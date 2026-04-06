@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}Mano rezervacijos{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h2><i class="bi bi-bookmark-check me-2" style="color:var(--primary);"></i>Mano rezervacijos</h2>
+  <p>Peržiūrėkite ir valdykite savo treniruočių rezervacijas</p>
+</div>
+
+<div class="s-card">
+  <div class="table-responsive">
+    <table class="s-table">
+      <thead>
+        <tr>
+          <th>Treniruotė</th>
+          <th>Data ir laikas</th>
+          <th>Statusas</th>
+          <th>Veiksmai</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in reservations %}
+          <tr>
+            <td>
+              <div class="fw-semibold">{{ r.training.title }}</div>
+              <div class="text-muted small">Treneris: {{ r.training.trainer.username }}</div>
+            </td>
+            <td>
+              <div>{{ r.training.starts_at|date:"Y-m-d" }}</div>
+              <div class="text-muted small">{{ r.training.starts_at|date:"H:i" }}</div>
+            </td>
+            <td>
+              {% if r.status == "BOOKED" %}
+                <span class="badge-status badge-booked">Užregistruota</span>
+              {% elif r.status == "CANCELLED" %}
+                <span class="badge-status badge-cancelled">Atšaukta</span>
+              {% elif r.status == "ATTENDED" %}
+                <span class="badge-status badge-attended">Dalyvavo</span>
+              {% elif r.status == "NO_SHOW" %}
+                <span class="badge-status badge-no_show">Neatvyko</span>
+              {% endif %}
+            </td>
+            <td>
+              {% if r.status == "BOOKED" %}
+                <a class="btn btn-outline-danger btn-sm"
+                   href="/my-reservations/{{ r.id }}/cancel/">
+                  <i class="bi bi-x-circle me-1"></i> Atšaukti
+                </a>
+              {% else %}
+                <span class="text-muted">—</span>
+              {% endif %}
+            </td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="4" class="text-center py-5">
+              <i class="bi bi-calendar-x fs-1 text-muted"></i>
+              <div class="text-muted mt-2">Rezervacijų nėra</div>
+              <a href="/trainings/" class="btn btn-primary btn-sm mt-3">
+                <i class="bi bi-search me-1"></i> Ieškoti treniruočių
+              </a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

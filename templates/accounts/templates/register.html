@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Registracija{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-5">
+    <div class="page-card p-4">
+      <h3 class="mb-3">Registracija</h3>
+
+      <form method="post">
+        {% csrf_token %}
+
+        <div class="mb-3">
+          <label class="form-label">Vartotojo vardas</label>
+          {{ form.username }}
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">El. paštas</label>
+          {{ form.email }}
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Slaptažodis</label>
+          {{ form.password1 }}
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Pakartok slaptažodį</label>
+          {{ form.password2 }}
+        </div>
+
+        {% if form.errors %}
+          <div class="alert alert-danger">
+            {{ form.errors }}
+          </div>
+        {% endif %}
+
+        <button class="btn btn-gym w-100" type="submit">Registruotis</button>
+      </form>
+
+      <div class="text-center mt-3">
+        <a href="/login/">Jau turi paskyrą? Prisijunk</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

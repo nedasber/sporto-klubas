@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Atšaukti treniruotę{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h2><i class="bi bi-x-circle me-2" style="color:var(--danger);"></i>Atšaukti treniruotę</h2>
+  <p>Ar tikrai norite atšaukti šią treniruotę?</p>
+</div>
+
+<div class="row">
+  <div class="col-lg-7">
+    <div class="s-card">
+      <div class="d-flex align-items-center gap-3 mb-4 p-3 rounded-3" style="background:#fef2f2;">
+        <i class="bi bi-exclamation-triangle-fill fs-4 text-danger"></i>
+        <div>
+          <div class="fw-bold">{{ training.title }}</div>
+          <div class="text-muted small">{{ training.starts_at|date:"Y-m-d H:i" }} · {{ training.duration_minutes }} min</div>
+        </div>
+      </div>
+
+      <form method="post">
+        {% csrf_token %}
+        <div class="mb-4">
+          <label class="form-label">Priežastis / pastaba (nebūtina)</label>
+          <input class="form-control" name="note" placeholder="Pvz. treneris susirgo / salė užimta">
+        </div>
+
+        <div class="d-flex gap-2">
+          <button class="btn btn-danger">
+            <i class="bi bi-x-circle me-1"></i> Patvirtinti atšaukimą
+          </button>
+          <a class="btn btn-outline-secondary" href="/trainer/trainings/">Atgal</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

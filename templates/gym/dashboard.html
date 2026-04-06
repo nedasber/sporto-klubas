@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h2>Sveiki, {{ request.user.username }}! 👋</h2>
+  <p>Jūsų sporto klubo valdymo skydelis</p>
+</div>
+
+<!-- NARYSTĖ -->
+<div class="s-card mb-4">
+  <div class="d-flex justify-content-between align-items-start mb-3">
+    <div>
+      <h5 class="fw-bold mb-1">
+        <i class="bi bi-credit-card-2-front me-2" style="color:var(--primary);"></i>
+        Narystė
+      </h5>
+      <p class="text-muted small mb-0">Informacija apie jūsų abonementą</p>
+    </div>
+    {% if membership_info %}
+      {% if membership_info.obj.status == "ACTIVE" %}
+        <span class="badge-status badge-active">● AKTYVI</span>
+      {% elif membership_info.obj.status == "PAUSED" %}
+        <span class="badge-status badge-paused">● SUSTABDYTA</span>
+      {% else %}
+        <span class="badge-status badge-expired">● PASIBAIGUSI</span>
+      {% endif %}
+    {% else %}
+      <span class="badge-status badge-cancelled">● NĖRA</span>
+    {% endif %}
+  </div>
+
+  {% if membership_info %}
+    <div class="row align-items-center">
+      <div class="col-md-8">
+        <div class="fw-bold fs-5">{{ membership_info.obj.plan.name }}</div>
+        <div class="text-muted small mt-1">
+          {{ membership_info.obj.start_date }} → {{ membership_info.obj.end_date }}
+          · Kaina: {{ membership_info.obj.plan.price }} €
+        </div>
+        <div class="mt-3">
+          <div class="d-flex justify-content-between small mb-1">
+            <span class="text-muted">Galiojimo laikas</span>
+            <span class="fw-semibold">Liko {{ membership_info.days_left }} d.</span>
+          </div>
+          <div class="progress">
+            <div class="progress-bar" style="width:{{ membership_info.time_progress }}%;"></div>
+          </div>
+        </div>
+        {% if membership_info.visit_limit %}
+          <div class="mt-3">
+            <div class="d-flex justify-content-between small mb-1">
+              <span class="text-muted">Apsilankymai</span>
+              <span class="fw-semibold">{{ membership_info.visits_left }}/{{ membership_info.visit_limit }} liko</span>
+            </div>
+            <div class="progress">
+              <div class="progress-bar" style="width:{{ membership_info.visit_progress }}%; background:var(--success);"></div>
+            </div>
+          </div>
+        {% else %}
+          <div class="mt-2 text-muted small">Apsilankymai: <b>Neriboti</b></div>
+        {% endif %}
+      </div>
+    </div>
+  {% else %}
+    <div class="d-flex align-items-center justify-content-between p-3 rounded-3" style="background:#fef2f2;">
+      <div>
+        <span class="fw-semibold text-danger small">Šiuo metu neturite aktyvios narystės</span>
+      </div>
+      <a class="btn btn-primary btn-sm" href="/membership/buy/">
+        <i class="bi bi-cart-plus me-1"></i> Įsigyti narystę
+      </a>
+    </div>
+  {% endif %}
+</div>
+
+<!-- STATISTIKA -->
+<div class="row g-3 mb-4">
+  <div class="col-6 col-md-3">
+    <div class="stat-card">
+      <div class="stat-number" style="color:var(--primary);">{{ stats.booked|default:0 }}</div>
+      <div class="stat-label">Užregistruota</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-card">
+      <div class="stat-number" style="color:var(--success);">{{ stats.attended|default:0 }}</div>
+      <div class="stat-label">Dalyvavo</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-card">
+      <div class="stat-number" style="color:var(--danger);">{{ stats.cancelled|default:0 }}</div>
+      <div class="stat-label">Atšaukta</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-card">
+      <div class="stat-number" style="color:var(--warning);">{{ stats.no_show|default:0 }}</div>
+      <div class="stat-label">Neatvyko</div>
+    </div>
+  </div>
+</div>
+
+<!-- ARTĖJANČIOS TRENIRUOTĖS -->
+<div class="s-card">
+  <h5 class="fw-bold mb-3">
+    <i class="bi bi-calendar2-check me-2" style="color:var(--primary);"></i>
+    Artėjančios treniruotės
+  </h5>
+
+  {% if upcoming %}
+    <div class="table-responsive">
+      <table class="s-table">
+        <thead>
+          <tr>
+            <th>Treniruotė</th>
+            <th>Data ir laikas</th>
+            <th>Treneris</th>
+            <th>Statusas</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in upcoming %}
+            <tr>
+              <td class="fw-semibold">{{ r.training.title }}</td>
+              <td>{{ r.training.starts_at|date:"Y-m-d H:i" }}</td>
+              <td>{{ r.training.trainer.username }}</td>
+              <td><span class="badge-status badge-booked">Registruota</span></td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="text-center py-4">
+      <i class="bi bi-calendar-x fs-1 text-muted"></i>
+      <div class="text-muted mt-2">Neturite artėjančių rezervacijų</div>
+      <a href="/trainings/" class="btn btn-primary btn-sm mt-3">
+        <i class="bi bi-search me-1"></i> Ieškoti treniruočių
+      </a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

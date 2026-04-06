@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}Įsigyti narystę{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h2><i class="bi bi-credit-card-2-front me-2" style="color:var(--primary);"></i>Abonementų planai</h2>
+  <p>Pasirinkite tinkamiausią planą ir pradėkite treniruotis</p>
+</div>
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+  {% for p in plans %}
+    <div class="col">
+      <div class="plan-card h-100 d-flex flex-column {% if forloop.counter == 2 %}popular{% endif %}">
+        {% if forloop.counter == 2 %}
+          <div class="popular-badge">POPULIARIAUSIAS</div>
+        {% endif %}
+
+        <div class="mb-3">
+          <h5 class="fw-bold">{{ p.name }}</h5>
+        </div>
+
+        <div class="plan-price">{{ p.price }} €</div>
+        <div class="plan-duration mb-3">{{ p.duration_days }} dienų</div>
+
+        <hr class="my-3">
+
+        <div class="text-start mb-4 flex-grow-1">
+          {% if p.visit_limit %}
+            <div class="small mb-2">
+              <i class="bi bi-check-circle-fill me-2" style="color:var(--success);"></i>
+              {{ p.visit_limit }} apsilankymai
+            </div>
+          {% else %}
+            <div class="small mb-2">
+              <i class="bi bi-check-circle-fill me-2" style="color:var(--success);"></i>
+              Neriboti apsilankymai
+            </div>
+          {% endif %}
+          <div class="small mb-2">
+            <i class="bi bi-check-circle-fill me-2" style="color:var(--success);"></i>
+            Visos treniruotės
+          </div>
+          <div class="small mb-2">
+            <i class="bi bi-check-circle-fill me-2" style="color:var(--success);"></i>
+            Persirengimo kambarys
+          </div>
+        </div>
+
+        <a href="/membership/buy/{{ p.id }}/" class="btn {% if forloop.counter == 2 %}btn-primary{% else %}btn-outline-primary{% endif %} w-100">
+          Pasirinkti
+        </a>
+      </div>
+    </div>
+  {% empty %}
+    <div class="col-12">
+      <div class="s-card text-center py-5">
+        <i class="bi bi-info-circle fs-1 text-muted"></i>
+        <div class="text-muted mt-2">Nėra sukurtų planų. Sukurkite per admin panelę.</div>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+
+<div class="mt-4">
+  <a href="/dashboard/" class="text-muted small text-decoration-none">
+    <i class="bi bi-arrow-left me-1"></i> Grįžti į dashboard
+  </a>
+</div>
+{% endblock %}

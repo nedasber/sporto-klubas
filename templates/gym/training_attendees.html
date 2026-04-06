@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}Dalyviai{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h2><i class="bi bi-people me-2" style="color:var(--primary);"></i>{{ training.title }}</h2>
+  <p>{{ training.starts_at|date:"Y-m-d H:i" }} · {{ training.duration_minutes }} min · Dalyvių sąrašas</p>
+</div>
+
+<div class="s-card">
+  <div class="table-responsive">
+    <table class="s-table">
+      <thead>
+        <tr>
+          <th>Klientas</th>
+          <th>Statusas</th>
+          <th>Veiksmai</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in reservations %}
+          <tr>
+            <td>
+              <div class="d-flex align-items-center gap-2">
+                <div class="user-avatar" style="width:32px;height:32px;font-size:14px;">
+                  <i class="bi bi-person-fill"></i>
+                </div>
+                <span class="fw-semibold">{{ r.user.username }}</span>
+              </div>
+            </td>
+            <td>
+              {% if r.status == "BOOKED" %}
+                <span class="badge-status badge-booked">Užregistruota</span>
+              {% elif r.status == "CANCELLED" %}
+                <span class="badge-status badge-cancelled">Atšaukta</span>
+              {% elif r.status == "ATTENDED" %}
+                <span class="badge-status badge-attended">Dalyvavo</span>
+              {% elif r.status == "NO_SHOW" %}
+                <span class="badge-status badge-no_show">Neatvyko</span>
+              {% endif %}
+            </td>
+            <td>
+              <div class="d-flex gap-2">
+                <a class="btn btn-success btn-sm"
+                   href="/trainer/reservations/{{ r.id }}/ATTENDED/">
+                  <i class="bi bi-check-lg me-1"></i> Dalyvavo
+                </a>
+                <a class="btn btn-outline-danger btn-sm"
+                   href="/trainer/reservations/{{ r.id }}/NO_SHOW/">
+                  <i class="bi bi-x-lg me-1"></i> Neatvyko
+                </a>
+              </div>
+            </td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="3" class="text-center py-5">
+              <i class="bi bi-people fs-1 text-muted"></i>
+              <div class="text-muted mt-2">Dalyvių nėra</div>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="mt-3">
+  <a href="/trainer/trainings/" class="text-muted small text-decoration-none">
+    <i class="bi bi-arrow-left me-1"></i> Grįžti į mano treniruotes
+  </a>
+</div>
+{% endblock %}

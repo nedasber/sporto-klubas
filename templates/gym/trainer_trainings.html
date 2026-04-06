@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}Mano treniruotės{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-start mb-4">
+  <div class="page-header mb-0">
+    <h2><i class="bi bi-clipboard2-pulse me-2" style="color:var(--primary);"></i>Mano treniruotės</h2>
+    <p>Valdykite savo sukurtas treniruotes</p>
+  </div>
+  <a class="btn btn-primary" href="/trainer/trainings/create/">
+    <i class="bi bi-plus-lg me-1"></i> Nauja treniruotė
+  </a>
+</div>
+
+<div class="s-card">
+  <div class="table-responsive">
+    <table class="s-table">
+      <thead>
+        <tr>
+          <th>Pavadinimas</th>
+          <th>Data ir laikas</th>
+          <th>Dalyviai</th>
+          <th>Statusas</th>
+          <th style="width:200px;">Veiksmai</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for t in trainings %}
+          <tr>
+            <td>
+              <div class="fw-semibold">{{ t.title }}</div>
+              <div class="text-muted small">{{ t.duration_minutes }} min · Talpa: {{ t.capacity }}</div>
+            </td>
+            <td>
+              <div>{{ t.starts_at|date:"Y-m-d" }}</div>
+              <div class="text-muted small">{{ t.starts_at|date:"H:i" }}</div>
+            </td>
+            <td>
+              <span class="fw-semibold">{{ t.reservations.count }}</span>
+              <span class="text-muted">/ {{ t.capacity }}</span>
+            </td>
+            <td>
+              {% if t.status == "CANCELLED" %}
+                <span class="badge-status badge-cancelled">Atšaukta</span>
+              {% else %}
+                <span class="badge-status badge-scheduled">Planuojama</span>
+              {% endif %}
+            </td>
+            <td>
+              <div class="d-flex gap-2">
+                <a class="btn btn-outline-primary btn-sm"
+                   href="/trainer/trainings/{{ t.id }}/attendees/">
+                  <i class="bi bi-people me-1"></i> Dalyviai
+                </a>
+                {% if t.status != "CANCELLED" %}
+                  <a class="btn btn-outline-danger btn-sm"
+                     href="/trainer/trainings/{{ t.id }}/cancel/">
+                    <i class="bi bi-x-circle me-1"></i> Atšaukti
+                  </a>
+                {% endif %}
+              </div>
+            </td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="5" class="text-center py-5">
+              <i class="bi bi-clipboard-x fs-1 text-muted"></i>
+              <div class="text-muted mt-2">Treniruočių nėra</div>
+              <a href="/trainer/trainings/create/" class="btn btn-primary btn-sm mt-3">
+                <i class="bi bi-plus-lg me-1"></i> Sukurti pirmą treniruotę
+              </a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
