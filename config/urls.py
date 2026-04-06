@@ -1,9 +1,12 @@
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
+from django.views.generic import RedirectView
 from gym import views as gym_views
 
 urlpatterns = [
+    path("", RedirectView.as_view(url="/login/", permanent=False)),
+
     path("admin/", admin.site.urls),
 
     # Auth
@@ -30,6 +33,6 @@ urlpatterns = [
     path("membership/buy/", gym_views.membership_buy_page, name="membership_buy_page"),
     path("membership/buy/<int:plan_id>/", gym_views.membership_buy_checkout, name="membership_buy_checkout"),
 
-    # Accounts app (register ir t.t.)
+    # Accounts app
     path("", include("accounts.urls")),
 ]
