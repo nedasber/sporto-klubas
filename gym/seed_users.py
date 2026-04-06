@@ -3,12 +3,14 @@ from accounts.models import Profile
 
 
 def create_test_users():
+    print("=== SEED START ===")
+
     users_data = [
         {
             "username": "admin",
             "email": "admin@test.com",
             "password": "Admin123!",
-            "role": "CLIENT",  # admin neturi specialios rolės pas tave
+            "role": "CLIENT",
             "is_staff": True,
             "is_superuser": True,
         },
@@ -32,18 +34,25 @@ def create_test_users():
 
     for user_data in users_data:
         user, created = User.objects.get_or_create(
-            username=user_data["username"],
-            defaults={
-                "email": user_data["email"],
-                "is_staff": user_data["is_staff"],
-                "is_superuser": user_data["is_superuser"],
-            },
+            username=user_data["username"]
         )
 
-        if created:
-            user.set_password(user_data["password"])
-            user.save()
+        user.email = user_data["email"]
+        user.is_staff = user_data["is_staff"]
+        user.is_superuser = user_data["is_superuser"]
+        user.set_password(user_data["password"])
+        user.save()
 
-        profile, _ = Profile.objects.get_or_create(user=user)
+        profile, profile_created = Profile.objects.get_or_create(user=user)
         profile.role = user_data["role"]
         profile.save()
+
+        print(
+            f"User={user.username}, created={created}, "
+            f"profile_created={profile_created}, "
+            f"password_ok={user.check_password(user_data['password'])}, "
+            f"role={profile.role}"
+        )
+
+    print("All users in DB:", list(User.objects.values_list("username", flat=True)))
+    print("=== SEED END ===")
