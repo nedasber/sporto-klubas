@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 set -o errexit
 
-echo "STARTING APP"
 python manage.py shell -c "from gym.seed_users import create_test_users; create_test_users()"
-echo "SEED DONE"
+python manage.py shell -c "from gym.seed_plans import create_test_plans; create_test_plans()"
 exec gunicorn config.wsgi:application
