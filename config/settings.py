@@ -39,6 +39,7 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -131,3 +132,62 @@ LOGIN_REDIRECT_URL = "/dashboard/"
 LOGOUT_REDIRECT_URL = "/login/"
 LOGIN_URL = "/login/"
 
+
+JAZZMIN_SETTINGS = {
+    "site_title": "Sporto Klubas Admin",
+    "site_header": "Sporto Klubas",
+    "site_brand": "💪 SportoKlubas",
+    "welcome_sign": "Sveiki sugrįžę!",
+    "copyright": "Sporto Klubas",
+    "show_sidebar": True,
+    "navigation_expanded": True,
+    "topmenu_links": [
+        {"name": "Svetainė", "url": "/", "new_window": True},
+        {"name": "Dashboard", "url": "/dashboard/"},
+    ],
+    "icons": {
+        "auth.user": "fas fa-user",
+        "auth.Group": "fas fa-users",
+        "accounts.Profile": "fas fa-id-card",
+        "gym.Membership": "fas fa-dumbbell",
+        "gym.MembershipPlan": "fas fa-list",
+        "gym.MembershipPurchase": "fas fa-shopping-cart",
+        "gym.Reservation": "fas fa-calendar-check",
+        "gym.Training": "fas fa-running",
+    },
+    "default_icon_parents": "fas fa-folder",
+    "default_icon_children": "fas fa-circle",
+    "related_modal_active": True,
+    "show_ui_builder": False,
+}
+
+JAZZMIN_UI_TWEAKS = {
+    "navbar_small_text": False,
+    "footer_small_text": False,
+    "body_small_text": False,
+    "brand_small_text": False,
+    "brand_colour": "navbar-dark",
+    "accent": "accent-purple",
+    "navbar": "navbar-dark",
+    "no_navbar_border": True,
+    "navbar_fixed": True,
+    "layout_boxed": False,
+    "footer_fixed": False,
+    "sidebar_fixed": True,
+    "sidebar": "sidebar-dark-purple",
+    "sidebar_nav_small_text": False,
+    "sidebar_disable_expand": False,
+    "sidebar_nav_child_indent": True,
+    "sidebar_nav_compact_style": False,
+    "sidebar_nav_legacy_style": False,
+    "sidebar_nav_flat_style": False,
+    "theme": "darkly",
+    "button_classes": {
+        "primary": "btn-primary",
+        "secondary": "btn-secondary",
+        "info": "btn-outline-info",
+        "warning": "btn-warning",
+        "danger": "btn-danger",
+        "success": "btn-success",
+    },
+}
