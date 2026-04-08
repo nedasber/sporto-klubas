@@ -5,7 +5,7 @@ from django.utils import timezone
 
 class MembershipPlan(models.Model):
     name = models.CharField(max_length=100)
-    duration_days = models.PositiveIntegerField(help_text="Abonemento galiojimo trukmė dienomis")
+    duration_days = models.PositiveIntegerField(default=30, help_text="Abonemento galiojimo trukmė dienomis")
     visit_limit = models.PositiveIntegerField(
         null=True, blank=True,
         help_text="Apsilankymų limitas (jei nėra – neribotas)"
