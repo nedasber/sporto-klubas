@@ -10,7 +10,7 @@ class MembershipPlan(models.Model):
         null=True, blank=True,
         help_text="Apsilankymų limitas (jei nėra – neribotas)"
     )
-    price = models.DecimalField(max_digits=6, decimal_places=2)
+    price = models.DecimalField(max_digits=6, decimal_places=2, default=0.00)
 
     def __str__(self):
         return self.name
