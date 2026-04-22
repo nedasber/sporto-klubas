@@ -49,6 +49,7 @@ INSTALLED_APPS = [
 
     "accounts.apps.AccountsConfig",
     "gym",
+    "gamification.apps.GamificationConfig",
 ]
 
 MIDDLEWARE = [
@@ -135,6 +136,14 @@ LOGOUT_REDIRECT_URL = "/login/"
 LOGIN_URL = "/login/"
 
 
+# ============================================================
+# STRIPE MOKĖJIMAI
+# ============================================================
+STRIPE_PUBLISHABLE_KEY = os.getenv("STRIPE_PUBLISHABLE_KEY", "")
+STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY", "")
+STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET", "")
+
+
 JAZZMIN_SETTINGS = {
     "site_title": "Sporto Klubas Admin",
     "site_header": "Sporto Klubas",
@@ -145,7 +154,8 @@ JAZZMIN_SETTINGS = {
     "navigation_expanded": True,
     "topmenu_links": [
         {"name": "Svetainė", "url": "/", "new_window": True},
-        {"name": "Dashboard", "url": "/dashboard/"},
+        {"name": "Valdymo skydelis", "url": "/dashboard/"},
+        {"name": "Atsijungti", "url": "/logout/"},
     ],
     "icons": {
         "auth.user": "fas fa-user",
@@ -156,6 +166,9 @@ JAZZMIN_SETTINGS = {
         "gym.MembershipPurchase": "fas fa-shopping-cart",
         "gym.Reservation": "fas fa-calendar-check",
         "gym.Training": "fas fa-running",
+        "gamification.UserProgress": "fas fa-chart-line",
+        "gamification.Achievement": "fas fa-medal",
+        "gamification.UserAchievement": "fas fa-award",
     },
     "default_icon_parents": "fas fa-folder",
     "default_icon_children": "fas fa-circle",

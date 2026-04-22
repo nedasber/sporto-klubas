@@ -1,0 +1,107 @@
+{% extends "admin/base_site.html" %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+  /* ================================================================ */
+  /*  JAZZMIN USER DROPDOWN FIX                                       */
+  /*  Pataiso "nematomą" vartotojo meniu viršuje dešinėje             */
+  /* ================================================================ */
+
+  /* Pagrindinis dropdown fonas */
+  .main-header .dropdown-menu,
+  .main-header .user-menu .dropdown-menu,
+  .navbar-nav .dropdown-menu,
+  ul.dropdown-menu {
+    background-color: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15) !important;
+    border-radius: 8px !important;
+    padding: 8px 0 !important;
+    min-width: 220px !important;
+  }
+
+  /* Header "Account" */
+  .main-header .dropdown-menu .dropdown-header,
+  ul.dropdown-menu li.dropdown-header,
+  ul.dropdown-menu .dropdown-header {
+    color: #475569 !important;
+    background-color: #f1f5f9 !important;
+    font-weight: 700 !important;
+    font-size: 12px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    padding: 10px 16px !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+    margin-bottom: 4px !important;
+  }
+
+  /* Dropdown nuorodos (Change password, Log out, See Profile) */
+  .main-header .dropdown-menu a,
+  .main-header .dropdown-menu .dropdown-item,
+  ul.dropdown-menu li a,
+  ul.dropdown-menu .dropdown-item {
+    color: #1e293b !important;
+    background-color: transparent !important;
+    padding: 10px 16px !important;
+    font-size: 14px !important;
+    text-decoration: none !important;
+    display: block !important;
+  }
+
+  .main-header .dropdown-menu a:hover,
+  .main-header .dropdown-menu .dropdown-item:hover,
+  ul.dropdown-menu li a:hover,
+  ul.dropdown-menu .dropdown-item:hover,
+  .main-header .dropdown-menu a:focus,
+  .main-header .dropdown-menu .dropdown-item:focus {
+    background-color: #4361ee !important;
+    color: #ffffff !important;
+  }
+
+  /* Dropdown ikonos */
+  .main-header .dropdown-menu a i,
+  .main-header .dropdown-menu .dropdown-item i,
+  ul.dropdown-menu li a i,
+  ul.dropdown-menu .dropdown-item i {
+    color: #64748b !important;
+    margin-right: 10px !important;
+    width: 16px !important;
+  }
+
+  .main-header .dropdown-menu a:hover i,
+  .main-header .dropdown-menu .dropdown-item:hover i,
+  ul.dropdown-menu li a:hover i,
+  ul.dropdown-menu .dropdown-item:hover i {
+    color: #ffffff !important;
+  }
+
+  /* Dropdown footer (See Profile mygtukas apačioje) */
+  .main-header .dropdown-menu .dropdown-footer,
+  ul.dropdown-menu li.dropdown-footer,
+  ul.dropdown-menu .dropdown-footer,
+  ul.dropdown-menu li.dropdown-footer a,
+  ul.dropdown-menu .dropdown-footer a {
+    background-color: #f8fafc !important;
+    color: #1e293b !important;
+    border-top: 1px solid #e2e8f0 !important;
+    margin-top: 4px !important;
+    padding: 10px 16px !important;
+    text-align: center !important;
+    font-weight: 600 !important;
+  }
+
+  ul.dropdown-menu li.dropdown-footer a:hover,
+  ul.dropdown-menu .dropdown-footer a:hover {
+    background-color: #4361ee !important;
+    color: #ffffff !important;
+  }
+
+  /* Dropdown divider */
+  ul.dropdown-menu .dropdown-divider,
+  .main-header .dropdown-menu .dropdown-divider {
+    border-top: 1px solid #e2e8f0 !important;
+    margin: 4px 0 !important;
+  }
+</style>
+{% endblock %}

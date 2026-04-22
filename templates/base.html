@@ -22,7 +22,7 @@
 
     <div class="sidebar-nav flex-grow-1">
       <a href="/dashboard/" class="sidebar-link {% if request.path == '/dashboard/' %}active{% endif %}">
-        <i class="bi bi-grid-1x2-fill"></i> Dashboard
+        <i class="bi bi-grid-1x2-fill"></i> Valdymo skydelis
       </a>
 
       {% if request.user.profile and request.user.profile.role == "CLIENT" %}
@@ -48,7 +48,7 @@
 
       {% if request.user.is_superuser %}
         <a href="/admin/" class="sidebar-link">
-          <i class="bi bi-shield-lock"></i> Admin
+          <i class="bi bi-shield-lock"></i> Administravimas
         </a>
       {% endif %}
     </div>

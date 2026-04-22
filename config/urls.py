@@ -33,6 +33,12 @@ urlpatterns = [
     path("membership/buy/", gym_views.membership_buy_page, name="membership_buy_page"),
     path("membership/buy/<int:plan_id>/", gym_views.membership_buy_checkout, name="membership_buy_checkout"),
 
+    # Stripe mokėjimai
+    path("membership/pay/<int:purchase_id>/", gym_views.membership_stripe_checkout, name="membership_stripe_checkout"),
+    path("membership/pay/<int:purchase_id>/success/", gym_views.membership_payment_success, name="membership_payment_success"),
+    path("membership/pay/<int:purchase_id>/cancel/", gym_views.membership_payment_cancel, name="membership_payment_cancel"),
+    path("stripe/webhook/", gym_views.stripe_webhook, name="stripe_webhook"),
+
     # Accounts app
     path("", include("accounts.urls")),
 ]

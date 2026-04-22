@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Dashboard{% endblock %}
+{% block title %}Valdymo skydelis{% endblock %}
 
 {% block content %}
 <div class="page-header">
@@ -73,6 +73,90 @@
     </div>
   {% endif %}
 </div>
+
+<!-- ============================================ -->
+<!-- MOTYVACINĖ SISTEMA                           -->
+<!-- ============================================ -->
+{% if gamification_info %}
+<div class="s-card mb-4" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: white;">
+  <div class="d-flex justify-content-between align-items-start mb-3">
+    <div>
+      <h5 class="fw-bold mb-1" style="color: white;">
+        <i class="bi bi-award-fill me-2"></i>
+        Jūsų pažanga
+      </h5>
+      <p class="small mb-0" style="color: rgba(255,255,255,0.85);">Už aktyvų dalyvavimą gaunate taškų ir ženklelių</p>
+    </div>
+    <span class="badge-status" style="background: #667eea; color: white; font-weight: 600;">
+      ● LYGIS {{ gamification_info.level }}
+    </span>
+  </div>
+
+  <div class="row align-items-center">
+    <div class="col-md-8">
+      <div class="d-flex align-items-baseline gap-3">
+        <div class="fw-bold" style="font-size: 2rem;">{{ gamification_info.points }}</div>
+        <div style="color: rgba(255,255,255,0.85);">taškai</div>
+      </div>
+      <div class="fw-semibold mb-2">{{ gamification_info.level_name }}</div>
+
+      <div class="mt-3">
+        <div class="d-flex justify-content-between small mb-1">
+          <span style="color: rgba(255,255,255,0.85);">Pažanga iki kito lygio</span>
+          <span class="fw-semibold">
+            {% if gamification_info.points_to_next %}
+              Trūksta {{ gamification_info.points_to_next }} t.
+            {% else %}
+              Maksimalus lygis!
+            {% endif %}
+          </span>
+        </div>
+        <div class="progress" style="background: rgba(255,255,255,0.2);">
+          <div class="progress-bar" style="width:{{ gamification_info.progress_percent }}%; background: #667eea;"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4 text-md-end mt-3 mt-md-0">
+      <div style="font-size: 2rem;">
+       <i class="bi bi-trophy-fill" style="color: #667eea;"></i>
+      </div>
+      <div class="fw-bold" style="font-size: 1.25rem;">{{ gamification_info.achievements_count }}</div>
+      <div class="small" style="color: rgba(255,255,255,0.85);">pasiekimų gauta</div>
+    </div>
+  </div>
+</div>
+
+<!-- PASIEKIMAI -->
+<div class="s-card mb-4">
+  <h5 class="fw-bold mb-3">
+    <i class="bi bi-patch-check-fill me-2" style="color:var(--primary);"></i>
+    Jūsų pasiekimai
+  </h5>
+
+  {% if gamification_info.achievements %}
+    <div class="row g-3">
+      {% for ua in gamification_info.achievements %}
+        <div class="col-6 col-md-4 col-lg-2">
+          <div class="text-center p-3 rounded-3" style="background: #f8fafc; border: 1px solid #e2e8f0;">
+            <div style="font-size: 2rem; color: #667eea;">
+              <i class="bi bi-{{ ua.achievement.icon }}"></i>
+            </div>
+            <div class="fw-bold small mt-2">{{ ua.achievement.name }}</div>
+            <div class="text-muted" style="font-size: 11px;">{{ ua.achievement.description }}</div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="text-center py-4">
+      <i class="bi bi-trophy fs-1 text-muted"></i>
+      <div class="text-muted mt-2">Dar neturite pasiekimų</div>
+      <div class="text-muted small">Užsiregistruokite į treniruotes ir įgykite pirmąjį ženklelį!</div>
+    </div>
+  {% endif %}
+</div>
+{% endif %}
 
 <!-- STATISTIKA -->
 <div class="row g-3 mb-4">

@@ -7,36 +7,295 @@
   <p>Užpildykite informaciją apie naują treniruotę</p>
 </div>
 
-<div class="row">
-  <div class="col-lg-8">
-    <div class="s-card">
-      <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
+<form method="post" novalidate>
+  {% csrf_token %}
 
-        {% if form.errors %}
-          <div class="alert alert-danger py-2 small mt-3">
-            <i class="bi bi-exclamation-circle me-1"></i>
-            {{ form.errors }}
-          </div>
-        {% endif %}
+  <div class="row g-4">
+    <!-- KAIRĖ: PAGRINDINIAI LAUKAI -->
+    <div class="col-lg-7">
+      <div class="s-card mb-4">
+        <h5 class="fw-bold mb-3">
+          <i class="bi bi-info-circle me-2" style="color:var(--primary);"></i>
+          Pagrindinė informacija
+        </h5>
 
-        <div class="d-flex gap-2 mt-4">
-          <button class="btn btn-primary">
-            <i class="bi bi-check-lg me-1"></i> Išsaugoti
-          </button>
-          <a class="btn btn-outline-secondary" href="/trainer/trainings/">Atgal</a>
+        <!-- Treniruotės tipas -->
+        <div class="mb-3">
+          <label for="{{ form.title.id_for_label }}" class="form-label">Treniruotės tipas *</label>
+          {{ form.title }}
+          {% if form.title.errors %}
+            <div class="text-danger small mt-1">{{ form.title.errors.0 }}</div>
+          {% endif %}
         </div>
-      </form>
+
+        <!-- Data ir laikas -->
+        <div class="mb-3">
+          <label for="{{ form.starts_at.id_for_label }}" class="form-label">Pradžios data ir laikas *</label>
+          {{ form.starts_at }}
+          {% if form.starts_at.errors %}
+            <div class="text-danger small mt-1">{{ form.starts_at.errors.0 }}</div>
+          {% endif %}
+        </div>
+
+        <!-- Trukmė su presetais -->
+        <div class="mb-3">
+          <label for="{{ form.duration_minutes.id_for_label }}" class="form-label">Trukmė (minutėmis) *</label>
+          <div class="duration-presets mb-2">
+            <button type="button" class="btn btn-sm btn-outline-secondary preset-btn" data-duration="30">30 min</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary preset-btn" data-duration="45">45 min</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary preset-btn" data-duration="60">1 val.</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary preset-btn" data-duration="90">1 val. 30 min</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary preset-btn" data-duration="120">2 val.</button>
+          </div>
+          {{ form.duration_minutes }}
+          {% if form.duration_minutes.errors %}
+            <div class="text-danger small mt-1">{{ form.duration_minutes.errors.0 }}</div>
+          {% endif %}
+        </div>
+
+        <!-- Maksimalus dalyvių skaičius -->
+        <div class="mb-3">
+          <label for="{{ form.capacity.id_for_label }}" class="form-label">Maksimalus dalyvių skaičius *</label>
+          {{ form.capacity }}
+          {% if form.capacity.errors %}
+            <div class="text-danger small mt-1">{{ form.capacity.errors.0 }}</div>
+          {% endif %}
+        </div>
+
+        <!-- Aprašymas -->
+        <div class="mb-0">
+          <label for="{{ form.description.id_for_label }}" class="form-label">Aprašymas</label>
+          {{ form.description }}
+          <div class="form-text">Neprivalomas. Galite aprašyti treniruotės turinį, reikalavimus ar patarimus.</div>
+          {% if form.description.errors %}
+            <div class="text-danger small mt-1">{{ form.description.errors.0 }}</div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- DEŠINĖ: PAVEIKSLĖLIŲ GALERIJA -->
+    <div class="col-lg-5">
+      <div class="s-card mb-4">
+        <h5 class="fw-bold mb-3">
+          <i class="bi bi-image me-2" style="color:var(--primary);"></i>
+          Paveikslėlis
+        </h5>
+
+        <!-- Peržiūra -->
+        <div class="image-preview mb-3" id="imagePreview">
+          <div class="no-image-placeholder">
+            <i class="bi bi-image fs-1"></i>
+            <div class="small mt-2">Pasirinkite paveikslėlį iš galerijos arba įklijuokite savo URL</div>
+          </div>
+        </div>
+
+        <!-- Galerija -->
+        <div class="form-label">Galerija – spragtelkite norimą:</div>
+        <div class="image-gallery">
+          {% for img in gallery_images %}
+            <div class="gallery-item" data-url="{{ img.url }}" title="{{ img.label }}">
+              <img src="{{ img.url }}" alt="{{ img.label }}" loading="lazy">
+              <div class="gallery-label">{{ img.label }}</div>
+            </div>
+          {% endfor %}
+        </div>
+
+        <!-- URL laukas (paslėptas, bet pildomas per JavaScript arba rankomis) -->
+        <div class="mt-3">
+          <label for="{{ form.image_url.id_for_label }}" class="form-label small">
+            Arba įklijuokite savo URL:
+          </label>
+          {{ form.image_url }}
+          {% if form.image_url.errors %}
+            <div class="text-danger small mt-1">{{ form.image_url.errors.0 }}</div>
+          {% endif %}
+        </div>
+      </div>
     </div>
   </div>
-</div>
+
+  <!-- VEIKSMAI -->
+  <div class="d-flex gap-2 mt-4">
+    <button type="submit" class="btn btn-primary">
+      <i class="bi bi-check-lg me-1"></i> Išsaugoti
+    </button>
+    <a href="/trainer/trainings/" class="btn btn-outline-secondary">
+      <i class="bi bi-arrow-left me-1"></i> Atgal
+    </a>
+  </div>
+</form>
+
+<style>
+/* ===== DURATION PRESETS ===== */
+.duration-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.preset-btn {
+  border-radius: 8px !important;
+  font-size: 13px !important;
+  padding: 4px 12px !important;
+  font-weight: 500 !important;
+}
+.preset-btn.active {
+  background: var(--primary) !important;
+  color: #fff !important;
+  border-color: var(--primary) !important;
+}
+
+/* ===== IMAGE PREVIEW ===== */
+.image-preview {
+  width: 100%;
+  height: 200px;
+  background: #f1f5f9;
+  border: 2px dashed #cbd5e1;
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color .2s;
+}
+.image-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.no-image-placeholder {
+  color: #94a3b8;
+  text-align: center;
+  padding: 20px;
+}
+
+/* ===== IMAGE GALLERY ===== */
+.image-gallery {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.gallery-item {
+  position: relative;
+  cursor: pointer;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 2px solid transparent;
+  transition: all .2s;
+  aspect-ratio: 4 / 3;
+  background: #f1f5f9;
+}
+.gallery-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,.12);
+}
+.gallery-item.selected {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(67,97,238,.25);
+}
+.gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.gallery-label {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to top, rgba(15,23,42,0.85) 0%, rgba(15,23,42,0) 100%);
+  color: #fff;
+  padding: 16px 8px 6px;
+  font-size: 11px;
+  font-weight: 600;
+  text-align: center;
+  letter-spacing: .3px;
+}
+.gallery-item.selected::after {
+  content: "✓";
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background: var(--primary);
+  color: #fff;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+@media (max-width: 575.98px) {
+  .image-gallery { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
 
 <script>
-  document.querySelectorAll("form input:not([type=hidden]), form textarea, form select").forEach(i => {
-    if(!i.classList.contains('form-control') && !i.classList.contains('form-select')){
-      i.classList.add("form-control");
+(function() {
+  const imageUrlInput = document.getElementById('{{ form.image_url.id_for_label }}');
+  const previewBox = document.getElementById('imagePreview');
+  const galleryItems = document.querySelectorAll('.gallery-item');
+  const durationInput = document.getElementById('{{ form.duration_minutes.id_for_label }}');
+  const presetBtns = document.querySelectorAll('.preset-btn');
+
+  // --- Paveikslėlio peržiūra ---
+  function updatePreview(url) {
+    if (url && url.trim()) {
+      previewBox.innerHTML = '<img src="' + url + '" alt="Peržiūra" onerror="this.parentElement.innerHTML=\'<div class=&quot;no-image-placeholder&quot;><i class=&quot;bi bi-exclamation-triangle fs-1&quot;></i><div class=&quot;small mt-2&quot;>Nepavyko įkelti paveikslėlio</div></div>\'">';
+    } else {
+      previewBox.innerHTML = '<div class="no-image-placeholder"><i class="bi bi-image fs-1"></i><div class="small mt-2">Pasirinkite paveikslėlį iš galerijos arba įklijuokite savo URL</div></div>';
     }
+  }
+
+  // Paleidimas su esama reikšme (jei forma buvo submit'inta su klaida)
+  if (imageUrlInput.value) {
+    updatePreview(imageUrlInput.value);
+    galleryItems.forEach(item => {
+      if (item.dataset.url === imageUrlInput.value) item.classList.add('selected');
+    });
+  }
+
+  // Galerijos paspaudimas
+  galleryItems.forEach(item => {
+    item.addEventListener('click', function() {
+      const url = this.dataset.url;
+      imageUrlInput.value = url;
+      updatePreview(url);
+      galleryItems.forEach(i => i.classList.remove('selected'));
+      this.classList.add('selected');
+    });
   });
+
+  // Rankinis URL įvedimas
+  imageUrlInput.addEventListener('input', function() {
+    updatePreview(this.value);
+    galleryItems.forEach(i => i.classList.remove('selected'));
+    galleryItems.forEach(item => {
+      if (item.dataset.url === this.value) item.classList.add('selected');
+    });
+  });
+
+  // --- Trukmės presetai ---
+  function syncDurationButtons() {
+    const val = durationInput.value;
+    presetBtns.forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.duration === val);
+    });
+  }
+
+  presetBtns.forEach(btn => {
+    btn.addEventListener('click', function() {
+      durationInput.value = this.dataset.duration;
+      syncDurationButtons();
+    });
+  });
+
+  durationInput.addEventListener('input', syncDurationButtons);
+  syncDurationButtons();
+})();
 </script>
 {% endblock %}

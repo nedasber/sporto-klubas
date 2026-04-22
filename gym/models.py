@@ -54,6 +54,20 @@ class MembershipPurchase(models.Model):
 
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="PENDING")
 
+    # --- Stripe integracijai ---
+    stripe_session_id = models.CharField(
+        max_length=255, blank=True,
+        help_text="Stripe Checkout sesijos ID"
+    )
+    stripe_payment_intent = models.CharField(
+        max_length=255, blank=True,
+        help_text="Stripe mokėjimo ID"
+    )
+    paid_at = models.DateTimeField(
+        null=True, blank=True,
+        help_text="Apmokėjimo data ir laikas"
+    )
+
     def __str__(self):
         return f"{self.user.username} – {self.plan.name} ({self.status})"
 
