@@ -9,7 +9,7 @@ def create_test_users():
         {
             "username": "admin",
             "email": "admin@test.com",
-            "password": "Admin123!",
+            "password": "Valdymas-Saugus-2026",
             "role": "CLIENT",
             "is_staff": True,
             "is_superuser": True,
@@ -17,7 +17,7 @@ def create_test_users():
         {
             "username": "treneris",
             "email": "treneris@test.com",
-            "password": "Treneris123!",
+            "password": "Treniruote-Vykdoma-88",
             "role": "TRAINER",
             "is_staff": False,
             "is_superuser": False,
@@ -25,7 +25,7 @@ def create_test_users():
         {
             "username": "klientas",
             "email": "klientas@test.com",
-            "password": "Klientas123!",
+            "password": "Sportas-Narys-2026",
             "role": "CLIENT",
             "is_staff": False,
             "is_superuser": False,
@@ -40,18 +40,22 @@ def create_test_users():
         user.email = user_data["email"]
         user.is_staff = user_data["is_staff"]
         user.is_superuser = user_data["is_superuser"]
+        user.is_active = True  # PRIVERSTINAI aktyvi paskyra
         user.set_password(user_data["password"])
         user.save()
 
         profile, profile_created = Profile.objects.get_or_create(user=user)
         profile.role = user_data["role"]
+        # PRIVERSTINAI patvirtintas el. paštas, kad nereikėtų patvirtinti per laišką
+        if hasattr(profile, "email_verified"):
+            profile.email_verified = True
         profile.save()
 
         print(
             f"User={user.username}, created={created}, "
             f"profile_created={profile_created}, "
             f"password_ok={user.check_password(user_data['password'])}, "
-            f"role={profile.role}"
+            f"is_active={user.is_active}, role={profile.role}"
         )
 
     print("All users in DB:", list(User.objects.values_list("username", flat=True)))
