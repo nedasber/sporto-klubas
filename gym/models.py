@@ -54,19 +54,9 @@ class MembershipPurchase(models.Model):
 
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="PENDING")
 
-    # --- Stripe integracijai ---
-    stripe_session_id = models.CharField(
-        max_length=255, blank=True,
-        help_text="Stripe Checkout sesijos ID"
-    )
-    stripe_payment_intent = models.CharField(
-        max_length=255, blank=True,
-        help_text="Stripe mokėjimo ID"
-    )
-    paid_at = models.DateTimeField(
-        null=True, blank=True,
-        help_text="Apmokėjimo data ir laikas"
-    )
+    stripe_session_id = models.CharField(max_length=255, blank=True)
+    stripe_payment_intent = models.CharField(max_length=255, blank=True)
+    paid_at = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return f"{self.user.username} – {self.plan.name} ({self.status})"
@@ -84,9 +74,16 @@ class Training(models.Model):
     )
 
     description = models.TextField(blank=True)
+
+    image = models.ImageField(
+        upload_to="trainings/",
+        blank=True,
+        null=True,
+        help_text="Įkeltas paveikslėlio failas (jpg, png)"
+    )
     image_url = models.URLField(
         blank=True,
-        help_text="Nuoroda į treniruotės paveikslą (URL)"
+        help_text="Arba nuoroda į galerijos paveikslėlį"
     )
 
     capacity = models.PositiveIntegerField(default=10)
@@ -102,15 +99,21 @@ class Training(models.Model):
         default="SCHEDULED"
     )
 
-    cancellation_note = models.CharField(
-        max_length=255,
-        blank=True
-    )
+    cancellation_note = models.CharField(max_length=255, blank=True)
 
+    # Pridėtas laukas, kad galėtume sekti, kada treniruotė sukurta
+    # (naudojama pranešimams apie naujas treniruotes)
+    created_at = models.DateTimeField(default=timezone.now)
+
+    def get_image_url(self):
+        if self.image:
+            return self.image.url
+        if self.image_url:
+            return self.image_url
+        return ""
 
     def __str__(self):
         return f"{self.title} ({self.starts_at:%Y-%m-%d %H:%M})"
-
 
 
 class Reservation(models.Model):
@@ -121,23 +124,9 @@ class Reservation(models.Model):
         ("NO_SHOW", "Neatvyko"),
     )
 
-    training = models.ForeignKey(
-        Training,
-        on_delete=models.CASCADE,
-        related_name="reservations"
-    )
-
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE
-    )
-
-    status = models.CharField(
-        max_length=10,
-        choices=STATUS_CHOICES,
-        default="BOOKED"
-    )
-
+    training = models.ForeignKey(Training, on_delete=models.CASCADE, related_name="reservations")
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="BOOKED")
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

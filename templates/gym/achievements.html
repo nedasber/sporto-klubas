@@ -1,0 +1,274 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load trans_db %}
+{% block title %}{% trans "Pasiekimai ir lygiai" %}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h2><i class="bi bi-patch-check-fill me-2" style="color:var(--primary);"></i>{% trans "Pasiekimai ir lygiai" %}</h2>
+  <p>{% trans "Jūsų progresas, lygiai ir kaip gauti taškų" %}</p>
+</div>
+
+<!-- DABARTINIS STATUSAS -->
+<div class="s-card mb-4" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: white;">
+  <div class="row align-items-center">
+    <div class="col-md-7">
+      <div class="d-flex align-items-baseline gap-3">
+        <div class="fw-bold" style="font-size: 2.5rem;">{{ progress.points }}</div>
+        <div style="color: rgba(255,255,255,0.85);">{% trans "taškai" %}</div>
+      </div>
+      <div class="fw-bold fs-5">{{ progress.get_level_display|trans_db }}</div>
+      <div class="small" style="color: rgba(255,255,255,0.7);">{% trans "Lygis" %} {{ progress.level }} / 5</div>
+
+      <div class="mt-3">
+        <div class="d-flex justify-content-between small mb-1">
+          <span style="color: rgba(255,255,255,0.85);">{% trans "Iki kito lygio" %}</span>
+          <span class="fw-semibold">
+            {% if progress.points_to_next_level %}
+              {{ progress.points_to_next_level }} {% trans "taškų" %}
+            {% else %}
+              {% trans "Maksimalus lygis!" %}
+            {% endif %}
+          </span>
+        </div>
+        <div class="progress" style="background: rgba(255,255,255,0.2);height:10px;">
+          <div class="progress-bar" style="width:{{ progress.progress_to_next_level }}%; background: #667eea;"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-5 text-md-end mt-3 mt-md-0">
+      <div class="d-flex justify-content-md-end gap-4 gap-md-3 flex-wrap">
+        <div>
+          <div style="font-size: 1.8rem;"><i class="bi bi-trophy-fill" style="color: #667eea;"></i></div>
+          <div class="fw-bold fs-5">{{ earned_count }} / {{ total_count }}</div>
+          <div class="small" style="color: rgba(255,255,255,0.7);">{% trans "Pasiekimai" %}</div>
+        </div>
+        <div>
+          <div style="font-size: 1.8rem;"><i class="bi bi-fire" style="color: #f59e0b;"></i></div>
+          <div class="fw-bold fs-5">{{ progress.current_streak }}</div>
+          <div class="small" style="color: rgba(255,255,255,0.7);">{% trans "Dabartinis streak'as" %}</div>
+        </div>
+        <div>
+          <div style="font-size: 1.8rem;"><i class="bi bi-lightning-charge-fill" style="color: #22c55e;"></i></div>
+          <div class="fw-bold fs-5">{{ progress.longest_streak }}</div>
+          <div class="small" style="color: rgba(255,255,255,0.7);">{% trans "Ilgiausias streak'as" %}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LYGIŲ SISTEMA -->
+<div class="s-card mb-4">
+  <h5 class="fw-bold mb-3"><i class="bi bi-bar-chart-steps me-2" style="color:var(--primary);"></i>{% trans "Lygių sistema" %}</h5>
+  <div class="levels-grid">
+    {% for lvl in levels_info %}
+      <div class="level-item {% if lvl.is_current %}current{% elif lvl.is_reached %}reached{% else %}locked{% endif %}">
+        <div class="level-num">{% trans "Lygis" %} {{ lvl.num }}</div>
+        <div class="level-name">{{ lvl.name|trans_db }}</div>
+        <div class="level-range small">{{ lvl.points_range }} {% trans "t." %}</div>
+        {% if lvl.is_current %}
+          <div class="level-tag tag-current">{% trans "Jūs čia" %}</div>
+        {% elif lvl.is_reached %}
+          <div class="level-tag tag-done"><i class="bi bi-check-lg"></i></div>
+        {% else %}
+          <div class="level-tag tag-locked"><i class="bi bi-lock-fill"></i></div>
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- KAIP GAUTI TAŠKŲ -->
+<div class="s-card mb-4">
+  <h5 class="fw-bold mb-3"><i class="bi bi-info-circle me-2" style="color:var(--primary);"></i>{% trans "Kaip gauti taškų" %}</h5>
+  <div class="row g-3">
+    {% for rule in point_rules %}
+      <div class="col-md-4">
+        <div class="point-rule">
+          <div class="point-rule-icon"><i class="bi bi-{{ rule.icon }}"></i></div>
+          <div class="point-rule-content">
+            <div class="point-rule-action">{% trans rule.action %}</div>
+            <div class="point-rule-points">+{{ rule.points }} {% trans "taškų" %}</div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+  <div class="alert alert-info mt-3 mb-0 small">
+    <i class="bi bi-lightbulb me-1"></i>
+    {% trans "Papildomus taškus gausite už pasiekimus (žemiau). Lankydamiesi kasdien iš eilės kursite streak'us!" %}
+  </div>
+</div>
+
+<!-- PASIEKIMAI -->
+<div class="s-card">
+  <h5 class="fw-bold mb-3"><i class="bi bi-patch-check-fill me-2" style="color:var(--primary);"></i>{% trans "Visi pasiekimai" %}</h5>
+  <div class="row g-3">
+    {% for item in achievements_data %}
+      <div class="col-6 col-md-4 col-lg-3">
+        <div class="achievement-card {% if item.earned %}earned{% else %}locked{% endif %}">
+          <div class="achievement-icon">
+            {% if item.earned %}
+              <i class="bi bi-{{ item.obj.icon }}"></i>
+            {% else %}
+              <i class="bi bi-lock-fill"></i>
+            {% endif %}
+          </div>
+          <div class="achievement-name">{{ item.obj.name|trans_db }}</div>
+          <div class="achievement-desc small">{{ item.obj.description|trans_db }}</div>
+          <div class="achievement-points">+{{ item.obj.points_reward }} {% trans "t." %}</div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+<style>
+/* LYGIAI */
+.levels-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+}
+@media (max-width: 767px) {
+  .levels-grid { grid-template-columns: repeat(2, 1fr); }
+}
+.level-item {
+  padding: 16px 12px;
+  border-radius: 12px;
+  text-align: center;
+  border: 2px solid #e2e8f0;
+  background: #f8fafc;
+  position: relative;
+  transition: all .2s;
+}
+.level-item.current {
+  background: linear-gradient(135deg, #4361ee 0%, #3a56d4 100%);
+  border-color: var(--primary);
+  color: #fff;
+  transform: scale(1.05);
+  box-shadow: 0 8px 24px rgba(67,97,238,0.25);
+}
+.level-item.reached {
+  background: #dcfce7;
+  border-color: #22c55e;
+  color: #166534;
+}
+.level-item.locked {
+  opacity: .55;
+}
+.level-num {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  font-weight: 600;
+  opacity: .8;
+}
+.level-name {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 4px 0;
+}
+.level-range {
+  font-weight: 500;
+}
+.level-tag {
+  margin-top: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 12px;
+  display: inline-block;
+}
+.tag-current { background: rgba(255,255,255,.2); color: #fff; }
+.tag-done { background: #16a34a; color: #fff; }
+.tag-locked { background: #e2e8f0; color: #64748b; }
+
+/* POINT RULES */
+.point-rule {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px;
+  background: #f8fafc;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+.point-rule-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--primary-light);
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+.point-rule-action {
+  font-weight: 600;
+  font-size: 14px;
+}
+.point-rule-points {
+  font-size: 13px;
+  color: var(--primary);
+  font-weight: 700;
+}
+
+/* ACHIEVEMENT CARDS */
+.achievement-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 16px 12px;
+  text-align: center;
+  height: 100%;
+  transition: all .2s;
+}
+.achievement-card.earned {
+  background: linear-gradient(135deg, #eef1ff 0%, #f8fafc 100%);
+  border-color: var(--primary);
+}
+.achievement-card.earned:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,.08);
+}
+.achievement-card.locked {
+  opacity: .5;
+  filter: grayscale(.8);
+}
+.achievement-icon {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+.achievement-card.earned .achievement-icon { color: var(--primary); }
+.achievement-card.locked .achievement-icon { color: #94a3b8; }
+.achievement-name {
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+.achievement-desc {
+  color: var(--text-muted);
+  font-size: 11px;
+  line-height: 1.4;
+  margin-bottom: 8px;
+  min-height: 30px;
+}
+.achievement-points {
+  display: inline-block;
+  background: #fef3c7;
+  color: #92400e;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 700;
+}
+.achievement-card.earned .achievement-points {
+  background: var(--primary-light);
+  color: var(--primary);
+}
+</style>
+{% endblock %}

@@ -1,136 +1,12 @@
+{% load i18n %}
 <!doctype html>
-<html lang="lt">
+<html lang="{{ LANGUAGE_CODE }}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block title %}Sporto klubas{% endblock %}</title>
+  <title>{% block title %}{% trans "Sporto klubas" %}{% endblock %}</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-</head>
-<body>
-
-{% if request.user.is_authenticated %}
-<!-- ===== SIDEBAR LAYOUT ===== -->
-<div class="d-flex" style="min-height:100vh;">
-
-  <!-- SIDEBAR -->
-  <nav class="sidebar d-flex flex-column" id="sidebar">
-    <div class="sidebar-brand">
-      <span class="brand-dot"></span>
-      Sporto klubas
-    </div>
-
-    <div class="sidebar-nav flex-grow-1">
-      <a href="/dashboard/" class="sidebar-link {% if request.path == '/dashboard/' %}active{% endif %}">
-        <i class="bi bi-grid-1x2-fill"></i> Valdymo skydelis
-      </a>
-
-      {% if request.user.profile and request.user.profile.role == "CLIENT" %}
-        <a href="/trainings/" class="sidebar-link {% if '/trainings' in request.path and 'trainer' not in request.path %}active{% endif %}">
-          <i class="bi bi-calendar-event"></i> Treniruotės
-        </a>
-        <a href="/membership/buy/" class="sidebar-link {% if '/membership' in request.path %}active{% endif %}">
-          <i class="bi bi-credit-card-2-front"></i> Abonementai
-        </a>
-        <a href="/my-reservations/" class="sidebar-link {% if '/my-reservations' in request.path %}active{% endif %}">
-          <i class="bi bi-bookmark-check"></i> Mano rezervacijos
-        </a>
-      {% endif %}
-
-      {% if request.user.profile and request.user.profile.role == "TRAINER" %}
-        <a href="/trainings/" class="sidebar-link {% if request.path == '/trainings/' %}active{% endif %}">
-          <i class="bi bi-calendar-event"></i> Treniruočių sąrašas
-        </a>
-        <a href="/trainer/trainings/" class="sidebar-link {% if '/trainer/trainings' in request.path %}active{% endif %}">
-          <i class="bi bi-clipboard2-pulse"></i> Mano treniruotės
-        </a>
-      {% endif %}
-
-      {% if request.user.is_superuser %}
-        <a href="/admin/" class="sidebar-link">
-          <i class="bi bi-shield-lock"></i> Administravimas
-        </a>
-      {% endif %}
-    </div>
-
-    <div class="sidebar-footer">
-      <form method="post" action="/logout/">
-        {% csrf_token %}
-        <button type="submit" class="sidebar-link logout-btn w-100 text-start border-0 bg-transparent">
-          <i class="bi bi-box-arrow-left"></i> Atsijungti
-        </button>
-      </form>
-    </div>
-  </nav>
-
-  <!-- MAIN CONTENT -->
-  <div class="main-content flex-grow-1 d-flex flex-column">
-    <!-- TOP BAR -->
-    <header class="topbar">
-      <button class="btn btn-sm d-lg-none me-2" id="sidebarToggle" type="button">
-        <i class="bi bi-list fs-5"></i>
-      </button>
-      <div class="flex-grow-1"></div>
-      <div class="d-flex align-items-center gap-2">
-        <div class="user-avatar">
-          <i class="bi bi-person-fill"></i>
-        </div>
-        <div>
-          <div class="fw-semibold small">{{ request.user.username }}</div>
-          <div class="text-muted" style="font-size:11px;">
-            {% if request.user.profile %}{{ request.user.profile.get_role_display }}{% endif %}
-          </div>
-        </div>
-      </div>
-    </header>
-
-    <!-- PAGE CONTENT -->
-    <main class="page-content">
-      {% if messages %}
-        {% for message in messages %}
-          <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-          </div>
-        {% endfor %}
-      {% endif %}
-
-      {% block content %}{% endblock %}
-    </main>
-  </div>
-</div>
-
-{% else %}
-<!-- ===== AUTH PAGES (no sidebar) ===== -->
-<div class="auth-wrapper">
-  {% if messages %}
-    {% for message in messages %}
-      <div class="alert alert-{{ message.tags }} alert-dismissible fade show mx-auto" style="max-width:420px;" role="alert">
-        {{ message }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-      </div>
-    {% endfor %}
-  {% endif %}
-  {% block content_auth %}{% endblock %}
-</div>
-{% endif %}
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-  const toggle = document.getElementById('sidebarToggle');
-  const sidebar = document.getElementById('sidebar');
-  if(toggle && sidebar){
-    toggle.addEventListener('click', ()=> sidebar.classList.toggle('show'));
-    document.addEventListener('click', (e)=>{
-      if(sidebar.classList.contains('show') && !sidebar.contains(e.target) && e.target !== toggle && !toggle.contains(e.target)){
-        sidebar.classList.remove('show');
-      }
-    });
-  }
-</script>
-</body>
-</html>
-
 <style>
 /* ===== VARIABLES ===== */
 :root {
@@ -227,6 +103,641 @@ body { margin:0; font-family:'Segoe UI', system-ui, -apple-system, sans-serif; b
   border-radius: 10px;
 }
 .logout-btn:hover { color:#fff !important; background: rgba(239,68,68,.15); }
+
+/* ===== LANG SWITCHER ===== */
+.lang-switcher {
+  width: auto !important;
+  min-width: 130px;
+  border-radius: 8px !important;
+  font-weight: 600;
+  cursor: pointer;
+}
+.lang-switcher-auth {
+  background: rgba(255,255,255,.95) !important;
+  border: 1px solid rgba(255,255,255,.3) !important;
+}
+
+/* ===== NOTIFICATIONS ===== */
+.notif-btn {
+  background: transparent;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 6px 10px;
+  color: var(--text-muted);
+  transition: all .2s;
+}
+.notif-btn:hover {
+  background: var(--primary-light);
+  color: var(--primary);
+  border-color: var(--primary);
+}
+.notif-btn[aria-expanded="true"] {
+  background: var(--primary-light);
+  color: var(--primary);
+  border-color: var(--primary);
+}
+.notif-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: var(--danger);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #fff;
+}
+.notif-dropdown {
+  width: 340px;
+  padding: 0;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 10px 30px rgba(0,0,0,.12);
+  margin-top: 8px;
+}
+.notif-header {
+  padding: 14px 16px;
+  border-bottom: 1px solid #f1f5f9;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.notif-body {
+  max-height: 360px;
+  overflow-y: auto;
+}
+.notif-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid #f1f5f9;
+  color: var(--text);
+  text-decoration: none;
+  transition: background .15s;
+}
+.notif-item:hover {
+  background: #f8fafc;
+  color: var(--text);
+}
+.notif-item:last-child { border-bottom: none; }
+.notif-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--primary-light);
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.notif-content { flex-grow: 1; min-width: 0; }
+.notif-footer {
+  padding: 10px 16px;
+  border-top: 1px solid #f1f5f9;
+  text-align: center;
+  background: #f8fafc;
+}
+.notif-footer a {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+/* ===== ACCESSIBILITY ===== */
+.a11y-btn {
+  background: transparent;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 6px 10px;
+  color: var(--text-muted);
+  transition: all .2s;
+}
+.a11y-btn:hover, .a11y-btn:focus {
+  background: var(--primary-light);
+  color: var(--primary);
+  border-color: var(--primary);
+}
+
+.a11y-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.35);
+  z-index: 1040;
+}
+.a11y-backdrop.show { display: block; }
+
+.a11y-panel {
+  display: none;
+  position: fixed;
+  top: 70px;
+  right: 20px;
+  width: 320px;
+  z-index: 1050;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 12px 32px rgba(0,0,0,.18);
+  border: 1px solid #e2e8f0;
+}
+.a11y-panel.show { display: block; }
+
+@media (max-width: 600px) {
+  .a11y-panel {
+    width: calc(100% - 24px);
+    right: 12px;
+    left: 12px;
+  }
+}
+
+.a11y-panel-inner { padding: 18px 20px; }
+.a11y-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f1f5f9;
+  margin-bottom: 14px;
+}
+.a11y-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+.a11y-label {
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--text);
+}
+.a11y-controls { display: flex; gap: 4px; }
+.a11y-btn-ctrl {
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all .15s;
+  color: var(--text);
+}
+.a11y-btn-ctrl:hover { background: var(--primary-light); border-color: var(--primary); color: var(--primary); }
+.a11y-btn-ctrl.active {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+
+/* Toggle switch */
+.a11y-switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+}
+.a11y-switch input { opacity: 0; width: 0; height: 0; }
+.a11y-slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background: #e2e8f0;
+  transition: .2s;
+  border-radius: 24px;
+}
+.a11y-slider::before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  top: 3px;
+  background: #fff;
+  transition: .2s;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0,0,0,.2);
+}
+.a11y-switch input:checked + .a11y-slider { background: var(--primary); }
+.a11y-switch input:checked + .a11y-slider::before { transform: translateX(20px); }
+.a11y-switch input:focus-visible + .a11y-slider {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* ===== A11Y CLASSES (taikomos <html> elementui) ===== */
+html.a11y-font-larger { font-size: 18px; }
+html.a11y-font-smaller { font-size: 13px; }
+
+html.a11y-high-contrast,
+html.a11y-high-contrast body {
+  background: #000 !important;
+  color: #fff !important;
+}
+html.a11y-high-contrast .topbar,
+html.a11y-high-contrast .sidebar,
+html.a11y-high-contrast .s-card,
+html.a11y-high-contrast .stat-card,
+html.a11y-high-contrast .plan-card,
+html.a11y-high-contrast .auth-card,
+html.a11y-high-contrast .a11y-panel,
+html.a11y-high-contrast .notif-dropdown,
+html.a11y-high-contrast .dropdown-menu,
+html.a11y-high-contrast .mini-row,
+html.a11y-high-contrast .table-row-me,
+html.a11y-high-contrast .podium-card,
+html.a11y-high-contrast .level-item,
+html.a11y-high-contrast .achievement-card,
+html.a11y-high-contrast .point-rule,
+html.a11y-high-contrast .notif-item,
+html.a11y-high-contrast .notif-header,
+html.a11y-high-contrast .notif-footer,
+html.a11y-high-contrast .modal-content,
+html.a11y-high-contrast .alert,
+html.a11y-high-contrast .a11y-btn-ctrl {
+  background: #1a1a1a !important;
+  color: #fff !important;
+  border-color: #fff !important;
+}
+html.a11y-high-contrast .text-muted,
+html.a11y-high-contrast .text-secondary,
+html.a11y-high-contrast small,
+html.a11y-high-contrast .small {
+  color: #d4d4d4 !important;
+}
+html.a11y-high-contrast h1,
+html.a11y-high-contrast h2,
+html.a11y-high-contrast h3,
+html.a11y-high-contrast h4,
+html.a11y-high-contrast h5,
+html.a11y-high-contrast h6,
+html.a11y-high-contrast strong,
+html.a11y-high-contrast b,
+html.a11y-high-contrast .fw-bold,
+html.a11y-high-contrast .fw-semibold {
+  color: #fff !important;
+}
+html.a11y-high-contrast a,
+html.a11y-high-contrast .sidebar-link {
+  color: #ffeb3b !important;
+}
+html.a11y-high-contrast .btn-primary,
+html.a11y-high-contrast .sidebar-link.active,
+html.a11y-high-contrast .a11y-btn-ctrl.active {
+  background: #ffeb3b !important;
+  color: #000 !important;
+  border-color: #ffeb3b !important;
+}
+html.a11y-high-contrast .btn-outline-primary,
+html.a11y-high-contrast .btn-outline-secondary,
+html.a11y-high-contrast .btn-outline-danger {
+  color: #ffeb3b !important;
+  border-color: #ffeb3b !important;
+  background: transparent !important;
+}
+html.a11y-high-contrast .btn-success {
+  background: #00e676 !important;
+  color: #000 !important;
+  border-color: #00e676 !important;
+}
+html.a11y-high-contrast .btn-danger {
+  background: #ff5252 !important;
+  color: #fff !important;
+  border-color: #ff5252 !important;
+}
+html.a11y-high-contrast input,
+html.a11y-high-contrast select,
+html.a11y-high-contrast textarea,
+html.a11y-high-contrast .form-control,
+html.a11y-high-contrast .form-select {
+  background: #000 !important;
+  color: #fff !important;
+  border: 2px solid #fff !important;
+}
+html.a11y-high-contrast .badge,
+html.a11y-high-contrast .badge-status {
+  border: 1px solid #fff !important;
+}
+html.a11y-high-contrast .progress {
+  background: #333 !important;
+  border: 1px solid #fff !important;
+}
+html.a11y-high-contrast .progress-bar {
+  background: #ffeb3b !important;
+}
+html.a11y-high-contrast .table,
+html.a11y-high-contrast .s-table,
+html.a11y-high-contrast .s-table th,
+html.a11y-high-contrast .s-table td {
+  background: #1a1a1a !important;
+  color: #fff !important;
+  border-color: #fff !important;
+}
+html.a11y-high-contrast .s-table thead {
+  background: #000 !important;
+}
+html.a11y-high-contrast .table-row-me {
+  background: #2a2a40 !important;
+}
+html.a11y-high-contrast hr,
+html.a11y-high-contrast .border-top,
+html.a11y-high-contrast .border-bottom {
+  border-color: #fff !important;
+}
+html.a11y-high-contrast .rank-plain,
+html.a11y-high-contrast .rank-number {
+  background: #333 !important;
+  color: #fff !important;
+}
+html.a11y-high-contrast .alert-info {
+  background: #003366 !important;
+  color: #fff !important;
+}
+html.a11y-high-contrast .alert-success {
+  background: #003300 !important;
+  color: #00ff00 !important;
+}
+html.a11y-high-contrast .alert-warning {
+  background: #332200 !important;
+  color: #ffeb3b !important;
+}
+html.a11y-high-contrast .alert-danger {
+  background: #330000 !important;
+  color: #ff5252 !important;
+}
+html.a11y-high-contrast .a11y-slider {
+  background: #555 !important;
+}
+html.a11y-high-contrast .a11y-switch input:checked + .a11y-slider {
+  background: #ffeb3b !important;
+}
+html.a11y-high-contrast .a11y-switch input:checked + .a11y-slider::before {
+  background: #000 !important;
+}
+
+/* Treniruočių kortelės, training-card */
+html.a11y-high-contrast .training-card,
+html.a11y-high-contrast .card,
+html.a11y-high-contrast .training-info {
+  background: #1a1a1a !important;
+  color: #fff !important;
+  border-color: #fff !important;
+}
+html.a11y-high-contrast .training-card *,
+html.a11y-high-contrast .card * {
+  color: #fff !important;
+}
+html.a11y-high-contrast .training-card .text-muted,
+html.a11y-high-contrast .training-card small,
+html.a11y-high-contrast .card .text-muted,
+html.a11y-high-contrast .card small {
+  color: #d4d4d4 !important;
+}
+html.a11y-high-contrast .training-card a,
+html.a11y-high-contrast .card a {
+  color: #ffeb3b !important;
+}
+
+/* Plano kainos – padarom ryškiai geltonas */
+html.a11y-high-contrast .plan-card .plan-price,
+html.a11y-high-contrast .plan-price {
+  color: #ffeb3b !important;
+}
+html.a11y-high-contrast .plan-card .plan-duration,
+html.a11y-high-contrast .plan-duration {
+  color: #d4d4d4 !important;
+}
+html.a11y-high-contrast .plan-card * {
+  color: #fff !important;
+}
+html.a11y-high-contrast .plan-card .plan-price {
+  color: #ffeb3b !important;
+}
+html.a11y-high-contrast .plan-card .plan-duration {
+  color: #d4d4d4 !important;
+}
+
+/* Alert'ai – stipresnis fonas */
+html.a11y-high-contrast .alert,
+html.a11y-high-contrast .alert * {
+  background: #1a1a1a !important;
+  color: #fff !important;
+  border: 2px solid #fff !important;
+}
+html.a11y-high-contrast .alert-danger,
+html.a11y-high-contrast .alert-danger * {
+  background: #1a0000 !important;
+  color: #ff8080 !important;
+  border-color: #ff5252 !important;
+}
+html.a11y-high-contrast .alert-success,
+html.a11y-high-contrast .alert-success * {
+  background: #001a00 !important;
+  color: #80ff80 !important;
+  border-color: #00e676 !important;
+}
+html.a11y-high-contrast .alert-warning,
+html.a11y-high-contrast .alert-warning * {
+  background: #1a1500 !important;
+  color: #ffeb3b !important;
+  border-color: #ffeb3b !important;
+}
+html.a11y-high-contrast .alert-info,
+html.a11y-high-contrast .alert-info * {
+  background: #001a2e !important;
+  color: #80c5ff !important;
+  border-color: #4361ee !important;
+}
+
+/* Page header (h1, h2 ir t.t.) */
+html.a11y-high-contrast .page-header h1,
+html.a11y-high-contrast .page-header h2,
+html.a11y-high-contrast .page-header p {
+  color: #fff !important;
+}
+
+/* Bendras taisymas - visi bendri tekstai turi būti balti, nebent kita nurodyta */
+html.a11y-high-contrast p,
+html.a11y-high-contrast span,
+html.a11y-high-contrast div,
+html.a11y-high-contrast li {
+  color: inherit;
+}
+
+/* Užtikrinam, kad visur kur background šviesus, turinys taptų matomas */
+html.a11y-high-contrast [style*="background: #f"],
+html.a11y-high-contrast [style*="background:#f"],
+html.a11y-high-contrast [style*="background: #e"],
+html.a11y-high-contrast [style*="background:#e"] {
+  background: #1a1a1a !important;
+  color: #fff !important;
+}
+
+/* Konkrečios klasės kurios turi šviesius fonus */
+html.a11y-high-contrast .bg-light,
+html.a11y-high-contrast .bg-white {
+  background: #1a1a1a !important;
+  color: #fff !important;
+}
+
+/* Badge'us pataisymas - kad teksto turinį visada matytume */
+html.a11y-high-contrast .badge,
+html.a11y-high-contrast .badge-status,
+html.a11y-high-contrast .badge-active,
+html.a11y-high-contrast .badge-expired,
+html.a11y-high-contrast .badge-paused {
+  background: #000 !important;
+  color: #ffeb3b !important;
+  border: 2px solid #ffeb3b !important;
+  font-weight: 700 !important;
+}
+html.a11y-high-contrast .badge-active,
+html.a11y-high-contrast .badge.bg-success {
+  background: #001a00 !important;
+  color: #00ff66 !important;
+  border-color: #00ff66 !important;
+}
+html.a11y-high-contrast .badge-expired,
+html.a11y-high-contrast .badge.bg-danger {
+  background: #1a0000 !important;
+  color: #ff6666 !important;
+  border-color: #ff6666 !important;
+}
+html.a11y-high-contrast .badge.bg-warning,
+html.a11y-high-contrast .badge-paused {
+  background: #1a1500 !important;
+  color: #ffeb3b !important;
+  border-color: #ffeb3b !important;
+}
+html.a11y-high-contrast .badge.bg-primary {
+  background: #002244 !important;
+  color: #80c5ff !important;
+  border-color: #80c5ff !important;
+}
+
+/* Bootstrap text spalvos */
+html.a11y-high-contrast .text-success { color: #00ff66 !important; }
+html.a11y-high-contrast .text-danger { color: #ff6666 !important; }
+html.a11y-high-contrast .text-warning { color: #ffeb3b !important; }
+html.a11y-high-contrast .text-primary { color: #80c5ff !important; }
+html.a11y-high-contrast .text-info { color: #80c5ff !important; }
+
+/* Bootstrap bg-success/bg-danger be badge konteksto */
+html.a11y-high-contrast [class*="bg-success"]:not(.badge):not(.alert) {
+  background: #003300 !important;
+  color: #fff !important;
+}
+html.a11y-high-contrast [class*="bg-danger"]:not(.badge):not(.alert) {
+  background: #330000 !important;
+  color: #fff !important;
+}
+
+/* Point-rule kortelės (Kaip gauti taškų) */
+html.a11y-high-contrast .point-rule {
+  background: #1a1a1a !important;
+  color: #fff !important;
+  border-color: #fff !important;
+}
+html.a11y-high-contrast .point-rule * {
+  color: #fff !important;
+}
+html.a11y-high-contrast .point-rule-icon {
+  background: #002244 !important;
+  color: #80c5ff !important;
+}
+html.a11y-high-contrast .point-rule-points {
+  color: #ffeb3b !important;
+}
+
+/* Podium - Top 3 spalvos */
+html.a11y-high-contrast .podium-card * {
+  color: inherit !important;
+}
+html.a11y-high-contrast .podium-card.gold {
+  background: linear-gradient(135deg, #b8860b, #8b6914) !important;
+  color: #fff !important;
+}
+html.a11y-high-contrast .podium-card.silver {
+  background: linear-gradient(135deg, #4a4a4a, #2a2a2a) !important;
+  color: #fff !important;
+}
+html.a11y-high-contrast .podium-card.bronze {
+  background: linear-gradient(135deg, #804020, #5a2d15) !important;
+  color: #fff !important;
+}
+
+/* Achievement cards */
+html.a11y-high-contrast .achievement-card,
+html.a11y-high-contrast .achievement-card.earned,
+html.a11y-high-contrast .achievement-card.locked {
+  background: #1a1a1a !important;
+  border-color: #fff !important;
+}
+html.a11y-high-contrast .achievement-card * {
+  color: #fff !important;
+}
+html.a11y-high-contrast .achievement-card.earned .achievement-icon {
+  color: #ffeb3b !important;
+}
+html.a11y-high-contrast .achievement-card.locked .achievement-icon {
+  color: #666 !important;
+}
+html.a11y-high-contrast .achievement-points {
+  background: #002244 !important;
+  color: #ffeb3b !important;
+}
+
+/* Lygiai */
+html.a11y-high-contrast .level-item.current {
+  background: linear-gradient(135deg, #002244, #003366) !important;
+  color: #fff !important;
+  border-color: #80c5ff !important;
+}
+html.a11y-high-contrast .level-item.reached {
+  background: #001a00 !important;
+  color: #00ff66 !important;
+  border-color: #00ff66 !important;
+}
+html.a11y-high-contrast .level-item.locked {
+  background: #1a1a1a !important;
+  color: #888 !important;
+  border-color: #555 !important;
+}
+html.a11y-high-contrast .level-item * {
+  color: inherit !important;
+}
+
+html.a11y-reduced-motion *,
+html.a11y-reduced-motion *::before,
+html.a11y-reduced-motion *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+}
+
+html.a11y-strong-focus *:focus-visible {
+  outline: 3px solid #ffeb3b !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 0 0 6px rgba(255,235,59,.4) !important;
+  border-radius: 4px;
+}
+
+/* Default focus stiliai (visiems) */
+*:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+.btn:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
 
 /* ===== MAIN CONTENT ===== */
 .main-content {
@@ -383,6 +894,7 @@ body { margin:0; font-family:'Segoe UI', system-ui, -apple-system, sans-serif; b
 .progress-bar { background: var(--primary); border-radius: 10px; }
 /* ===== AUTH PAGES ===== */
 .auth-wrapper {
+  position: relative;
   min-height: 100vh;
   background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
   display: flex;
@@ -501,3 +1013,374 @@ body { margin:0; font-family:'Segoe UI', system-ui, -apple-system, sans-serif; b
   .page-content { padding: 16px; }
 }
 </style>
+</head>
+<body>
+
+{% if request.user.is_authenticated %}
+<!-- ===== SIDEBAR LAYOUT ===== -->
+<div class="d-flex" style="min-height:100vh;">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar d-flex flex-column" id="sidebar">
+    <div class="sidebar-brand">
+      <span class="brand-dot"></span>
+      {% trans "Sporto klubas" %}
+    </div>
+
+    <div class="sidebar-nav flex-grow-1">
+      <a href="/dashboard/" class="sidebar-link {% if request.path == '/dashboard/' %}active{% endif %}">
+        <i class="bi bi-grid-1x2-fill"></i> {% trans "Valdymo skydelis" %}
+      </a>
+
+      {% if request.user.profile and request.user.profile.role == "CLIENT" %}
+        <a href="/trainings/" class="sidebar-link {% if '/trainings' in request.path and 'trainer' not in request.path %}active{% endif %}">
+          <i class="bi bi-calendar-event"></i> {% trans "Treniruotės" %}
+        </a>
+        <a href="/membership/buy/" class="sidebar-link {% if '/membership' in request.path %}active{% endif %}">
+          <i class="bi bi-credit-card-2-front"></i> {% trans "Abonementai" %}
+        </a>
+        <a href="/my-reservations/" class="sidebar-link {% if '/my-reservations' in request.path %}active{% endif %}">
+          <i class="bi bi-bookmark-check"></i> {% trans "Mano rezervacijos" %}
+        </a>
+        <a href="/achievements/" class="sidebar-link {% if '/achievements' in request.path %}active{% endif %}">
+          <i class="bi bi-patch-check-fill"></i> {% trans "Pasiekimai" %}
+        </a>
+        <a href="/leaderboard/" class="sidebar-link {% if '/leaderboard' in request.path %}active{% endif %}">
+          <i class="bi bi-trophy-fill"></i> {% trans "Lyderių lentelė" %}
+        </a>
+      {% endif %}
+
+      {% if request.user.profile and request.user.profile.role == "TRAINER" %}
+        <a href="/trainer/calendar/" class="sidebar-link {% if '/trainer/calendar' in request.path %}active{% endif %}">
+          <i class="bi bi-calendar3"></i> {% trans "Kalendorius" %}
+        </a>
+        <a href="/trainer/trainings/" class="sidebar-link {% if '/trainer/trainings' in request.path %}active{% endif %}">
+          <i class="bi bi-clipboard2-pulse"></i> {% trans "Mano treniruotės" %}
+        </a>
+      {% endif %}
+
+      {% if request.user.is_superuser %}
+        <a href="/admin/" class="sidebar-link">
+          <i class="bi bi-shield-lock"></i> {% trans "Administravimas" %}
+        </a>
+      {% endif %}
+    </div>
+
+    <div class="sidebar-footer">
+      <form method="post" action="/logout/">
+        {% csrf_token %}
+        <button type="submit" class="sidebar-link logout-btn w-100 text-start border-0 bg-transparent">
+          <i class="bi bi-box-arrow-left"></i> {% trans "Atsijungti" %}
+        </button>
+      </form>
+    </div>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <div class="main-content flex-grow-1 d-flex flex-column">
+    <!-- TOP BAR -->
+    <header class="topbar">
+      <button class="btn btn-sm d-lg-none me-2" id="sidebarToggle" type="button" aria-label="{% trans 'Atidaryti meniu' %}">
+        <i class="bi bi-list fs-5" aria-hidden="true"></i>
+      </button>
+      <div class="flex-grow-1"></div>
+
+      <!-- ACCESSIBILITY MYGTUKAS -->
+      <button id="a11yBtn" class="btn btn-sm a11y-btn me-2" type="button" aria-label="{% trans 'Prieinamumo nustatymai' %}" title="{% trans 'Prieinamumo nustatymai' %}">
+        <i class="bi bi-universal-access-circle fs-5" aria-hidden="true"></i>
+      </button>
+
+      <!-- KALBOS PERJUNGIKLIS -->
+      <form action="{% url 'set_language' %}" method="post" class="me-2 d-flex align-items-center" aria-label="{% trans 'Pasirinkti kalbą' %}">
+        {% csrf_token %}
+        <input name="next" type="hidden" value="{{ request.get_full_path }}">
+        {% get_current_language as CURRENT_LANGUAGE %}
+        {% get_available_languages as LANGUAGES %}
+        <select name="language" class="form-select form-select-sm lang-switcher" onchange="this.form.submit()">
+          {% for lang_code, lang_name in LANGUAGES %}
+            <option value="{{ lang_code }}" {% if lang_code == CURRENT_LANGUAGE %}selected{% endif %}>
+              {% if lang_code == 'lt' %}🇱🇹 Lietuvių{% elif lang_code == 'en' %}🇬🇧 English{% else %}{{ lang_name }}{% endif %}
+            </option>
+          {% endfor %}
+        </select>
+      </form>
+
+      <!-- PRANEŠIMAI -->
+      {% if request.user.profile and request.user.profile.role == "CLIENT" %}
+      <div class="dropdown me-3" id="notificationsWrap">
+        <button class="btn btn-sm position-relative notif-btn" type="button" id="notifBtn" data-bs-toggle="dropdown" aria-expanded="false" aria-label="{% trans 'Pranešimai' %}">
+          <i class="bi bi-bell-fill fs-5" aria-hidden="true"></i>
+          {% if notifications_count > 0 %}
+            <span class="notif-badge" aria-label="{% trans 'naujų pranešimų' %}">{{ notifications_count }}</span>
+          {% endif %}
+        </button>
+        <div class="dropdown-menu dropdown-menu-end notif-dropdown" aria-labelledby="notifBtn">
+          <div class="notif-header">
+            <strong>{% trans "Pranešimai" %}</strong>
+            {% if notifications_count > 0 %}
+              <span class="badge bg-primary">{{ notifications_count }}</span>
+            {% endif %}
+          </div>
+          <div class="notif-body">
+            {% if notifications_list %}
+              {% for t in notifications_list %}
+                <a href="/trainings/" class="notif-item">
+                  <div class="notif-icon"><i class="bi bi-calendar-plus"></i></div>
+                  <div class="notif-content">
+                    <div class="fw-semibold small">{% trans "Nauja treniruotė" %}: {{ t.title }}</div>
+                    <div class="text-muted" style="font-size:11px;">
+                      {{ t.starts_at|date:"Y-m-d H:i" }} · {{ t.trainer.username }}
+                    </div>
+                  </div>
+                </a>
+              {% endfor %}
+            {% else %}
+              <div class="text-center py-4 text-muted small">
+                <i class="bi bi-bell-slash fs-3 d-block mb-2"></i>
+                {% trans "Naujų pranešimų nėra" %}
+              </div>
+            {% endif %}
+          </div>
+          {% if notifications_list %}
+            <div class="notif-footer">
+              <a href="/trainings/" class="small">{% trans "Žiūrėti visas treniruotes" %} →</a>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+      {% endif %}
+
+      <div class="d-flex align-items-center gap-2">
+        <div class="user-avatar">
+          <i class="bi bi-person-fill"></i>
+        </div>
+        <div>
+          <div class="fw-semibold small">{{ request.user.username }}</div>
+          <div class="text-muted" style="font-size:11px;">
+            {% if request.user.profile %}{{ request.user.profile.get_role_display }}{% endif %}
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- PAGE CONTENT -->
+    <main class="page-content">
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{% trans "Uždaryti pranešimą" %}"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+</div>
+
+{% else %}
+<!-- ===== AUTH PAGES (no sidebar) ===== -->
+<div class="auth-wrapper">
+
+  <!-- KALBOS PERJUNGIKLIS auth puslapiams -->
+  <form action="{% url 'set_language' %}" method="post" class="position-absolute" style="top:20px;right:20px;">
+    {% csrf_token %}
+    <input name="next" type="hidden" value="{{ request.get_full_path }}">
+    {% get_current_language as CURRENT_LANGUAGE %}
+    {% get_available_languages as LANGUAGES %}
+    <select name="language" class="form-select form-select-sm lang-switcher lang-switcher-auth" onchange="this.form.submit()">
+      {% for lang_code, lang_name in LANGUAGES %}
+        <option value="{{ lang_code }}" {% if lang_code == CURRENT_LANGUAGE %}selected{% endif %}>
+          {% if lang_code == 'lt' %}🇱🇹 Lietuvių{% elif lang_code == 'en' %}🇬🇧 English{% else %}{{ lang_name }}{% endif %}
+        </option>
+      {% endfor %}
+    </select>
+  </form>
+
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} alert-dismissible fade show mx-auto" style="max-width:420px;" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{% trans "Uždaryti pranešimą" %}"></button>
+      </div>
+    {% endfor %}
+  {% endif %}
+  {% block content_auth %}{% endblock %}
+</div>
+{% endif %}
+
+<div id="a11yPanel" class="a11y-panel" role="dialog" aria-labelledby="a11yPanelTitle" aria-hidden="true">
+  <div class="a11y-panel-inner">
+    <div class="a11y-header">
+      <h6 id="a11yPanelTitle" class="mb-0 fw-bold">
+        <i class="bi bi-universal-access-circle me-1" aria-hidden="true"></i>
+        {% trans "Prieinamumas" %}
+      </h6>
+      <button id="a11yClose" class="btn-close" aria-label="{% trans 'Uždaryti' %}"></button>
+    </div>
+
+    <!-- Šrifto dydis -->
+    <div class="a11y-section">
+      <div class="a11y-label">{% trans "Šrifto dydis" %}</div>
+      <div class="a11y-controls">
+        <button class="a11y-btn-ctrl" data-a11y="font-smaller" aria-label="{% trans 'Mažesnis šriftas' %}">A−</button>
+        <button class="a11y-btn-ctrl active" data-a11y="font-normal" aria-label="{% trans 'Normalus šriftas' %}">A</button>
+        <button class="a11y-btn-ctrl" data-a11y="font-larger" aria-label="{% trans 'Didesnis šriftas' %}" style="font-size:18px;">A+</button>
+      </div>
+    </div>
+
+    <!-- Kontrastas -->
+    <div class="a11y-section">
+      <div class="a11y-label">{% trans "Didelis kontrastas" %}</div>
+      <label class="a11y-switch">
+        <input type="checkbox" id="a11yContrast">
+        <span class="a11y-slider"></span>
+      </label>
+    </div>
+
+    <!-- Animacijos -->
+    <div class="a11y-section">
+      <div class="a11y-label">{% trans "Sumažintos animacijos" %}</div>
+      <label class="a11y-switch">
+        <input type="checkbox" id="a11yMotion">
+        <span class="a11y-slider"></span>
+      </label>
+    </div>
+
+    <!-- Sustiprintas fokuso žiedas -->
+    <div class="a11y-section">
+      <div class="a11y-label">{% trans "Pažymėti dėmesio žiedą" %}</div>
+      <label class="a11y-switch">
+        <input type="checkbox" id="a11yFocus">
+        <span class="a11y-slider"></span>
+      </label>
+    </div>
+
+    <button id="a11yReset" class="btn btn-sm btn-outline-secondary w-100 mt-3">
+      <i class="bi bi-arrow-counterclockwise me-1"></i>{% trans "Atstatyti" %}
+    </button>
+  </div>
+</div>
+<div id="a11yBackdrop" class="a11y-backdrop"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  const toggle = document.getElementById('sidebarToggle');
+  const sidebar = document.getElementById('sidebar');
+  if(toggle && sidebar){
+    toggle.addEventListener('click', ()=> sidebar.classList.toggle('show'));
+    document.addEventListener('click', (e)=>{
+      if(sidebar.classList.contains('show') && !sidebar.contains(e.target) && e.target !== toggle && !toggle.contains(e.target)){
+        sidebar.classList.remove('show');
+      }
+    });
+  }
+
+  // Pranešimai – kai atidaromas dropdown'as, pažymim viską matytu
+  const notifBtn = document.getElementById('notifBtn');
+  if (notifBtn) {
+    notifBtn.addEventListener('show.bs.dropdown', function() {
+      const badge = notifBtn.querySelector('.notif-badge');
+      if (badge) badge.style.display = 'none';
+      const csrftoken = document.cookie.split('; ').find(c => c.startsWith('csrftoken='));
+      const token = csrftoken ? csrftoken.split('=')[1] : '';
+      fetch('/notifications/mark-seen/', {
+        method: 'POST',
+        headers: { 'X-CSRFToken': token, 'Content-Type': 'application/json' },
+      }).catch(err => console.warn('Notif mark failed:', err));
+    });
+  }
+
+  // ===== ACCESSIBILITY =====
+  (function() {
+    const html = document.documentElement;
+    const btn = document.getElementById('a11yBtn');
+    const panel = document.getElementById('a11yPanel');
+    const backdrop = document.getElementById('a11yBackdrop');
+    const closeBtn = document.getElementById('a11yClose');
+    const contrastTgl = document.getElementById('a11yContrast');
+    const motionTgl = document.getElementById('a11yMotion');
+    const focusTgl = document.getElementById('a11yFocus');
+    const resetBtn = document.getElementById('a11yReset');
+    const sizeBtns = document.querySelectorAll('[data-a11y^="font-"]');
+
+    if (!btn) return;
+
+    // Įkrauname išsaugotus nustatymus iš localStorage
+    const settings = JSON.parse(localStorage.getItem('a11y') || '{}');
+
+    function applySettings() {
+      html.classList.toggle('a11y-font-larger', settings.fontSize === 'larger');
+      html.classList.toggle('a11y-font-smaller', settings.fontSize === 'smaller');
+      html.classList.toggle('a11y-high-contrast', !!settings.contrast);
+      html.classList.toggle('a11y-reduced-motion', !!settings.motion);
+      html.classList.toggle('a11y-strong-focus', !!settings.focus);
+
+      // Atnaujinam mygtukų aktyvią būseną
+      sizeBtns.forEach(b => {
+        const key = b.dataset.a11y;
+        const isActive = (key === 'font-larger' && settings.fontSize === 'larger') ||
+                         (key === 'font-smaller' && settings.fontSize === 'smaller') ||
+                         (key === 'font-normal' && !settings.fontSize);
+        b.classList.toggle('active', isActive);
+      });
+
+      if (contrastTgl) contrastTgl.checked = !!settings.contrast;
+      if (motionTgl) motionTgl.checked = !!settings.motion;
+      if (focusTgl) focusTgl.checked = !!settings.focus;
+    }
+
+    function save() {
+      localStorage.setItem('a11y', JSON.stringify(settings));
+      applySettings();
+    }
+
+    applySettings();
+
+    // Panelės atidarymas/uždarymas
+    function openPanel() {
+      panel.classList.add('show');
+      backdrop.classList.add('show');
+      panel.setAttribute('aria-hidden', 'false');
+    }
+    function closePanel() {
+      panel.classList.remove('show');
+      backdrop.classList.remove('show');
+      panel.setAttribute('aria-hidden', 'true');
+    }
+    btn.addEventListener('click', openPanel);
+    closeBtn.addEventListener('click', closePanel);
+    backdrop.addEventListener('click', closePanel);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closePanel();
+    });
+
+    // Šrifto dydis
+    sizeBtns.forEach(b => {
+      b.addEventListener('click', () => {
+        const key = b.dataset.a11y;
+        if (key === 'font-larger') settings.fontSize = 'larger';
+        else if (key === 'font-smaller') settings.fontSize = 'smaller';
+        else delete settings.fontSize;
+        save();
+      });
+    });
+
+    // Toggle'iai
+    contrastTgl.addEventListener('change', () => { settings.contrast = contrastTgl.checked; save(); });
+    motionTgl.addEventListener('change', () => { settings.motion = motionTgl.checked; save(); });
+    focusTgl.addEventListener('change', () => { settings.focus = focusTgl.checked; save(); });
+
+    // Reset
+    resetBtn.addEventListener('click', () => {
+      Object.keys(settings).forEach(k => delete settings[k]);
+      save();
+    });
+  })();
+</script>
+<!-- ===== ACCESSIBILITY PANEL ===== -->
+
+</body>
+</html>
+

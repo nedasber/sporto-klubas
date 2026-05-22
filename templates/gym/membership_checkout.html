@@ -1,108 +1,59 @@
 {% extends "base.html" %}
-{% block title %}Abonemento pirkimas{% endblock %}
+{% load i18n %}
+{% load trans_db %}
+{% block title %}{% trans "Abonemento pirkimas" %}{% endblock %}
 
 {% block content %}
 <div class="page-header">
-  <h2><i class="bi bi-credit-card-2-front me-2" style="color:var(--primary);"></i>Abonemento pirkimas</h2>
-  <p>Užpildykite duomenis ir pereikite prie apmokėjimo</p>
+  <h2><i class="bi bi-credit-card-2-front me-2" style="color:var(--primary);"></i>{% trans "Abonemento pirkimas" %}</h2>
+  <p>{% trans "Užpildykite duomenis ir pereikite prie apmokėjimo" %}</p>
 </div>
 
 <div class="row g-4">
   <div class="col-md-5">
     <div class="plan-card h-100">
       <div class="mb-3">
-        <span class="badge bg-primary mb-2">Pasirinktas planas</span>
-        <h4 class="fw-bold mb-0">{{ plan.name }}</h4>
+        <span class="badge bg-primary mb-2">{% trans "Pasirinktas planas" %}</span>
+        <h4 class="fw-bold mb-0">{{ plan.name|trans_db }}</h4>
       </div>
-
       <div class="plan-price">{{ plan.price }} €</div>
-      <div class="plan-duration mb-3">{{ plan.duration_days }} dienų</div>
-
+      <div class="plan-duration mb-3">{{ plan.duration_days }} {% trans "dienų" %}</div>
       <hr class="my-3">
-
       <div class="text-start">
         {% if plan.visit_limit %}
-          <div class="small mb-2">
-            <i class="bi bi-check-circle-fill me-2" style="color:var(--success);"></i>
-            {{ plan.visit_limit }} apsilankymai
-          </div>
+          <div class="small mb-2"><i class="bi bi-check-circle-fill me-2" style="color:var(--success);"></i>{{ plan.visit_limit }} {% trans "apsilankymų" %}</div>
         {% else %}
-          <div class="small mb-2">
-            <i class="bi bi-check-circle-fill me-2" style="color:var(--success);"></i>
-            Neriboti apsilankymai
-          </div>
+          <div class="small mb-2"><i class="bi bi-check-circle-fill me-2" style="color:var(--success);"></i>{% trans "Neriboti apsilankymai" %}</div>
         {% endif %}
-        <div class="small mb-2">
-          <i class="bi bi-check-circle-fill me-2" style="color:var(--success);"></i>
-          Visos treniruotės
-        </div>
-        <div class="small mb-2">
-          <i class="bi bi-check-circle-fill me-2" style="color:var(--success);"></i>
-          Persirengimo kambarys
-        </div>
+        <div class="small mb-2"><i class="bi bi-check-circle-fill me-2" style="color:var(--success);"></i>{% trans "Visos treniruotės" %}</div>
+        <div class="small mb-2"><i class="bi bi-check-circle-fill me-2" style="color:var(--success);"></i>{% trans "Persirengimo kambarys" %}</div>
       </div>
     </div>
   </div>
 
   <div class="col-md-7">
     <div class="s-card">
-      <h5 class="fw-bold mb-3">
-        <i class="bi bi-person-lines-fill me-2" style="color:var(--primary);"></i>
-        Kliento duomenys
-      </h5>
-
+      <h5 class="fw-bold mb-3"><i class="bi bi-person-lines-fill me-2" style="color:var(--primary);"></i>{% trans "Kliento duomenys" %}</h5>
       <form method="post" novalidate>
         {% csrf_token %}
-
         <div class="mb-3">
-          <label for="{{ form.full_name.id_for_label }}" class="form-label">
-            {{ form.full_name.label }}
-          </label>
-          <input
-            type="text"
-            name="{{ form.full_name.name }}"
-            id="{{ form.full_name.id_for_label }}"
+          <label for="{{ form.full_name.id_for_label }}" class="form-label">{{ form.full_name.label }}</label>
+          <input type="text" name="{{ form.full_name.name }}" id="{{ form.full_name.id_for_label }}"
             class="form-control {% if form.full_name.errors %}is-invalid{% endif %}"
-            value="{{ form.full_name.value|default:'' }}"
-            required
-          >
-          {% if form.full_name.errors %}
-            <div class="invalid-feedback">{{ form.full_name.errors.0 }}</div>
-          {% endif %}
+            value="{{ form.full_name.value|default:'' }}" required>
+          {% if form.full_name.errors %}<div class="invalid-feedback">{{ form.full_name.errors.0 }}</div>{% endif %}
         </div>
-
         <div class="mb-4">
-          <label for="{{ form.phone.id_for_label }}" class="form-label">
-            {{ form.phone.label }}
-          </label>
-          <input
-            type="tel"
-            name="{{ form.phone.name }}"
-            id="{{ form.phone.id_for_label }}"
+          <label for="{{ form.phone.id_for_label }}" class="form-label">{{ form.phone.label }}</label>
+          <input type="tel" name="{{ form.phone.name }}" id="{{ form.phone.id_for_label }}"
             class="form-control {% if form.phone.errors %}is-invalid{% endif %}"
-            value="{{ form.phone.value|default:'' }}"
-            placeholder="+3706..."
-            inputmode="numeric"
-          >
-          {% if form.phone.errors %}
-            <div class="invalid-feedback">{{ form.phone.errors.0 }}</div>
-          {% endif %}
+            value="{{ form.phone.value|default:'' }}" placeholder="+3706..." inputmode="numeric">
+          {% if form.phone.errors %}<div class="invalid-feedback">{{ form.phone.errors.0 }}</div>{% endif %}
         </div>
-
-        <div class="alert alert-info small" role="alert">
-          <i class="bi bi-info-circle me-2"></i>
-          Paspaudus „Tęsti apmokėjimą" būsite nukreipti į saugią Stripe mokėjimo aplinką.
-          <strong>Testavimo režime</strong> galite naudoti kortelės numerį
-          <code>4242 4242 4242 4242</code>, bet kokią ateities datą ir bet kokį CVC.
-        </div>
-
         <div class="d-flex gap-2">
-          <a href="/membership/buy/" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left me-1"></i> Grįžti
-          </a>
+          <a href="/membership/buy/" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i> {% trans "Grįžti" %}</a>
           <button type="submit" class="btn btn-primary flex-grow-1">
-            <i class="bi bi-lock-fill me-1"></i>
-            Tęsti apmokėjimą – {{ plan.price }} €
+            <i class="bi bi-lock-fill me-1"></i> {% trans "Tęsti apmokėjimą" %} – {{ plan.price }} €
           </button>
         </div>
       </form>

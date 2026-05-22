@@ -1,27 +1,81 @@
 {% extends "base.html" %}
-{% block title %}Mano treniruotės{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Mano treniruotės" %}{% endblock %}
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-start mb-4">
   <div class="page-header mb-0">
-    <h2><i class="bi bi-clipboard2-pulse me-2" style="color:var(--primary);"></i>Mano treniruotės</h2>
-    <p>Valdykite savo sukurtas treniruotes</p>
+    <h2><i class="bi bi-clipboard2-pulse me-2" style="color:var(--primary);"></i>{% trans "Mano treniruotės" %}</h2>
+    <p>{% trans "Valdykite savo sukurtas treniruotes" %}</p>
   </div>
   <a class="btn btn-primary" href="/trainer/trainings/create/">
-    <i class="bi bi-plus-lg me-1"></i> Nauja treniruotė
+    <i class="bi bi-plus-lg me-1"></i> {% trans "Nauja treniruotė" %}
   </a>
 </div>
+
+<div class="s-card mb-3">
+  <form method="get" class="row g-2 align-items-end">
+    <div class="col-md-4">
+      <label class="form-label small fw-semibold mb-1"><i class="bi bi-search me-1"></i> {% trans "Paieška" %}</label>
+      <input type="text" name="q" class="form-control" placeholder="{% trans 'Ieškoti pagal pavadinimą...' %}" value="{{ search_query }}">
+    </div>
+    <div class="col-md-2">
+      <label class="form-label small fw-semibold mb-1"><i class="bi bi-flag me-1"></i> {% trans "Statusas" %}</label>
+      <select name="status" class="form-select">
+        <option value="" {% if not status_filter %}selected{% endif %}>{% trans "Visi" %}</option>
+        <option value="SCHEDULED" {% if status_filter == "SCHEDULED" %}selected{% endif %}>{% trans "Planuojama" %}</option>
+        <option value="CANCELLED" {% if status_filter == "CANCELLED" %}selected{% endif %}>{% trans "Atšaukta" %}</option>
+      </select>
+    </div>
+    <div class="col-md-2">
+      <label class="form-label small fw-semibold mb-1"><i class="bi bi-calendar-range me-1"></i> {% trans "Laikotarpis" %}</label>
+      <select name="period" class="form-select">
+        <option value="" {% if not period_filter %}selected{% endif %}>{% trans "Visos" %}</option>
+        <option value="upcoming" {% if period_filter == "upcoming" %}selected{% endif %}>{% trans "Tik būsimos" %}</option>
+        <option value="past" {% if period_filter == "past" %}selected{% endif %}>{% trans "Tik praeities" %}</option>
+      </select>
+    </div>
+    <div class="col-md-2">
+      <label class="form-label small fw-semibold mb-1"><i class="bi bi-sort-down me-1"></i> {% trans "Rikiavimas" %}</label>
+      <select name="sort" class="form-select">
+        <option value="asc" {% if sort_order == "asc" %}selected{% endif %}>{% trans "Seniausi pirma" %}</option>
+        <option value="desc" {% if sort_order == "desc" %}selected{% endif %}>{% trans "Naujausi pirma" %}</option>
+      </select>
+    </div>
+    <div class="col-md-2">
+      <div class="d-flex gap-1">
+        <button type="submit" class="btn btn-primary flex-grow-1"><i class="bi bi-funnel me-1"></i> {% trans "Filtruoti" %}</button>
+        {% if search_query or status_filter or period_filter or sort_order == "desc" %}
+          <a href="/trainer/trainings/" class="btn btn-outline-secondary" title="{% trans 'Išvalyti filtrus' %}"><i class="bi bi-x-lg"></i></a>
+        {% endif %}
+      </div>
+    </div>
+  </form>
+</div>
+
+{% if search_query or status_filter or period_filter %}
+  <div class="mb-3 small text-muted">
+    <i class="bi bi-funnel-fill me-1"></i>
+    {% trans "Pritaikyti filtrai:" %}
+    {% if search_query %}<span class="badge bg-light text-dark me-1">{% trans "Paieška" %}: „{{ search_query }}"</span>{% endif %}
+    {% if status_filter == "SCHEDULED" %}<span class="badge bg-light text-dark me-1">{% trans "Statusas" %}: {% trans "Planuojama" %}</span>{% endif %}
+    {% if status_filter == "CANCELLED" %}<span class="badge bg-light text-dark me-1">{% trans "Statusas" %}: {% trans "Atšaukta" %}</span>{% endif %}
+    {% if period_filter == "upcoming" %}<span class="badge bg-light text-dark me-1">{% trans "Tik būsimos" %}</span>{% endif %}
+    {% if period_filter == "past" %}<span class="badge bg-light text-dark me-1">{% trans "Tik praeities" %}</span>{% endif %}
+    <span class="ms-2">{% trans "Rasta:" %} <strong>{{ trainings.count }}</strong></span>
+  </div>
+{% endif %}
 
 <div class="s-card">
   <div class="table-responsive">
     <table class="s-table">
       <thead>
         <tr>
-          <th>Pavadinimas</th>
-          <th>Data ir laikas</th>
-          <th>Dalyviai</th>
-          <th>Statusas</th>
-          <th style="width:200px;">Veiksmai</th>
+          <th>{% trans "Pavadinimas" %}</th>
+          <th>{% trans "Data ir laikas" %}</th>
+          <th>{% trans "Dalyviai" %}</th>
+          <th>{% trans "Statusas" %}</th>
+          <th style="width:200px;">{% trans "Veiksmai" %}</th>
         </tr>
       </thead>
       <tbody>
@@ -29,7 +83,7 @@
           <tr>
             <td>
               <div class="fw-semibold">{{ t.title }}</div>
-              <div class="text-muted small">{{ t.duration_minutes }} min · Talpa: {{ t.capacity }}</div>
+              <div class="text-muted small">{{ t.duration_minutes }} min · {% trans "Talpa:" %} {{ t.capacity }}</div>
             </td>
             <td>
               <div>{{ t.starts_at|date:"Y-m-d" }}</div>
@@ -41,21 +95,19 @@
             </td>
             <td>
               {% if t.status == "CANCELLED" %}
-                <span class="badge-status badge-cancelled">Atšaukta</span>
+                <span class="badge-status badge-cancelled">{% trans "Atšaukta" %}</span>
               {% else %}
-                <span class="badge-status badge-scheduled">Planuojama</span>
+                <span class="badge-status badge-scheduled">{% trans "Planuojama" %}</span>
               {% endif %}
             </td>
             <td>
               <div class="d-flex gap-2">
-                <a class="btn btn-outline-primary btn-sm"
-                   href="/trainer/trainings/{{ t.id }}/attendees/">
-                  <i class="bi bi-people me-1"></i> Dalyviai
+                <a class="btn btn-outline-primary btn-sm" href="/trainer/trainings/{{ t.id }}/attendees/">
+                  <i class="bi bi-people me-1"></i> {% trans "Dalyviai" %}
                 </a>
                 {% if t.status != "CANCELLED" %}
-                  <a class="btn btn-outline-danger btn-sm"
-                     href="/trainer/trainings/{{ t.id }}/cancel/">
-                    <i class="bi bi-x-circle me-1"></i> Atšaukti
+                  <a class="btn btn-outline-danger btn-sm" href="/trainer/trainings/{{ t.id }}/cancel/">
+                    <i class="bi bi-x-circle me-1"></i> {% trans "Atšaukti" %}
                   </a>
                 {% endif %}
               </div>
@@ -65,10 +117,13 @@
           <tr>
             <td colspan="5" class="text-center py-5">
               <i class="bi bi-clipboard-x fs-1 text-muted"></i>
-              <div class="text-muted mt-2">Treniruočių nėra</div>
-              <a href="/trainer/trainings/create/" class="btn btn-primary btn-sm mt-3">
-                <i class="bi bi-plus-lg me-1"></i> Sukurti pirmą treniruotę
-              </a>
+              {% if search_query or status_filter or period_filter %}
+                <div class="text-muted mt-2">{% trans "Pagal nurodytus filtrus treniruočių nerasta" %}</div>
+                <a href="/trainer/trainings/" class="btn btn-outline-secondary btn-sm mt-3"><i class="bi bi-x-lg me-1"></i> {% trans "Išvalyti filtrus" %}</a>
+              {% else %}
+                <div class="text-muted mt-2">{% trans "Treniruočių nėra" %}</div>
+                <a href="/trainer/trainings/create/" class="btn btn-primary btn-sm mt-3"><i class="bi bi-plus-lg me-1"></i> {% trans "Sukurti pirmą treniruotę" %}</a>
+              {% endif %}
             </td>
           </tr>
         {% endfor %}

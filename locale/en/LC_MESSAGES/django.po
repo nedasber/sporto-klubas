@@ -1,0 +1,937 @@
+# English translation for sporto klubas
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en\n"
+
+# ============================================================
+# NAVIGATION / SIDEBAR
+# ============================================================
+msgid "Sporto klubas"
+msgstr "Sports Club"
+
+msgid "Valdymo skydelis"
+msgstr "Dashboard"
+
+msgid "Treniruotės"
+msgstr "Trainings"
+
+msgid "Abonementai"
+msgstr "Memberships"
+
+msgid "Mano rezervacijos"
+msgstr "My Reservations"
+
+msgid "Treniruočių sąrašas"
+msgstr "Training Schedule"
+
+msgid "Mano treniruotės"
+msgstr "My Trainings"
+
+msgid "Kalendorius"
+msgstr "Calendar"
+
+msgid "Administravimas"
+msgstr "Administration"
+
+msgid "Atsijungti"
+msgstr "Log out"
+
+msgid "Prisijungti"
+msgstr "Log in"
+
+msgid "Registruotis"
+msgstr "Sign up"
+
+# ============================================================
+# AUTH PAGES
+# ============================================================
+msgid "Prisijungimas"
+msgstr "Sign in"
+
+msgid "Įveskite savo prisijungimo duomenis"
+msgstr "Enter your credentials"
+
+msgid "Vartotojo vardas"
+msgstr "Username"
+
+msgid "Slaptažodis"
+msgstr "Password"
+
+msgid "Pakartokite slaptažodį"
+msgstr "Repeat password"
+
+msgid "El. paštas"
+msgstr "Email"
+
+msgid "Įveskite vartotojo vardą"
+msgstr "Enter your username"
+
+msgid "Neturite paskyros?"
+msgstr "Don't have an account?"
+
+msgid "Jau turite paskyrą?"
+msgstr "Already have an account?"
+
+msgid "Registracija"
+msgstr "Sign up"
+
+msgid "Sukurkite naują paskyrą"
+msgstr "Create a new account"
+
+msgid "Sukurti paskyrą"
+msgstr "Create account"
+
+msgid "Ištaisykite šias klaidas:"
+msgstr "Please fix the following errors:"
+
+msgid "Rodyti slaptažodį"
+msgstr "Show password"
+
+msgid "Slėpti slaptažodį"
+msgstr "Hide password"
+
+# ============================================================
+# DASHBOARD (client)
+# ============================================================
+msgid "Sveiki"
+msgstr "Welcome"
+
+msgid "Jūsų sporto klubo valdymo skydelis"
+msgstr "Your sports club dashboard"
+
+msgid "Narystė"
+msgstr "Membership"
+
+msgid "Informacija apie jūsų abonementą"
+msgstr "Your membership information"
+
+msgid "AKTYVI"
+msgstr "ACTIVE"
+
+msgid "SUSTABDYTA"
+msgstr "PAUSED"
+
+msgid "PASIBAIGUSI"
+msgstr "EXPIRED"
+
+msgid "NĖRA"
+msgstr "NONE"
+
+msgid "Galiojimo laikas"
+msgstr "Validity period"
+
+msgid "Liko"
+msgstr "Left"
+
+msgid "Apsilankymai"
+msgstr "Visits"
+
+msgid "liko"
+msgstr "left"
+
+msgid "Neriboti"
+msgstr "Unlimited"
+
+msgid "Šiuo metu neturite aktyvios narystės"
+msgstr "You don't have an active membership"
+
+msgid "Įsigyti narystę"
+msgstr "Buy membership"
+
+msgid "Jūsų pažanga"
+msgstr "Your progress"
+
+msgid "Už aktyvų dalyvavimą gaunate taškų ir ženklelių"
+msgstr "Earn points and badges for active participation"
+
+msgid "LYGIS"
+msgstr "LEVEL"
+
+msgid "taškai"
+msgstr "points"
+
+msgid "Pažanga iki kito lygio"
+msgstr "Progress to next level"
+
+msgid "Trūksta"
+msgstr "Missing"
+
+msgid "Maksimalus lygis!"
+msgstr "Maximum level!"
+
+msgid "pasiekimų gauta"
+msgstr "achievements earned"
+
+msgid "Jūsų pasiekimai"
+msgstr "Your achievements"
+
+msgid "Dar neturite pasiekimų"
+msgstr "No achievements yet"
+
+msgid "Užsiregistruokite į treniruotes ir įgykite pirmąjį ženklelį!"
+msgstr "Sign up for trainings and earn your first badge!"
+
+msgid "Užregistruota"
+msgstr "Registered"
+
+msgid "Dalyvavo"
+msgstr "Attended"
+
+msgid "Atšaukta"
+msgstr "Cancelled"
+
+msgid "Neatvyko"
+msgstr "No-show"
+
+msgid "Artėjančios treniruotės"
+msgstr "Upcoming trainings"
+
+msgid "Treniruotė"
+msgstr "Training"
+
+msgid "Data ir laikas"
+msgstr "Date and time"
+
+msgid "Treneris"
+msgstr "Trainer"
+
+msgid "Statusas"
+msgstr "Status"
+
+msgid "Registruota"
+msgstr "Booked"
+
+msgid "Neturite artėjančių rezervacijų"
+msgstr "No upcoming reservations"
+
+msgid "Ieškoti treniruočių"
+msgstr "Find trainings"
+
+# ============================================================
+# TRAINER DASHBOARD
+# ============================================================
+msgid "Trenerio valdymo skydelis"
+msgstr "Trainer dashboard"
+
+msgid "Nauja treniruotė"
+msgstr "New training"
+
+msgid "Šiandien treniruočių"
+msgstr "Trainings today"
+
+msgid "Dalyvių per savaitę"
+msgstr "Weekly attendees"
+
+msgid "Mėnesio užimtumas"
+msgstr "Monthly occupancy"
+
+msgid "Aktyvios treniruotės"
+msgstr "Active trainings"
+
+msgid "Šiandienos tvarkaraštis"
+msgstr "Today's schedule"
+
+msgid "dalyviai"
+msgstr "attendees"
+
+msgid "Dalyviai"
+msgstr "Attendees"
+
+msgid "Planuojama"
+msgstr "Scheduled"
+
+msgid "Šiandien treniruočių nėra"
+msgstr "No trainings today"
+
+msgid "Artimiausios treniruotės (7 dienos)"
+msgstr "Upcoming trainings (7 days)"
+
+msgid "Visos treniruotės"
+msgstr "All trainings"
+
+msgid "Artimiausią savaitę treniruočių neturite"
+msgstr "No trainings in the next week"
+
+msgid "Sukurti treniruotę"
+msgstr "Create training"
+
+# ============================================================
+# TRAINER TRAININGS LIST
+# ============================================================
+msgid "Valdykite savo sukurtas treniruotes"
+msgstr "Manage your trainings"
+
+msgid "Paieška"
+msgstr "Search"
+
+msgid "Ieškoti pagal pavadinimą..."
+msgstr "Search by title..."
+
+msgid "Visi"
+msgstr "All"
+
+msgid "Laikotarpis"
+msgstr "Period"
+
+msgid "Visos"
+msgstr "All"
+
+msgid "Tik būsimos"
+msgstr "Upcoming only"
+
+msgid "Tik praeities"
+msgstr "Past only"
+
+msgid "Rikiavimas"
+msgstr "Sort"
+
+msgid "Seniausi pirma"
+msgstr "Oldest first"
+
+msgid "Naujausi pirma"
+msgstr "Newest first"
+
+msgid "Filtruoti"
+msgstr "Filter"
+
+msgid "Išvalyti filtrus"
+msgstr "Clear filters"
+
+msgid "Pritaikyti filtrai:"
+msgstr "Active filters:"
+
+msgid "Rasta:"
+msgstr "Found:"
+
+msgid "Pavadinimas"
+msgstr "Title"
+
+msgid "Veiksmai"
+msgstr "Actions"
+
+msgid "Talpa:"
+msgstr "Capacity:"
+
+msgid "Pagal nurodytus filtrus treniruočių nerasta"
+msgstr "No trainings match the filters"
+
+msgid "Treniruočių nėra"
+msgstr "No trainings"
+
+msgid "Sukurti pirmą treniruotę"
+msgstr "Create your first training"
+
+# ============================================================
+# TRAINING SCHEDULE (client)
+# ============================================================
+msgid "Treniruočių grafikas"
+msgstr "Training schedule"
+
+msgid "Peržiūrėkite būsimas treniruotes ir užsiregistruokite"
+msgstr "View upcoming trainings and sign up"
+
+msgid "Tipas"
+msgstr "Type"
+
+msgid "Diena"
+msgstr "Day"
+
+msgid "Laikas"
+msgstr "Time"
+
+msgid "Bet kada"
+msgstr "Any time"
+
+msgid "Rytas (06–12)"
+msgstr "Morning (06–12)"
+
+msgid "Diena (12–17)"
+msgstr "Afternoon (12–17)"
+
+msgid "Vakaras (17–22)"
+msgstr "Evening (17–22)"
+
+msgid "Anksčiausi pirma"
+msgstr "Earliest first"
+
+msgid "Vėliausi pirma"
+msgstr "Latest first"
+
+msgid "Rodyti tik treniruotes su laisvomis vietomis"
+msgstr "Show only trainings with available spots"
+
+msgid "Rasta treniruočių:"
+msgstr "Trainings found:"
+
+msgid "Liko vietų:"
+msgstr "Spots left:"
+
+msgid "Pilna"
+msgstr "Full"
+
+msgid "Vietos užimtos"
+msgstr "All spots taken"
+
+msgid "Jau užsiregistravęs"
+msgstr "Already registered"
+
+msgid "Treniruotė atšaukta"
+msgstr "Training cancelled"
+
+msgid "Šiuo metu treniruočių nėra"
+msgstr "No trainings available"
+
+msgid "ATŠAUKTA"
+msgstr "CANCELLED"
+
+msgid "PILNA"
+msgstr "FULL"
+
+# ============================================================
+# MY RESERVATIONS
+# ============================================================
+msgid "Peržiūrėkite ir valdykite savo treniruočių rezervacijas"
+msgstr "View and manage your training reservations"
+
+msgid "Atšaukti"
+msgstr "Cancel"
+
+msgid "Rezervacijų nėra"
+msgstr "No reservations"
+
+# ============================================================
+# CREATE TRAINING (trainer)
+# ============================================================
+msgid "Užpildykite informaciją apie naują treniruotę"
+msgstr "Fill in information about the new training"
+
+msgid "Pagrindinė informacija"
+msgstr "Main information"
+
+msgid "Treniruotės tipas"
+msgstr "Training type"
+
+msgid "Pradžios data ir laikas"
+msgstr "Start date and time"
+
+msgid "Trukmė (minutėmis)"
+msgstr "Duration (minutes)"
+
+msgid "Maksimalus dalyvių skaičius"
+msgstr "Maximum participants"
+
+msgid "Leidžiama nuo 15 iki 240 min (4 val.)"
+msgstr "Allowed from 15 to 240 min (4 h)"
+
+msgid "Leidžiama nuo 1 iki 20 dalyvių"
+msgstr "Allowed from 1 to 20 participants"
+
+msgid "Aprašymas"
+msgstr "Description"
+
+msgid "Paveikslėlis"
+msgstr "Image"
+
+msgid "Įkelti iš kompiuterio"
+msgstr "Upload from computer"
+
+msgid "Pasirinkti failą..."
+msgstr "Choose file..."
+
+msgid "JPG, PNG arba WebP. Maks. 5 MB."
+msgstr "JPG, PNG or WebP. Max. 5 MB."
+
+msgid "arba pasirinkite iš galerijos"
+msgstr "or choose from gallery"
+
+msgid "Išsaugoti"
+msgstr "Save"
+
+msgid "Atgal"
+msgstr "Back"
+
+msgid "Spragtelėkite, kad pasirinktumėte datą..."
+msgstr "Click to pick date..."
+
+# ============================================================
+# CANCEL TRAINING (trainer)
+# ============================================================
+msgid "Atšaukti treniruotę"
+msgstr "Cancel training"
+
+msgid "Ar tikrai norite atšaukti šią treniruotę?"
+msgstr "Are you sure you want to cancel this training?"
+
+msgid "Priežastis / pastaba (nebūtina)"
+msgstr "Reason / note (optional)"
+
+msgid "Pvz. treneris susirgo / salė užimta"
+msgstr "E.g. trainer is sick / hall occupied"
+
+msgid "Patvirtinti atšaukimą"
+msgstr "Confirm cancellation"
+
+# ============================================================
+# ATTENDEES (trainer)
+# ============================================================
+msgid "Dalyvių sąrašas"
+msgstr "Attendees list"
+
+msgid "Klientas"
+msgstr "Client"
+
+msgid "Dalyvių nėra"
+msgstr "No attendees"
+
+msgid "Grįžti į mano treniruotes"
+msgstr "Back to my trainings"
+
+# ============================================================
+# MEMBERSHIPS (client)
+# ============================================================
+msgid "Abonementų planai"
+msgstr "Membership plans"
+
+msgid "Pasirinkite tinkamiausią planą ir pradėkite treniruotis"
+msgstr "Choose the best plan and start training"
+
+msgid "POPULIARIAUSIAS"
+msgstr "MOST POPULAR"
+
+msgid "dienų"
+msgstr "days"
+
+msgid "apsilankymai"
+msgstr "visits"
+
+msgid "Neriboti apsilankymai"
+msgstr "Unlimited visits"
+
+msgid "Persirengimo kambarys"
+msgstr "Changing room"
+
+msgid "Pasirinkti"
+msgstr "Choose"
+
+msgid "Grįžti į dashboard"
+msgstr "Back to dashboard"
+
+msgid "Nėra sukurtų planų. Sukurkite per admin panelę."
+msgstr "No plans created. Create via admin panel."
+
+msgid "Abonemento pirkimas"
+msgstr "Membership purchase"
+
+msgid "Užpildykite duomenis ir pereikite prie apmokėjimo"
+msgstr "Fill in data and proceed to payment"
+
+msgid "Pasirinktas planas"
+msgstr "Selected plan"
+
+msgid "Kliento duomenys"
+msgstr "Customer details"
+
+msgid "Vardas, pavardė"
+msgstr "Full name"
+
+msgid "Telefono numeris"
+msgstr "Phone number"
+
+msgid "Tęsti apmokėjimą"
+msgstr "Continue to payment"
+
+msgid "Grįžti"
+msgstr "Back"
+
+# ============================================================
+# CALENDAR (trainer)
+# ============================================================
+msgid "Jūsų treniruočių vaizdas mėnesio, savaitės ir dienos pjūviais"
+msgstr "Your trainings in monthly, weekly and daily views"
+
+msgid "Spalvos:"
+msgstr "Colors:"
+
+msgid "Laisvų vietų daug"
+msgstr "Many spots available"
+
+msgid "Pusiau pilna"
+msgstr "Half full"
+
+# ============================================================
+# COMMON
+# ============================================================
+msgid "Kalba"
+msgstr "Language"
+
+msgid "Lietuvių"
+msgstr "Lithuanian"
+
+msgid "English"
+msgstr "English"
+
+# ============================================================
+# AUTH FORMS / VALIDATORS
+# ============================================================
+msgid "Įveskite teisingą el. pašto adresą."
+msgstr "Enter a valid email address."
+
+msgid "Privaloma. Iki 150 simbolių. Tik raidės, skaitmenys ir @/./+/-/_."
+msgstr "Required. Up to 150 characters. Only letters, digits and @/./+/-/_."
+
+msgid "Įveskite vartotojo vardą."
+msgstr "Enter a username."
+
+msgid "Toks vartotojo vardas jau egzistuoja."
+msgstr "A user with that username already exists."
+
+msgid "Vartotojo vardas negali būti ilgesnis nei 150 simbolių."
+msgstr "Username cannot be longer than 150 characters."
+
+msgid "Vartotojo varde gali būti tik raidės, skaitmenys ir simboliai @/./+/-/_."
+msgstr "Username may only contain letters, digits and @/./+/-/_."
+
+msgid "Slaptažodis turi būti bent 8 simbolių ilgio. Negali būti panašus į kitus jūsų asmeninius duomenis. Negali būti dažnai naudojamas slaptažodis. Negali būti sudarytas vien tik iš skaitmenų."
+msgstr "The password must be at least 8 characters long. It cannot be too similar to your personal information. It cannot be a commonly used password. It cannot be entirely numeric."
+
+msgid "Įveskite slaptažodį."
+msgstr "Enter a password."
+
+msgid "Pakartokite tą patį slaptažodį patikrinimui."
+msgstr "Repeat the same password for verification."
+
+msgid "Pakartokite slaptažodį."
+msgstr "Repeat the password."
+
+msgid "Slaptažodžiai nesutampa."
+msgstr "Passwords do not match."
+
+msgid "Neteisingas vartotojo vardas arba slaptažodis. Patikrinkite ar teisingai įvedėte (atkreipkite dėmesį, kad svarbu didžiosios/mažosios raidės)."
+msgstr "Incorrect username or password. Please check (note that uppercase and lowercase letters matter)."
+
+msgid "Ši paskyra yra neaktyvi."
+msgstr "This account is inactive."
+
+msgid "Slaptažodis per trumpas. Jis turi būti bent %(min_length)d simbolių ilgio."
+msgstr "Password is too short. It must be at least %(min_length)d characters long."
+
+msgid "Slaptažodis turi būti bent %(min_length)d simbolių ilgio."
+msgstr "Password must be at least %(min_length)d characters long."
+
+msgid "Slaptažodis pernelyg panašus į jūsų asmeninius duomenis (vartotojo vardą, el. paštą ir pan.)."
+msgstr "The password is too similar to your personal information (username, email, etc.)."
+
+msgid "Slaptažodis negali būti panašus į kitus jūsų asmeninius duomenis."
+msgstr "Password cannot be too similar to your personal information."
+
+msgid "Šis slaptažodis pernelyg dažnai naudojamas. Pasirinkite saugesnį."
+msgstr "This password is too common. Please choose a safer one."
+
+msgid "Slaptažodis negali būti dažnai naudojamas (pvz. 'password', '12345678')."
+msgstr "Password cannot be commonly used (e.g. 'password', '12345678')."
+
+msgid "Slaptažodis negali būti sudarytas vien tik iš skaitmenų."
+msgstr "Password cannot be entirely numeric."
+
+# ============================================================
+# DASHBOARD client - additional
+# ============================================================
+msgid "Kaina:"
+msgstr "Price:"
+
+msgid "Šios dienos kalendorius"
+msgstr "Today's calendar"
+
+msgid "Mėn."
+msgstr "Month"
+
+# ============================================================
+# CALENDAR
+# ============================================================
+msgid "FullCalendar:Šiandien"
+msgstr "Today"
+
+msgctxt "valanda santrumpa"
+msgid "val"
+msgstr "h"
+
+msgid "Liko %(days)s d."
+msgstr "%(days)s days left"
+
+msgid "Trūksta %(p)s t."
+msgstr "%(p)s pts needed"
+
+# ============================================================
+# ACHIEVEMENTS (DB content)
+# ============================================================
+msgid "Pirmas žingsnis"
+msgstr "First step"
+
+msgid "Užsiregistravote į pirmąją treniruotę"
+msgstr "You registered for your first training"
+
+msgid "Pradžia padaryta"
+msgstr "Off to a start"
+
+msgid "Dalyvavote pirmojoje treniruotėje"
+msgstr "You attended your first training"
+
+msgid "Narys"
+msgstr "Member"
+
+msgid "Įsigijote pirmąjį abonementą"
+msgstr "You bought your first membership"
+
+msgid "Aktyvus sportininkas"
+msgstr "Active athlete"
+
+msgid "Dalyvavote 5 treniruotėse"
+msgstr "You attended 5 trainings"
+
+msgid "Ištvermės meistras"
+msgstr "Endurance master"
+
+msgid "Dalyvavote 10 treniruočių"
+msgstr "You attended 10 trainings"
+
+msgid "Tikras atletas"
+msgstr "True athlete"
+
+msgid "Dalyvavote 25 treniruotėse"
+msgstr "You attended 25 trainings"
+
+# Level names
+msgid "Pradedantysis"
+msgstr "Beginner"
+
+msgid "Sportininkas"
+msgstr "Athlete"
+
+msgid "Atletas"
+msgstr "Strong athlete"
+
+msgid "Čempionas"
+msgstr "Champion"
+
+msgid "Legenda"
+msgstr "Legend"
+
+# ============================================================
+# MEMBERSHIP PLANS (DB content)
+# ============================================================
+msgid "1 mėn. neribotas"
+msgstr "1 month unlimited"
+
+msgid "3 mėn. neribotas"
+msgstr "3 months unlimited"
+
+msgid "10 apsilankymų"
+msgstr "10 visits"
+
+msgid "Vienkartinis apsilankymas"
+msgstr "Single visit"
+
+# ============================================================
+# LEADERBOARD & ACHIEVEMENTS
+# ============================================================
+msgid "Lyderių lentelė"
+msgstr "Leaderboard"
+
+msgid "Aktyviausi nariai ir jų pasiekimai"
+msgstr "Most active members and their achievements"
+
+msgid "Aktyvūs (30 d.)"
+msgstr "Active (30 days)"
+
+msgid "Neaktyvūs"
+msgstr "Inactive"
+
+msgid "Iš viso:"
+msgstr "Total:"
+
+msgid "Lygis"
+msgstr "Level"
+
+msgid "Streak'as"
+msgstr "Streak"
+
+msgid "Tu"
+msgstr "You"
+
+msgid "t."
+msgstr "pts"
+
+msgid "d."
+msgstr "d"
+
+msgid "Aktyvus"
+msgstr "Active"
+
+msgid "Neaktyvus"
+msgstr "Inactive"
+
+msgid "Pagal šį filtrą nieko nerasta"
+msgstr "Nothing found for this filter"
+
+msgid "Jūsų pozicija"
+msgstr "Your position"
+
+msgid "Jūsų pozicija:"
+msgstr "Your position:"
+
+msgid "Top 5 nariai"
+msgstr "Top 5 members"
+
+msgid "Pilna lentelė"
+msgstr "Full leaderboard"
+
+msgid "Pasiekimai"
+msgstr "Achievements"
+
+msgid "pasiekimai"
+msgstr "achievements"
+
+msgid "dienų iš eilės"
+msgstr "days in a row"
+
+msgid "Lygiai ir pasiekimai"
+msgstr "Levels and achievements"
+
+msgid "Pasiekimai ir lygiai"
+msgstr "Achievements and levels"
+
+msgid "Jūsų progresas, lygiai ir kaip gauti taškų"
+msgstr "Your progress, levels and how to earn points"
+
+msgid "taškų"
+msgstr "points"
+
+msgid "Iki kito lygio"
+msgstr "To next level"
+
+msgid "Dabartinis streak'as"
+msgstr "Current streak"
+
+msgid "Ilgiausias streak'as"
+msgstr "Longest streak"
+
+msgid "Lygių sistema"
+msgstr "Level system"
+
+msgid "Jūs čia"
+msgstr "You are here"
+
+msgid "Kaip gauti taškų"
+msgstr "How to earn points"
+
+msgid "Užsiregistruoti į treniruotę"
+msgstr "Sign up for training"
+
+msgid "Dalyvauti treniruotėje"
+msgstr "Attend a training"
+
+msgid "Įsigyti abonementą"
+msgstr "Buy a membership"
+
+msgid "Papildomus taškus gausite už pasiekimus (žemiau). Lankydamiesi kasdien iš eilės kursite streak'us!"
+msgstr "Extra points come from achievements (below). Attend daily in a row to build streaks!"
+
+msgid "Visi pasiekimai"
+msgstr "All achievements"
+
+# New achievements
+msgid "Sporto legenda"
+msgstr "Sports legend"
+
+msgid "Dalyvavote 50 treniruočių"
+msgstr "You attended 50 trainings"
+
+msgid "Įgaunate pagreitį"
+msgstr "Gaining momentum"
+
+msgid "Dalyvavote 3 dienas iš eilės"
+msgstr "You attended 3 days in a row"
+
+msgid "Savaitės iššūkis"
+msgstr "Weekly challenge"
+
+msgid "Dalyvavote 7 dienas iš eilės"
+msgstr "You attended 7 days in a row"
+
+msgid "Dviejų savaičių karys"
+msgstr "Two-week warrior"
+
+msgid "Dalyvavote 14 dienų iš eilės"
+msgstr "You attended 14 days in a row"
+
+msgid "Nesustabdomas"
+msgstr "Unstoppable"
+
+msgid "Dalyvavote 30 dienų iš eilės"
+msgstr "You attended 30 days in a row"
+
+# Notifications
+msgid "Pranešimai"
+msgstr "Notifications"
+
+msgid "Naujų pranešimų nėra"
+msgstr "No new notifications"
+
+msgid "Žiūrėti visas treniruotes"
+msgstr "View all trainings"
+
+# Linksniavimas
+msgid "apsilankymų"
+msgstr "visits"
+
+# Email verification
+msgid "Į šį adresą bus išsiųstas patvirtinimo laiškas."
+msgstr "A verification email will be sent to this address."
+
+msgid "Įveskite el. pašto adresą."
+msgstr "Enter an email address."
+
+msgid "Šis el. pašto adresas jau yra užregistruotas."
+msgstr "This email address is already registered."
+
+msgid "Registracija sėkminga! Patikrinkite savo el. paštą ir paspauskite patvirtinimo nuorodą."
+msgstr "Registration successful! Check your email and click the confirmation link."
+
+# Accessibility
+msgid "Prieinamumo nustatymai"
+msgstr "Accessibility settings"
+
+msgid "Pasirinkti kalbą"
+msgstr "Choose language"
+
+msgid "Prieinamumas"
+msgstr "Accessibility"
+
+msgid "Uždaryti"
+msgstr "Close"
+
+msgid "Šrifto dydis"
+msgstr "Font size"
+
+msgid "Mažesnis šriftas"
+msgstr "Smaller font"
+
+msgid "Normalus šriftas"
+msgstr "Normal font"
+
+msgid "Didesnis šriftas"
+msgstr "Larger font"
+
+msgid "Didelis kontrastas"
+msgstr "High contrast"
+
+msgid "Sumažintos animacijos"
+msgstr "Reduced motion"
+
+msgid "Pažymėti dėmesio žiedą"
+msgstr "Strong focus ring"
+
+msgid "Atstatyti"
+msgstr "Reset"

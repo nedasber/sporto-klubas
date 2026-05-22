@@ -1,8 +1,11 @@
+from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
 from django.views.generic import RedirectView
 from gym import views as gym_views
+from accounts.forms import LoginForm
 
 urlpatterns = [
     path("", RedirectView.as_view(url="/login/", permanent=False)),
@@ -10,11 +13,25 @@ urlpatterns = [
     path("admin/", admin.site.urls),
 
     # Auth
-    path("login/", auth_views.LoginView.as_view(template_name="accounts/login.html"), name="login"),
+    path(
+        "login/",
+        auth_views.LoginView.as_view(
+            template_name="accounts/login.html",
+            authentication_form=LoginForm,
+        ),
+        name="login",
+    ),
     path("logout/", auth_views.LogoutView.as_view(), name="logout"),
 
     # Dashboard
     path("dashboard/", gym_views.dashboard, name="dashboard"),
+
+    # Gamification
+    path("leaderboard/", gym_views.leaderboard, name="leaderboard"),
+    path("achievements/", gym_views.achievements_page, name="achievements_page"),
+
+    # Pranešimai
+    path("notifications/mark-seen/", gym_views.mark_notifications_seen, name="mark_notifications_seen"),
 
     # Client
     path("trainings/", gym_views.trainings_list, name="trainings_list"),
@@ -28,6 +45,8 @@ urlpatterns = [
     path("trainer/trainings/<int:training_id>/attendees/", gym_views.training_attendees, name="training_attendees"),
     path("trainer/trainings/<int:training_id>/cancel/", gym_views.trainer_cancel_training, name="trainer_cancel_training"),
     path("trainer/reservations/<int:reservation_id>/<str:status>/", gym_views.set_attendance, name="set_attendance"),
+    path("trainer/calendar/", gym_views.trainer_calendar, name="trainer_calendar"),
+    path("trainer/calendar/events/", gym_views.trainer_calendar_events, name="trainer_calendar_events"),
 
     # Membership
     path("membership/buy/", gym_views.membership_buy_page, name="membership_buy_page"),
@@ -41,4 +60,11 @@ urlpatterns = [
 
     # Accounts app
     path("", include("accounts.urls")),
+
+    # Kalbos perjungimas
+    path("i18n/", include("django.conf.urls.i18n")),
 ]
+
+# Media failai development režime
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

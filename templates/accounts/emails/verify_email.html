@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="lt">
+<head>
+  <meta charset="utf-8">
+  <title>Patvirtinkite savo paskyrą</title>
+</head>
+<body style="margin:0;padding:0;background:#f1f5f9;font-family:Arial,sans-serif;color:#1e293b;">
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f1f5f9;padding:40px 20px;">
+    <tr>
+      <td align="center">
+        <table width="560" cellpadding="0" cellspacing="0" border="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,0.06);">
+
+          <!-- Header -->
+          <tr>
+            <td style="background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%);padding:28px 32px;text-align:center;">
+              <div style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#4361ee;margin-right:8px;vertical-align:middle;"></div>
+              <span style="color:#ffffff;font-size:20px;font-weight:700;letter-spacing:.3px;vertical-align:middle;">Sporto klubas</span>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="padding:36px 32px 24px 32px;">
+              <h2 style="margin:0 0 16px 0;font-size:22px;color:#1e293b;">Sveiki, {{ user.username }}!</h2>
+              <p style="margin:0 0 16px 0;font-size:15px;line-height:1.6;color:#475569;">
+                Ačiū, kad užsiregistravote sporto klube. Norėdami užbaigti registraciją ir
+                pradėti naudotis sistema, patvirtinkite savo el. pašto adresą paspausdami mygtuką žemiau:
+              </p>
+
+              <table cellpadding="0" cellspacing="0" border="0" style="margin:28px auto;">
+                <tr>
+                  <td style="border-radius:10px;background:#4361ee;">
+                    <a href="{{ verify_url }}"
+                       style="display:inline-block;padding:14px 32px;font-size:15px;font-weight:600;color:#ffffff;text-decoration:none;border-radius:10px;">
+                      Patvirtinti el. paštą
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
+              <p style="margin:0 0 8px 0;font-size:13px;color:#64748b;line-height:1.5;">
+                Jei mygtukas neveikia, nukopijuokite šią nuorodą į naršyklę:
+              </p>
+              <p style="margin:0 0 24px 0;font-size:12px;color:#4361ee;word-break:break-all;">
+                {{ verify_url }}
+              </p>
+
+              <div style="background:#f8fafc;border-left:4px solid #4361ee;padding:14px 16px;border-radius:6px;margin-top:16px;">
+                <p style="margin:0;font-size:13px;color:#475569;line-height:1.5;">
+                  <strong>Pastaba:</strong> Jei tai ne jūs užsiregistravote, tiesiog ignoruokite šį laišką.
+                  Niekas negalės naudotis paskyra, kol nebus patvirtintas el. paštas.
+                </p>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="padding:18px 32px;background:#f8fafc;border-top:1px solid #e2e8f0;text-align:center;">
+              <p style="margin:0;font-size:12px;color:#94a3b8;">
+                Šis laiškas išsiųstas automatiškai – atsakymai į jį nebus skaitomi.<br>
+                © Sporto klubas
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

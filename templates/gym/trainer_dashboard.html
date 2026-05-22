@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% trans "Valdymo skydelis" %}{% endblock %}
+
+{% block content %}
+<div class="page-header d-flex justify-content-between align-items-start">
+  <div>
+    <h2>{% trans "Sveiki" %}, {{ request.user.username }}! 👋</h2>
+    <p>{{ now|date:"Y-m-d" }} · {% trans "Trenerio valdymo skydelis" %}</p>
+  </div>
+  <a class="btn btn-primary" href="/trainer/trainings/create/">
+    <i class="bi bi-plus-lg me-1"></i> {% trans "Nauja treniruotė" %}
+  </a>
+</div>
+
+<!-- STATISTIKA -->
+<div class="row g-3 mb-4">
+  <div class="col-6 col-md-3">
+    <div class="stat-card">
+      <div class="stat-number" style="color:var(--primary);">{{ stats.today_count }}</div>
+      <div class="stat-label">{% trans "Šiandien treniruočių" %}</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-card">
+      <div class="stat-number" style="color:var(--success);">{{ stats.week_attendees }}</div>
+      <div class="stat-label">{% trans "Dalyvių per savaitę" %}</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-card">
+      <div class="stat-number" style="color:var(--info);">{{ stats.month_fill_percent }}%</div>
+      <div class="stat-label">{% trans "Mėnesio užimtumas" %}</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-card">
+      <div class="stat-number" style="color:var(--warning);">{{ stats.active_count }}</div>
+      <div class="stat-label">{% trans "Aktyvios treniruotės" %}</div>
+    </div>
+  </div>
+</div>
+
+<!-- ŠIANDIENOS KALENDORIUS -->
+<div class="s-card mb-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h5 class="fw-bold mb-0">
+      <i class="bi bi-calendar-day me-2" style="color:var(--primary);"></i>
+      {% trans "Šiandienos tvarkaraštis" %}
+    </h5>
+    <span class="text-muted small">{{ now|date:"Y-m-d" }}</span>
+  </div>
+
+  {% if today_trainings %}
+    <div class="today-timeline">
+      {% for t in today_trainings %}
+        <div class="timeline-item {% if t.status == 'CANCELLED' %}cancelled{% endif %}">
+          <div class="timeline-time">
+            <div class="time-hour">{{ t.starts_at|date:"H:i" }}</div>
+            <div class="time-duration">{{ t.duration_minutes }} min</div>
+          </div>
+          <div class="timeline-content">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <div class="fw-bold">{{ t.title }}</div>
+                <div class="text-muted small">
+                  <i class="bi bi-people me-1"></i>
+                  {{ t.booked_count }} / {{ t.capacity }} {% trans "dalyviai" %}
+                </div>
+              </div>
+              <div class="d-flex flex-column align-items-end gap-1">
+                {% if t.status == "CANCELLED" %}
+                  <span class="badge-status badge-cancelled">{% trans "Atšaukta" %}</span>
+                {% else %}
+                  <span class="badge-status badge-scheduled">{% trans "Planuojama" %}</span>
+                {% endif %}
+                <a class="btn btn-outline-primary btn-sm" href="/trainer/trainings/{{ t.id }}/attendees/">
+                  <i class="bi bi-people me-1"></i> {% trans "Dalyviai" %}
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="text-center py-4">
+      <i class="bi bi-calendar-x fs-1 text-muted"></i>
+      <div class="text-muted mt-2">{% trans "Šiandien treniruočių nėra" %}</div>
+    </div>
+  {% endif %}
+</div>
+
+<!-- ARTIMIAUSIOS 7 DIENOS -->
+<div class="s-card">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h5 class="fw-bold mb-0">
+      <i class="bi bi-calendar2-week me-2" style="color:var(--primary);"></i>
+      {% trans "Artimiausios treniruotės (7 dienos)" %}
+    </h5>
+    <a href="/trainer/trainings/" class="text-muted small text-decoration-none">
+      {% trans "Visos treniruotės" %} →
+    </a>
+  </div>
+
+  {% if upcoming_week %}
+    <div class="table-responsive">
+      <table class="s-table">
+        <thead>
+          <tr>
+            <th>{% trans "Data ir laikas" %}</th>
+            <th>{% trans "Treniruotė" %}</th>
+            <th style="width:200px;">{% trans "Mėnesio užimtumas" %}</th>
+            <th>{% trans "Statusas" %}</th>
+            <th>{% trans "Veiksmai" %}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for t in upcoming_week %}
+            <tr>
+              <td>
+                <div class="fw-semibold">{{ t.starts_at|date:"Y-m-d" }}</div>
+                <div class="text-muted small">{{ t.starts_at|date:"H:i" }} · {{ t.duration_minutes }} min</div>
+              </td>
+              <td>
+                <div class="fw-semibold">{{ t.title }}</div>
+              </td>
+              <td>
+                <div class="d-flex justify-content-between small mb-1">
+                  <span>{{ t.booked_count }} / {{ t.capacity }}</span>
+                  <span class="fw-semibold">{{ t.fill_percent }}%</span>
+                </div>
+                <div class="progress" style="height:6px;">
+                  <div class="progress-bar"
+                       style="width:{{ t.fill_percent }}%;
+                              {% if t.fill_percent >= 80 %}background:var(--success);
+                              {% elif t.fill_percent >= 40 %}background:var(--primary);
+                              {% else %}background:var(--warning);{% endif %}"></div>
+                </div>
+              </td>
+              <td>
+                {% if t.status == "CANCELLED" %}
+                  <span class="badge-status badge-cancelled">{% trans "Atšaukta" %}</span>
+                {% else %}
+                  <span class="badge-status badge-scheduled">{% trans "Planuojama" %}</span>
+                {% endif %}
+              </td>
+              <td>
+                <a class="btn btn-outline-primary btn-sm" href="/trainer/trainings/{{ t.id }}/attendees/">
+                  <i class="bi bi-people"></i>
+                </a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="text-center py-4">
+      <i class="bi bi-calendar-x fs-1 text-muted"></i>
+      <div class="text-muted mt-2">{% trans "Artimiausią savaitę treniruočių neturite" %}</div>
+      <a href="/trainer/trainings/create/" class="btn btn-primary btn-sm mt-3">
+        <i class="bi bi-plus-lg me-1"></i> {% trans "Sukurti treniruotę" %}
+      </a>
+    </div>
+  {% endif %}
+</div>
+
+<style>
+.today-timeline { display: flex; flex-direction: column; gap: 12px; }
+.timeline-item {
+  display: flex; gap: 16px;
+  padding: 14px 16px;
+  background: #f8fafc;
+  border-radius: 12px;
+  border-left: 4px solid var(--primary);
+  transition: all .2s;
+}
+.timeline-item:hover { background: #eef1ff; transform: translateX(2px); }
+.timeline-item.cancelled { border-left-color: var(--danger); opacity: .7; }
+.timeline-time { min-width: 80px; text-align: center; border-right: 1px solid #e2e8f0; padding-right: 16px; }
+.time-hour { font-size: 20px; font-weight: 700; color: var(--text); }
+.time-duration { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: .3px; }
+.timeline-content { flex-grow: 1; }
+</style>
+{% endblock %}

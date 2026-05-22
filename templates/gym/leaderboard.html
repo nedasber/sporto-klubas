@@ -1,0 +1,218 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% trans "Lyderių lentelė" %}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h2><i class="bi bi-trophy-fill me-2" style="color:var(--primary);"></i>{% trans "Lyderių lentelė" %}</h2>
+  <p>{% trans "Aktyviausi nariai ir jų pasiekimai" %}</p>
+</div>
+
+<!-- FILTRAI -->
+<div class="s-card mb-3 py-2">
+  <div class="d-flex flex-wrap align-items-center gap-2">
+    <a href="?filter=all" class="btn btn-sm {% if filter_mode == 'all' %}btn-primary{% else %}btn-outline-secondary{% endif %}">
+      <i class="bi bi-people me-1"></i> {% trans "Visi" %}
+    </a>
+    <a href="?filter=active" class="btn btn-sm {% if filter_mode == 'active' %}btn-primary{% else %}btn-outline-secondary{% endif %}">
+      <i class="bi bi-lightning-charge me-1"></i> {% trans "Aktyvūs (30 d.)" %}
+    </a>
+    <a href="?filter=inactive" class="btn btn-sm {% if filter_mode == 'inactive' %}btn-primary{% else %}btn-outline-secondary{% endif %}">
+      <i class="bi bi-pause-circle me-1"></i> {% trans "Neaktyvūs" %}
+    </a>
+    <span class="ms-auto text-muted small">{% trans "Iš viso:" %} <strong>{{ total_count }}</strong></span>
+  </div>
+</div>
+
+<!-- TOP 3 PODIUMAS -->
+{% if leaderboard|length >= 3 %}
+<div class="row g-3 mb-4 align-items-end">
+  <!-- 2 vieta -->
+  <div class="col-4 order-1">
+    <div class="podium-card silver">
+      <div class="podium-rank">2</div>
+      <div class="podium-icon"><i class="bi bi-trophy"></i></div>
+      <div class="podium-name">{{ leaderboard.1.user.username }}</div>
+      <div class="podium-points">{{ leaderboard.1.points }} {% trans "t." %}</div>
+      <div class="podium-level small">{{ leaderboard.1.get_level_display }}</div>
+    </div>
+  </div>
+  <!-- 1 vieta (didžiausias) -->
+  <div class="col-4 order-2">
+    <div class="podium-card gold">
+      <div class="podium-rank">1</div>
+      <div class="podium-crown"><i class="bi bi-trophy-fill"></i></div>
+      <div class="podium-name">{{ leaderboard.0.user.username }}</div>
+      <div class="podium-points">{{ leaderboard.0.points }} {% trans "t." %}</div>
+      <div class="podium-level small">{{ leaderboard.0.get_level_display }}</div>
+    </div>
+  </div>
+  <!-- 3 vieta -->
+  <div class="col-4 order-3">
+    <div class="podium-card bronze">
+      <div class="podium-rank">3</div>
+      <div class="podium-icon"><i class="bi bi-trophy"></i></div>
+      <div class="podium-name">{{ leaderboard.2.user.username }}</div>
+      <div class="podium-points">{{ leaderboard.2.points }} {% trans "t." %}</div>
+      <div class="podium-level small">{{ leaderboard.2.get_level_display }}</div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<!-- LENTELĖ -->
+<div class="s-card">
+  <div class="table-responsive">
+    <table class="s-table">
+      <thead>
+        <tr>
+          <th style="width:60px;">#</th>
+          <th>{% trans "Narys" %}</th>
+          <th>{% trans "Lygis" %}</th>
+          <th>{% trans "Taškai" %}</th>
+          <th>{% trans "Streak'as" %}</th>
+          <th>{% trans "Statusas" %}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in leaderboard %}
+          <tr class="{% if p.user == request.user %}table-row-me{% endif %}">
+            <td>
+              {% if p.rank == 1 %}
+                <span class="rank-badge rank-gold">🥇</span>
+              {% elif p.rank == 2 %}
+                <span class="rank-badge rank-silver">🥈</span>
+              {% elif p.rank == 3 %}
+                <span class="rank-badge rank-bronze">🥉</span>
+              {% else %}
+                <span class="rank-number">{{ p.rank }}</span>
+              {% endif %}
+            </td>
+            <td>
+              <div class="d-flex align-items-center gap-2">
+                <div class="user-avatar" style="width:32px;height:32px;font-size:14px;"><i class="bi bi-person-fill"></i></div>
+                <span class="fw-semibold">{{ p.user.username }}</span>
+                {% if p.user == request.user %}<span class="badge bg-primary ms-1">{% trans "Tu" %}</span>{% endif %}
+              </div>
+            </td>
+            <td>
+              <span class="fw-semibold">{{ p.get_level_display }}</span>
+              <div class="text-muted small">{% trans "Lygis" %} {{ p.level }}</div>
+            </td>
+            <td>
+              <span class="fw-bold fs-5" style="color:var(--primary);">{{ p.points }}</span>
+              <span class="text-muted small">{% trans "t." %}</span>
+            </td>
+            <td>
+              {% if p.current_streak > 0 %}
+                <span class="badge bg-warning text-dark">
+                  <i class="bi bi-fire me-1"></i>{{ p.current_streak }} {% trans "d." %}
+                </span>
+              {% else %}
+                <span class="text-muted small">—</span>
+              {% endif %}
+            </td>
+            <td>
+              {% if p.is_active %}
+                <span class="badge-status badge-active">● {% trans "Aktyvus" %}</span>
+              {% else %}
+                <span class="badge-status badge-expired">● {% trans "Neaktyvus" %}</span>
+              {% endif %}
+            </td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="6" class="text-center py-5">
+              <i class="bi bi-trophy fs-1 text-muted"></i>
+              <div class="text-muted mt-2">{% trans "Pagal šį filtrą nieko nerasta" %}</div>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- MANO POZICIJA (jei ne top 100) -->
+{% if my_position and my_position > 100 and my_progress %}
+<div class="s-card mt-3" style="background:#eef1ff;border:2px solid var(--primary);">
+  <h6 class="fw-bold mb-2"><i class="bi bi-person-fill me-1"></i> {% trans "Jūsų pozicija" %}</h6>
+  <div class="d-flex justify-content-between align-items-center">
+    <div>
+      <div class="fw-semibold">{{ request.user.username }}</div>
+      <div class="text-muted small">{{ my_progress.get_level_display }}</div>
+    </div>
+    <div class="text-end">
+      <div class="fw-bold fs-4" style="color:var(--primary);">#{{ my_position }}</div>
+      <div class="text-muted small">{{ my_progress.points }} {% trans "t." %}</div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<style>
+.podium-card {
+  text-align: center;
+  padding: 20px 12px;
+  border-radius: 16px;
+  position: relative;
+  color: #fff;
+  font-weight: 700;
+}
+.podium-card.gold {
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  padding: 32px 12px;
+  box-shadow: 0 10px 25px rgba(245,158,11,0.35);
+}
+.podium-card.silver {
+  background: linear-gradient(135deg, #cbd5e1, #94a3b8);
+  padding: 20px 12px;
+  box-shadow: 0 8px 18px rgba(148,163,184,0.3);
+}
+.podium-card.bronze {
+  background: linear-gradient(135deg, #d97706, #b45309);
+  padding: 16px 12px;
+  box-shadow: 0 8px 18px rgba(180,83,9,0.3);
+}
+.podium-rank {
+  font-size: 14px;
+  opacity: .8;
+  margin-bottom: 4px;
+}
+.podium-icon, .podium-crown {
+  font-size: 36px;
+  margin-bottom: 8px;
+}
+.podium-crown { font-size: 48px; }
+.podium-name {
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+.podium-points {
+  font-size: 20px;
+  font-weight: 800;
+}
+.podium-level {
+  opacity: .85;
+  font-weight: 500;
+}
+.rank-badge {
+  font-size: 22px;
+}
+.rank-number {
+  font-weight: 700;
+  color: var(--text-muted);
+  padding: 4px 10px;
+  background: #f1f5f9;
+  border-radius: 8px;
+  font-size: 13px;
+}
+.table-row-me {
+  background: #eef1ff !important;
+  position: relative;
+}
+.table-row-me td {
+  font-weight: 600;
+}
+</style>
+{% endblock %}

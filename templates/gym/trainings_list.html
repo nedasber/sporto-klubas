@@ -1,46 +1,95 @@
 {% extends "base.html" %}
-{% block title %}Treniruočių grafikas{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Treniruočių grafikas" %}{% endblock %}
 
 {% block content %}
 <div class="page-header">
-  <h2><i class="bi bi-calendar-event me-2" style="color:var(--primary);"></i>Treniruočių grafikas</h2>
-  <p>Peržiūrėkite būsimas treniruotes ir užsiregistruokite</p>
+  <h2><i class="bi bi-calendar-event me-2" style="color:var(--primary);"></i>{% trans "Treniruočių grafikas" %}</h2>
+  <p>{% trans "Peržiūrėkite būsimas treniruotes ir užsiregistruokite" %}</p>
 </div>
+
+<div class="s-card mb-3">
+  <form method="get" class="row g-2 align-items-end">
+    <div class="col-md-3">
+      <label class="form-label small fw-semibold mb-1"><i class="bi bi-search me-1"></i> {% trans "Paieška" %}</label>
+      <input type="text" name="q" class="form-control" placeholder="{% trans 'Ieškoti pagal pavadinimą...' %}" value="{{ search_query }}">
+    </div>
+    <div class="col-md-2">
+      <label class="form-label small fw-semibold mb-1"><i class="bi bi-tag me-1"></i> {% trans "Tipas" %}</label>
+      <select name="type" class="form-select">
+        <option value="">{% trans "Visi" %}</option>
+        {% for val, label in type_choices %}
+          <option value="{{ val }}" {% if type_filter == val %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-2">
+      <label class="form-label small fw-semibold mb-1"><i class="bi bi-calendar3 me-1"></i> {% trans "Diena" %}</label>
+      <input type="date" name="date" class="form-control" value="{{ date_filter }}">
+    </div>
+    <div class="col-md-2">
+      <label class="form-label small fw-semibold mb-1"><i class="bi bi-clock me-1"></i> {% trans "Laikas" %}</label>
+      <select name="time" class="form-select">
+        <option value="">{% trans "Bet kada" %}</option>
+        <option value="morning" {% if time_filter == "morning" %}selected{% endif %}>{% trans "Rytas (06–12)" %}</option>
+        <option value="afternoon" {% if time_filter == "afternoon" %}selected{% endif %}>{% trans "Diena (12–17)" %}</option>
+        <option value="evening" {% if time_filter == "evening" %}selected{% endif %}>{% trans "Vakaras (17–22)" %}</option>
+      </select>
+    </div>
+    <div class="col-md-2">
+      <label class="form-label small fw-semibold mb-1"><i class="bi bi-sort-down me-1"></i> {% trans "Rikiavimas" %}</label>
+      <select name="sort" class="form-select">
+        <option value="asc" {% if sort_order == "asc" %}selected{% endif %}>{% trans "Anksčiausi pirma" %}</option>
+        <option value="desc" {% if sort_order == "desc" %}selected{% endif %}>{% trans "Vėliausi pirma" %}</option>
+      </select>
+    </div>
+    <div class="col-md-1">
+      <button type="submit" class="btn btn-primary w-100" title="{% trans 'Filtruoti' %}"><i class="bi bi-funnel"></i></button>
+    </div>
+    <div class="col-12 d-flex justify-content-between align-items-center mt-2">
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" name="available" value="1" id="onlyAvailable" {% if only_available %}checked{% endif %}>
+        <label class="form-check-label small" for="onlyAvailable">{% trans "Rodyti tik treniruotes su laisvomis vietomis" %}</label>
+      </div>
+      {% if search_query or date_filter or time_filter or type_filter or only_available or sort_order == "desc" %}
+        <a href="/trainings/" class="btn btn-sm btn-outline-secondary"><i class="bi bi-x-lg me-1"></i> {% trans "Išvalyti filtrus" %}</a>
+      {% endif %}
+    </div>
+  </form>
+</div>
+
+{% if search_query or date_filter or time_filter or type_filter or only_available %}
+  <div class="mb-3 small text-muted">
+    <i class="bi bi-funnel-fill me-1"></i>
+    {% trans "Rasta treniruočių:" %} <strong>{{ trainings|length }}</strong>
+  </div>
+{% endif %}
 
 <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4">
   {% for t in trainings %}
     <div class="col">
       <div class="training-card h-100 d-flex flex-column {% if t.is_full %}full{% endif %}">
-
         <div class="image-wrap">
-          {% if t.image_url %}
+          {% if t.image %}
+            <img src="{{ t.image.url }}" class="card-img-top" alt="{{ t.title }}">
+          {% elif t.image_url %}
             <img src="{{ t.image_url }}" class="card-img-top" alt="{{ t.title }}">
           {% else %}
             <div style="height:200px;background:linear-gradient(135deg,#667eea,#764ba2);display:flex;align-items:center;justify-content:center;">
               <i class="bi bi-activity text-white" style="font-size:48px;opacity:.5;"></i>
             </div>
           {% endif %}
-
           {% if t.status == "CANCELLED" %}
-            <div class="overlay">ATŠAUKTA</div>
+            <div class="overlay">{% trans "ATŠAUKTA" %}</div>
           {% elif t.is_full %}
-            <div class="overlay">PILNA</div>
+            <div class="overlay">{% trans "PILNA" %}</div>
           {% endif %}
         </div>
 
         <div class="p-3 flex-grow-1 d-flex flex-column">
           <h6 class="fw-bold mb-2">{{ t.title }}</h6>
-
-          <div class="small text-muted mb-1">
-            <i class="bi bi-clock me-1"></i>
-            {{ t.starts_at|date:"Y-m-d H:i" }} · {{ t.duration_minutes }} min
-          </div>
-
-          <div class="small text-muted mb-2">
-            <i class="bi bi-person me-1"></i>
-            Treneris: {{ t.trainer.username }}
-          </div>
-
+          <div class="small text-muted mb-1"><i class="bi bi-clock me-1"></i> {{ t.starts_at|date:"Y-m-d H:i" }} · {{ t.duration_minutes }} min</div>
+          <div class="small text-muted mb-2"><i class="bi bi-person me-1"></i> {% trans "Treneris" %}: {{ t.trainer.username }}</div>
           {% if t.description %}
             <p class="small text-muted mb-3" style="line-height:1.4;">{{ t.description|truncatewords:20 }}</p>
           {% endif %}
@@ -48,26 +97,26 @@
           <div class="mt-auto">
             <div class="d-flex justify-content-between align-items-center mb-3">
               {% if t.status == "CANCELLED" %}
-                <span class="badge-status badge-cancelled">Atšaukta</span>
+                <span class="badge-status badge-cancelled">{% trans "Atšaukta" %}</span>
               {% elif t.is_full %}
-                <span class="badge-status badge-full">Pilna</span>
+                <span class="badge-status badge-full">{% trans "Pilna" %}</span>
               {% else %}
-                <span class="badge-status badge-active">Liko vietų: {{ t.left_count }}</span>
+                <span class="badge-status badge-active">{% trans "Liko vietų:" %} {{ t.left_count }}</span>
               {% endif %}
               <span class="text-muted small">{{ t.booked_count }}/{{ t.capacity }}</span>
             </div>
 
             {% if t.status == "CANCELLED" %}
-              <button class="btn btn-outline-secondary w-100 btn-sm" disabled>Treniruotė atšaukta</button>
+              <button class="btn btn-outline-secondary w-100 btn-sm" disabled>{% trans "Treniruotė atšaukta" %}</button>
             {% elif t.id in my_booked_ids %}
               <button class="btn btn-outline-secondary w-100 btn-sm" disabled>
-                <i class="bi bi-check-circle me-1"></i> Jau užsiregistravęs
+                <i class="bi bi-check-circle me-1"></i> {% trans "Jau užsiregistravęs" %}
               </button>
             {% elif t.is_full %}
-              <button class="btn btn-outline-danger w-100 btn-sm" disabled>Vietos užimtos</button>
+              <button class="btn btn-outline-danger w-100 btn-sm" disabled>{% trans "Vietos užimtos" %}</button>
             {% else %}
               <a href="/trainings/{{ t.id }}/register/" class="btn btn-primary w-100 btn-sm">
-                <i class="bi bi-plus-circle me-1"></i> Registruotis
+                <i class="bi bi-plus-circle me-1"></i> {% trans "Registruotis" %}
               </a>
             {% endif %}
           </div>
@@ -78,12 +127,14 @@
     <div class="col-12">
       <div class="s-card text-center py-5">
         <i class="bi bi-calendar-x fs-1 text-muted"></i>
-        <div class="text-muted mt-2">Šiuo metu treniruočių nėra</div>
+        {% if search_query or date_filter or time_filter or type_filter or only_available %}
+          <div class="text-muted mt-2">{% trans "Pagal nurodytus filtrus treniruočių nerasta" %}</div>
+          <a href="/trainings/" class="btn btn-outline-secondary btn-sm mt-3"><i class="bi bi-x-lg me-1"></i> {% trans "Išvalyti filtrus" %}</a>
+        {% else %}
+          <div class="text-muted mt-2">{% trans "Šiuo metu treniruočių nėra" %}</div>
+        {% endif %}
       </div>
     </div>
   {% endfor %}
 </div>
-
-{% if trainings and trainings.0.status == "CANCELLED" and trainings.0.cancellation_note %}
-{% endif %}
 {% endblock %}

@@ -1,0 +1,11 @@
+Sveiki, {{ user.username }}!
+
+Ačiū, kad užsiregistravote sporto klube. Norėdami užbaigti registraciją,
+patvirtinkite savo el. pašto adresą paspausdami šią nuorodą:
+
+{{ verify_url }}
+
+Jei tai ne jūs užsiregistravote, ignoruokite šį laišką.
+
+---
+Sporto klubas

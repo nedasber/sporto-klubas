@@ -4,7 +4,7 @@ from django.utils import timezone
 
 
 class UserProgress(models.Model):
-    """Saugo vartotojo bendrą pažangą – taškus ir dabartinį lygį."""
+    """Saugo vartotojo bendrą pažangą – taškus, lygį ir streak'us."""
 
     LEVEL_CHOICES = (
         (1, "Pradedantysis"),
@@ -30,6 +30,21 @@ class UserProgress(models.Model):
     )
     points = models.PositiveIntegerField(default=0)
     level = models.PositiveIntegerField(choices=LEVEL_CHOICES, default=1)
+
+    # Streak'ai
+    current_streak = models.PositiveIntegerField(
+        default=0,
+        help_text="Dabartinis dienų iš eilės streak'as (paskutinė dalyvavimo data + sekančios dienos)"
+    )
+    longest_streak = models.PositiveIntegerField(
+        default=0,
+        help_text="Ilgiausias streak'as kada nors pasiektas"
+    )
+    last_attendance_date = models.DateField(
+        null=True, blank=True,
+        help_text="Paskutinė data, kai dalyvavo treniruotėje"
+    )
+
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
@@ -64,6 +79,45 @@ class UserProgress(models.Model):
         if self.level >= 5:
             return 0
         return self.LEVEL_THRESHOLDS[self.level + 1] - self.points
+
+    def update_streak(self, attendance_date=None):
+        """
+        Atnaujina streak'ą po dalyvavimo treniruotėje.
+        - Jei dalyvavo šiandien arba vakar po paskutinio karto – streak'as tęsiasi (+1)
+        - Jei tarpas > 1 d. – streak'as resetinasi į 1
+        - Jei dalyvavo tą pačią dieną du kartus – streak'as nesikeičia
+        """
+        if attendance_date is None:
+            attendance_date = timezone.now().date()
+
+        if self.last_attendance_date is None:
+            # Pirmas dalyvavimas
+            self.current_streak = 1
+        elif attendance_date == self.last_attendance_date:
+            # Tą pačią dieną – nieko nedarom
+            return
+        else:
+            days_gap = (attendance_date - self.last_attendance_date).days
+            if days_gap == 1:
+                # Sekanti diena – streak'as tęsiasi
+                self.current_streak += 1
+            else:
+                # Praleido dieną – streak'as nulinis ir prasideda nuo 1
+                self.current_streak = 1
+
+        # Atnaujinam ilgiausią
+        if self.current_streak > self.longest_streak:
+            self.longest_streak = self.current_streak
+
+        self.last_attendance_date = attendance_date
+        self.save(update_fields=["current_streak", "longest_streak", "last_attendance_date", "updated_at"])
+
+    def is_active_member(self):
+        """Aktyvus narys – dalyvavo bent kartą per pastarąsias 30 d."""
+        if not self.last_attendance_date:
+            return False
+        days_since = (timezone.now().date() - self.last_attendance_date).days
+        return days_since <= 30
 
 
 class Achievement(models.Model):
