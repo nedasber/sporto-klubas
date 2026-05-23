@@ -1,0 +1,68 @@
+{% extends "manage/base.html" %}
+
+{% block manage_title %}Pirkimai{% endblock %}
+
+{% block manage_content %}
+<div class="page-header">
+  <h2><i class="bi bi-cart-check me-2" style="color:var(--primary);"></i>Pirkimai</h2>
+  <p>Abonementų pirkimo istorija</p>
+</div>
+
+<form method="get" class="s-card mb-3 py-3">
+  <div class="row g-2 align-items-end">
+    <div class="col-md-10">
+      <label class="form-label small mb-1 text-muted">Statusas</label>
+      <select name="status" class="form-select form-select-sm">
+        <option value="">Visi</option>
+        <option value="PENDING" {% if status == "PENDING" %}selected{% endif %}>Laukia apmokėjimo</option>
+        <option value="PAID" {% if status == "PAID" %}selected{% endif %}>Apmokėta</option>
+        <option value="REJECTED" {% if status == "REJECTED" %}selected{% endif %}>Atmesta</option>
+      </select>
+    </div>
+    <div class="col-md-2">
+      <button class="btn btn-primary btn-sm w-100" type="submit">
+        <i class="bi bi-funnel me-1"></i> Filtruoti
+      </button>
+    </div>
+  </div>
+</form>
+
+<div class="manage-table">
+  <table>
+    <thead>
+      <tr>
+        <th>Vartotojas</th>
+        <th>Planas</th>
+        <th>Pilnas vardas</th>
+        <th>Kaina</th>
+        <th>Statusas</th>
+        <th>Sukurta</th>
+        <th>Apmokėta</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for p in purchases %}
+        <tr>
+          <td><strong>{{ p.user.username }}</strong></td>
+          <td>{{ p.plan.name }}</td>
+          <td class="small text-muted">{{ p.full_name|default:"—" }}</td>
+          <td><strong>{{ p.plan.price }} €</strong></td>
+          <td>
+            {% if p.status == "PAID" %}
+              <span class="badge bg-success">Apmokėta</span>
+            {% elif p.status == "PENDING" %}
+              <span class="badge bg-warning text-dark">Laukia</span>
+            {% else %}
+              <span class="badge bg-danger">Atmesta</span>
+            {% endif %}
+          </td>
+          <td class="small text-muted">{{ p.created_at|date:"Y-m-d H:i" }}</td>
+          <td class="small text-muted">{{ p.paid_at|date:"Y-m-d H:i"|default:"—" }}</td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="7" class="text-center text-muted py-4">Pirkimų nėra</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

@@ -10,7 +10,10 @@ from accounts.forms import LoginForm
 urlpatterns = [
     path("", RedirectView.as_view(url="/login/", permanent=False)),
 
-    path("admin/", admin.site.urls),
+    # Django integruotas admin (paliktas backup'ui)
+    path("django-admin/", admin.site.urls),
+    # Mūsų administracinė panelė
+    path("manage/", include("manage_panel.urls")),
 
     # Auth
     path(

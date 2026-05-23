@@ -1,0 +1,76 @@
+{% extends "manage/base.html" %}
+
+{% block manage_title %}Treniruotės{% endblock %}
+
+{% block manage_content %}
+<div class="page-header">
+  <h2><i class="bi bi-calendar-event me-2" style="color:var(--primary);"></i>Treniruotės</h2>
+  <p>Visų sistemos treniruočių sąrašas</p>
+</div>
+
+<form method="get" class="s-card mb-3 py-3">
+  <div class="row g-2 align-items-end">
+    <div class="col-md-7">
+      <label class="form-label small mb-1 text-muted">Paieška pagal pavadinimą</label>
+      <input type="text" name="q" value="{{ q }}" class="form-control form-control-sm">
+    </div>
+    <div class="col-md-3">
+      <label class="form-label small mb-1 text-muted">Statusas</label>
+      <select name="status" class="form-select form-select-sm">
+        <option value="">Visi</option>
+        <option value="SCHEDULED" {% if status == "SCHEDULED" %}selected{% endif %}>Planuojama</option>
+        <option value="CANCELLED" {% if status == "CANCELLED" %}selected{% endif %}>Atšaukta</option>
+      </select>
+    </div>
+    <div class="col-md-2">
+      <button class="btn btn-primary btn-sm w-100" type="submit">
+        <i class="bi bi-funnel me-1"></i> Filtruoti
+      </button>
+    </div>
+  </div>
+</form>
+
+<div class="manage-table">
+  <table>
+    <thead>
+      <tr>
+        <th>Treniruotė</th>
+        <th>Treneris</th>
+        <th>Data ir laikas</th>
+        <th>Trukmė</th>
+        <th>Talpa</th>
+        <th>Statusas</th>
+        <th>Veiksmai</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for t in trainings %}
+        <tr>
+          <td><strong>{{ t.title }}</strong></td>
+          <td>{{ t.trainer.username }}</td>
+          <td>
+            <div>{{ t.starts_at|date:"Y-m-d" }}</div>
+            <div class="small text-muted">{{ t.starts_at|date:"H:i" }}</div>
+          </td>
+          <td class="small text-muted">{{ t.duration_minutes }} min</td>
+          <td class="small">{{ t.reservations.count }}/{{ t.capacity }}</td>
+          <td>
+            {% if t.status == "SCHEDULED" %}
+              <span class="badge bg-success">Planuojama</span>
+            {% else %}
+              <span class="badge bg-danger">Atšaukta</span>
+            {% endif %}
+          </td>
+          <td>
+            <a href="/manage/trainings/{{ t.id }}/delete/" class="btn btn-sm btn-outline-danger">
+              <i class="bi bi-trash"></i>
+            </a>
+          </td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="7" class="text-center text-muted py-4">Treniruočių nėra</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

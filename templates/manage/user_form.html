@@ -1,0 +1,97 @@
+{% extends "manage/base.html" %}
+
+{% block manage_title %}{% if is_edit %}Redaguoti vartotoją{% else %}Naujas vartotojas{% endif %}{% endblock %}
+
+{% block manage_content %}
+<div class="page-header">
+  <h2>
+    <i class="bi {% if is_edit %}bi-pencil-square{% else %}bi-person-plus{% endif %} me-2" style="color:var(--primary);"></i>
+    {% if is_edit %}Redaguoti vartotoją: {{ user_obj.username }}{% else %}Naujas vartotojas{% endif %}
+  </h2>
+</div>
+
+<form method="post" class="s-card">
+  {% csrf_token %}
+
+  <div class="row g-3">
+    <div class="col-md-6">
+      <label class="form-label">Vartotojo vardas <span class="text-danger">*</span></label>
+      {% if is_edit %}
+        <input type="text" class="form-control" value="{{ user_obj.username }}" disabled>
+        <div class="form-text small">Vartotojo vardo keisti negalima.</div>
+      {% else %}
+        <input type="text" name="username" class="form-control" required>
+      {% endif %}
+    </div>
+
+    <div class="col-md-6">
+      <label class="form-label">El. paštas</label>
+      <input type="email" name="email" class="form-control" value="{{ user_obj.email|default:'' }}">
+    </div>
+
+    {% if is_edit %}
+      <div class="col-md-6">
+        <label class="form-label">Vardas</label>
+        <input type="text" name="first_name" class="form-control" value="{{ user_obj.first_name|default:'' }}">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Pavardė</label>
+        <input type="text" name="last_name" class="form-control" value="{{ user_obj.last_name|default:'' }}">
+      </div>
+    {% endif %}
+
+    <div class="col-md-6">
+      <label class="form-label">Slaptažodis {% if not is_edit %}<span class="text-danger">*</span>{% endif %}</label>
+      <input type="password" name="password" class="form-control" {% if not is_edit %}required{% endif %} minlength="8">
+      <div class="form-text small">
+        {% if is_edit %}Palikite tuščią, jei nenorite keisti.{% else %}Bent 8 simboliai.{% endif %}
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <label class="form-label">Rolė <span class="text-danger">*</span></label>
+      <select name="role" class="form-select">
+        <option value="CLIENT" {% if profile.role == "CLIENT" or not is_edit %}selected{% endif %}>Klientas</option>
+        <option value="TRAINER" {% if profile.role == "TRAINER" %}selected{% endif %}>Treneris</option>
+      </select>
+    </div>
+
+    <div class="col-12">
+      <hr>
+      <h6 class="mb-3">Papildomi nustatymai</h6>
+    </div>
+
+    {% if is_edit %}
+      <div class="col-md-4">
+        <div class="form-check form-switch">
+          <input type="checkbox" name="is_active" class="form-check-input" id="isActive" {% if user_obj.is_active %}checked{% endif %}>
+          <label class="form-check-label" for="isActive">Aktyvi paskyra</label>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="form-check form-switch">
+          <input type="checkbox" name="email_verified" class="form-check-input" id="emailVerified" {% if profile.email_verified %}checked{% endif %}>
+          <label class="form-check-label" for="emailVerified">El. paštas patvirtintas</label>
+        </div>
+      </div>
+    {% endif %}
+
+    <div class="col-md-4">
+      <div class="form-check form-switch">
+        <input type="checkbox" name="is_staff" class="form-check-input" id="isStaff" {% if user_obj.is_staff %}checked{% endif %}>
+        <label class="form-check-label" for="isStaff">Administratorius</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-4 d-flex gap-2">
+    <button type="submit" class="btn btn-primary">
+      <i class="bi bi-check-lg me-1"></i> {% if is_edit %}Atnaujinti{% else %}Sukurti{% endif %}
+    </button>
+    <a href="/manage/users/" class="btn btn-outline-secondary">
+      <i class="bi bi-arrow-left me-1"></i> Atgal
+    </a>
+  </div>
+</form>
+{% endblock %}

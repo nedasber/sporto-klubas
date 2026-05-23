@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     "accounts.apps.AccountsConfig",
     "gym.apps.GymConfig",
     "gamification.apps.GamificationConfig",
+    "manage_panel.apps.ManagePanelConfig",
 ]
 
 MIDDLEWARE = [

@@ -1,0 +1,54 @@
+{% extends "manage/base.html" %}
+
+{% block manage_title %}El. laiškų žurnalas{% endblock %}
+
+{% block manage_content %}
+<div class="page-header">
+  <h2><i class="bi bi-envelope-paper me-2" style="color:var(--primary);"></i>El. laiškų žurnalas</h2>
+  <p>Paskutiniai 200 sistemos išsiųstų pranešimų</p>
+</div>
+
+<form method="get" class="s-card mb-3 py-3">
+  <div class="row g-2 align-items-end">
+    <div class="col-md-10">
+      <label class="form-label small mb-1 text-muted">Tipas</label>
+      <select name="kind" class="form-select form-select-sm">
+        <option value="">Visi</option>
+        {% for code, label in kinds %}
+          <option value="{{ code }}" {% if kind == code %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-2">
+      <button class="btn btn-primary btn-sm w-100" type="submit">
+        <i class="bi bi-funnel me-1"></i> Filtruoti
+      </button>
+    </div>
+  </div>
+</form>
+
+<div class="manage-table">
+  <table>
+    <thead>
+      <tr>
+        <th>Vartotojas</th>
+        <th>Laiško tipas</th>
+        <th>Susijęs objektas</th>
+        <th>Išsiųsta</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for l in logs %}
+        <tr>
+          <td><strong>{{ l.user.username }}</strong></td>
+          <td>{{ l.get_kind_display }}</td>
+          <td class="small text-muted">#{{ l.object_id }}</td>
+          <td class="small text-muted">{{ l.sent_at|date:"Y-m-d H:i" }}</td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="4" class="text-center text-muted py-4">Įrašų nėra</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

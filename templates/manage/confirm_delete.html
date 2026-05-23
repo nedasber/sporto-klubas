@@ -1,0 +1,32 @@
+{% extends "manage/base.html" %}
+
+{% block manage_title %}Patvirtinti ištrynimą{% endblock %}
+
+{% block manage_content %}
+<div class="page-header">
+  <h2><i class="bi bi-exclamation-triangle me-2" style="color:#dc2626;"></i>Patvirtinti ištrynimą</h2>
+</div>
+
+<div class="s-card">
+  <p>Ar tikrai norite ištrinti šį įrašą?</p>
+
+  <div class="alert alert-danger py-2 small">
+    <i class="bi bi-info-circle me-1"></i>
+    <strong>{{ object_name }}</strong>
+  </div>
+
+  <p class="small text-muted">
+    Šis veiksmas yra <strong>negrįžtamas</strong>. Susiję įrašai (rezervacijos, narystės ir kt.) gali būti ištrinti kartu.
+  </p>
+
+  <form method="post" class="d-flex gap-2 mt-3">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">
+      <i class="bi bi-trash me-1"></i> Taip, ištrinti
+    </button>
+    <a href="{{ back_url }}" class="btn btn-outline-secondary">
+      <i class="bi bi-x me-1"></i> Atšaukti
+    </a>
+  </form>
+</div>
+{% endblock %}

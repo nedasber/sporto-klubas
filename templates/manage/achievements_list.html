@@ -1,0 +1,53 @@
+{% extends "manage/base.html" %}
+
+{% block manage_title %}Pasiekimai{% endblock %}
+
+{% block manage_content %}
+<div class="page-header d-flex justify-content-between align-items-start">
+  <div>
+    <h2><i class="bi bi-trophy me-2" style="color:var(--primary);"></i>Pasiekimai</h2>
+    <p>Motyvacinės sistemos ženkleliai</p>
+  </div>
+  <a href="/manage/achievements/create/" class="btn btn-primary">
+    <i class="bi bi-plus-lg me-1"></i> Naujas pasiekimas
+  </a>
+</div>
+
+<div class="manage-table">
+  <table>
+    <thead>
+      <tr>
+        <th>Piktograma</th>
+        <th>Kodas</th>
+        <th>Pavadinimas</th>
+        <th>Aprašymas</th>
+        <th>Taškai</th>
+        <th>Veiksmai</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for a in achievements %}
+        <tr>
+          <td><i class="bi bi-{{ a.icon }}" style="font-size:24px;color:var(--primary);"></i></td>
+          <td><code class="small">{{ a.code }}</code></td>
+          <td><strong>{{ a.name }}</strong></td>
+          <td class="small text-muted">{{ a.description }}</td>
+          <td><strong>+{{ a.points_reward }} t.</strong></td>
+          <td>
+            <div class="d-flex gap-1">
+              <a href="/manage/achievements/{{ a.id }}/edit/" class="btn btn-sm btn-outline-primary">
+                <i class="bi bi-pencil"></i>
+              </a>
+              <a href="/manage/achievements/{{ a.id }}/delete/" class="btn btn-sm btn-outline-danger">
+                <i class="bi bi-trash"></i>
+              </a>
+            </div>
+          </td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="6" class="text-center text-muted py-4">Pasiekimų nėra</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

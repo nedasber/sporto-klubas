@@ -1,0 +1,160 @@
+{% extends "manage/base.html" %}
+
+{% block manage_title %}Skydelis{% endblock %}
+
+{% block manage_content %}
+<div class="page-header">
+  <h2><i class="bi bi-grid-1x2 me-2" style="color:var(--primary);"></i>Administratoriaus skydelis</h2>
+  <p>Sistemos statistika ir greita prieiga</p>
+</div>
+
+<!-- STATISTIKA -->
+<div class="row g-3 mb-4">
+  <!-- Vartotojai -->
+  <div class="col-md-3 col-6">
+    <div class="manage-stat-card">
+      <i class="bi bi-people stat-icon" style="color:var(--primary);"></i>
+      <div class="stat-label">Vartotojai</div>
+      <div class="stat-value">{{ stats.total_users }}</div>
+      <div class="small text-muted mt-1">
+        {{ stats.clients }} klientai, {{ stats.trainers }} treneriai
+      </div>
+    </div>
+  </div>
+
+  <!-- Naujų per 30 d. -->
+  <div class="col-md-3 col-6">
+    <div class="manage-stat-card">
+      <i class="bi bi-person-plus stat-icon" style="color:#16a34a;"></i>
+      <div class="stat-label">Naujų per 30 d.</div>
+      <div class="stat-value">{{ stats.new_users_30d }}</div>
+      <div class="small text-muted mt-1">vartotojų registracijų</div>
+    </div>
+  </div>
+
+  <!-- Treniruotės -->
+  <div class="col-md-3 col-6">
+    <div class="manage-stat-card">
+      <i class="bi bi-calendar-event stat-icon" style="color:#f59e0b;"></i>
+      <div class="stat-label">Treniruotės</div>
+      <div class="stat-value">{{ stats.total_trainings }}</div>
+      <div class="small text-muted mt-1">
+        {{ stats.upcoming_trainings }} būsimos, {{ stats.cancelled_trainings }} atšauktos
+      </div>
+    </div>
+  </div>
+
+  <!-- Aktyvios narystės -->
+  <div class="col-md-3 col-6">
+    <div class="manage-stat-card">
+      <i class="bi bi-credit-card stat-icon" style="color:#dc2626;"></i>
+      <div class="stat-label">Aktyvios narystės</div>
+      <div class="stat-value">{{ stats.active_memberships }}</div>
+      <div class="small text-muted mt-1">{{ stats.expired_memberships }} pasibaigusios</div>
+    </div>
+  </div>
+
+  <!-- Rezervacijos -->
+  <div class="col-md-3 col-6">
+    <div class="manage-stat-card">
+      <i class="bi bi-bookmark-check stat-icon" style="color:var(--primary);"></i>
+      <div class="stat-label">Rezervacijos</div>
+      <div class="stat-value">{{ stats.total_reservations }}</div>
+      <div class="small text-muted mt-1">{{ stats.active_reservations }} aktyvios</div>
+    </div>
+  </div>
+
+  <!-- Pajamos -->
+  <div class="col-md-3 col-6">
+    <div class="manage-stat-card">
+      <i class="bi bi-cash-stack stat-icon" style="color:#16a34a;"></i>
+      <div class="stat-label">Bendros pajamos</div>
+      <div class="stat-value">{{ stats.total_revenue|floatformat:2 }} €</div>
+      <div class="small text-muted mt-1">iš sėkmingų pirkimų</div>
+    </div>
+  </div>
+
+  <!-- Pirkimai per 30 d. -->
+  <div class="col-md-3 col-6">
+    <div class="manage-stat-card">
+      <i class="bi bi-cart-check stat-icon" style="color:#f59e0b;"></i>
+      <div class="stat-label">Pirkimai (30 d.)</div>
+      <div class="stat-value">{{ stats.purchases_30d }}</div>
+      <div class="small text-muted mt-1">apmokėtos narystės</div>
+    </div>
+  </div>
+
+  <!-- Šios dienos treniruotės -->
+  <div class="col-md-3 col-6">
+    <div class="manage-stat-card">
+      <i class="bi bi-clock stat-icon" style="color:#dc2626;"></i>
+      <div class="stat-label">Šiandien treniruočių</div>
+      <div class="stat-value">{{ today_trainings|length }}</div>
+      <div class="small text-muted mt-1">planuotos šiandien</div>
+    </div>
+  </div>
+</div>
+
+<!-- DVI LENTELĖS GRETIMAI -->
+<div class="row g-3">
+  <!-- Naujausi vartotojai -->
+  <div class="col-md-6">
+    <div class="manage-table">
+      <div class="px-3 py-2 d-flex align-items-center justify-content-between" style="background:#f8fafc;border-bottom:1px solid var(--border);">
+        <h6 class="m-0 fw-bold"><i class="bi bi-people me-1"></i> Naujausi vartotojai</h6>
+        <a href="/manage/users/" class="small text-decoration-none">Visi →</a>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Vartotojas</th>
+            <th>El. paštas</th>
+            <th>Užsiregistravo</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for u in recent_users %}
+            <tr>
+              <td><strong>{{ u.username }}</strong></td>
+              <td class="text-muted small">{{ u.email|default:"—" }}</td>
+              <td class="text-muted small">{{ u.date_joined|date:"Y-m-d" }}</td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="3" class="text-center text-muted py-3">Vartotojų nėra</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Šios dienos treniruotės -->
+  <div class="col-md-6">
+    <div class="manage-table">
+      <div class="px-3 py-2 d-flex align-items-center justify-content-between" style="background:#f8fafc;border-bottom:1px solid var(--border);">
+        <h6 class="m-0 fw-bold"><i class="bi bi-calendar-day me-1"></i> Šios dienos treniruotės</h6>
+        <a href="/manage/trainings/" class="small text-decoration-none">Visos →</a>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Treniruotė</th>
+            <th>Laikas</th>
+            <th>Treneris</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for t in today_trainings %}
+            <tr>
+              <td><strong>{{ t.title }}</strong></td>
+              <td class="text-muted small">{{ t.starts_at|date:"H:i" }}</td>
+              <td class="text-muted small">{{ t.trainer.username }}</td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="3" class="text-center text-muted py-3">Šiandien treniruočių nėra</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

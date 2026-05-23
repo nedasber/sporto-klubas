@@ -1,0 +1,48 @@
+{% extends "manage/base.html" %}
+
+{% block manage_title %}{% if is_edit %}Redaguoti planą{% else %}Naujas planas{% endif %}{% endblock %}
+
+{% block manage_content %}
+<div class="page-header">
+  <h2>
+    <i class="bi {% if is_edit %}bi-pencil-square{% else %}bi-plus-circle{% endif %} me-2" style="color:var(--primary);"></i>
+    {% if is_edit %}Redaguoti planą: {{ plan.name }}{% else %}Naujas abonemento planas{% endif %}
+  </h2>
+</div>
+
+<form method="post" class="s-card">
+  {% csrf_token %}
+
+  <div class="row g-3">
+    <div class="col-12">
+      <label class="form-label">Pavadinimas <span class="text-danger">*</span></label>
+      <input type="text" name="name" class="form-control" required value="{{ plan.name|default:'' }}">
+    </div>
+
+    <div class="col-md-4">
+      <label class="form-label">Galiojimo trukmė (dienomis) <span class="text-danger">*</span></label>
+      <input type="number" name="duration_days" class="form-control" min="1" required value="{{ plan.duration_days|default:30 }}">
+    </div>
+
+    <div class="col-md-4">
+      <label class="form-label">Apsilankymų limitas</label>
+      <input type="number" name="visit_limit" class="form-control" min="0" value="{{ plan.visit_limit|default:'' }}">
+      <div class="form-text small">Palikite tuščią arba 0 = neribotas.</div>
+    </div>
+
+    <div class="col-md-4">
+      <label class="form-label">Kaina (€) <span class="text-danger">*</span></label>
+      <input type="number" name="price" class="form-control" min="0" step="0.01" required value="{{ plan.price|default:0 }}">
+    </div>
+  </div>
+
+  <div class="mt-4 d-flex gap-2">
+    <button type="submit" class="btn btn-primary">
+      <i class="bi bi-check-lg me-1"></i> {% if is_edit %}Atnaujinti{% else %}Sukurti{% endif %}
+    </button>
+    <a href="/manage/plans/" class="btn btn-outline-secondary">
+      <i class="bi bi-arrow-left me-1"></i> Atgal
+    </a>
+  </div>
+</form>
+{% endblock %}

@@ -1,0 +1,97 @@
+{% extends "manage/base.html" %}
+
+{% block manage_title %}Vartotojai{% endblock %}
+
+{% block manage_content %}
+<div class="page-header d-flex justify-content-between align-items-start">
+  <div>
+    <h2><i class="bi bi-people me-2" style="color:var(--primary);"></i>Vartotojai</h2>
+    <p>Sistemos vartotojų valdymas</p>
+  </div>
+  <a href="/manage/users/create/" class="btn btn-primary">
+    <i class="bi bi-plus-lg me-1"></i> Naujas vartotojas
+  </a>
+</div>
+
+<!-- FILTRAI -->
+<form method="get" class="s-card mb-3 py-3">
+  <div class="row g-2 align-items-end">
+    <div class="col-md-7">
+      <label class="form-label small mb-1 text-muted">Paieška</label>
+      <input type="text" name="q" value="{{ q }}" class="form-control form-control-sm" placeholder="Vardas, el. paštas...">
+    </div>
+    <div class="col-md-3">
+      <label class="form-label small mb-1 text-muted">Rolė</label>
+      <select name="role" class="form-select form-select-sm">
+        <option value="">Visi</option>
+        <option value="CLIENT" {% if role == "CLIENT" %}selected{% endif %}>Klientai</option>
+        <option value="TRAINER" {% if role == "TRAINER" %}selected{% endif %}>Treneriai</option>
+        <option value="STAFF" {% if role == "STAFF" %}selected{% endif %}>Administratoriai</option>
+      </select>
+    </div>
+    <div class="col-md-2">
+      <button class="btn btn-primary btn-sm w-100" type="submit">
+        <i class="bi bi-funnel me-1"></i> Filtruoti
+      </button>
+    </div>
+  </div>
+</form>
+
+<!-- LENTELĖ -->
+<div class="manage-table">
+  <table>
+    <thead>
+      <tr>
+        <th>Vartotojo vardas</th>
+        <th>El. paštas</th>
+        <th>Rolė</th>
+        <th>Statusas</th>
+        <th>Registracija</th>
+        <th>Veiksmai</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for u in users %}
+        <tr>
+          <td>
+            <strong>{{ u.username }}</strong>
+            {% if u.is_staff %}<span class="badge bg-danger ms-1" style="font-size:10px;">ADMIN</span>{% endif %}
+          </td>
+          <td class="text-muted small">{{ u.email|default:"—" }}</td>
+          <td>
+            {% if u.profile.role == "TRAINER" %}
+              <span class="badge bg-warning text-dark">Treneris</span>
+            {% else %}
+              <span class="badge bg-info text-white">Klientas</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if u.is_active %}
+              <span class="badge bg-success">Aktyvus</span>
+            {% else %}
+              <span class="badge bg-secondary">Neaktyvus</span>
+            {% endif %}
+          </td>
+          <td class="text-muted small">{{ u.date_joined|date:"Y-m-d" }}</td>
+          <td>
+            <div class="d-flex gap-1">
+              <a href="/manage/users/{{ u.id }}/edit/" class="btn btn-sm btn-outline-primary">
+                <i class="bi bi-pencil"></i>
+              </a>
+              {% if u != request.user %}
+                <a href="/manage/users/{{ u.id }}/delete/" class="btn btn-sm btn-outline-danger">
+                  <i class="bi bi-trash"></i>
+                </a>
+              {% endif %}
+            </div>
+          </td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="6" class="text-center text-muted py-4">Vartotojų nėra</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div class="mt-2 small text-muted">Iš viso: {{ users|length }} vartotojai</div>
+{% endblock %}

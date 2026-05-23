@@ -1061,8 +1061,8 @@ html.a11y-strong-focus *:focus-visible {
         </a>
       {% endif %}
 
-      {% if request.user.is_superuser %}
-        <a href="/admin/" class="sidebar-link">
+      {% if request.user.is_staff %}
+        <a href="/manage/" class="sidebar-link {% if '/manage' in request.path %}active{% endif %}">
           <i class="bi bi-shield-lock"></i> {% trans "Administravimas" %}
         </a>
       {% endif %}

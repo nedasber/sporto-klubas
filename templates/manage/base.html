@@ -1,0 +1,211 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% block manage_title %}Administracija{% endblock %} – Sporto klubas{% endblock %}
+
+{% block content %}
+<div class="manage-layout">
+  <!-- ADMIN SIDEBAR -->
+  <aside class="manage-sidebar">
+    <div class="manage-sidebar-header">
+      <i class="bi bi-shield-lock"></i>
+      <span>Administracija</span>
+    </div>
+    <nav class="manage-nav">
+      <a href="/manage/" class="manage-nav-item {% if section == 'dashboard' %}active{% endif %}">
+        <i class="bi bi-grid-1x2"></i> Skydelis
+      </a>
+      <a href="/manage/users/" class="manage-nav-item {% if section == 'users' %}active{% endif %}">
+        <i class="bi bi-people"></i> Vartotojai
+      </a>
+      <a href="/manage/trainings/" class="manage-nav-item {% if section == 'trainings' %}active{% endif %}">
+        <i class="bi bi-calendar-event"></i> Treniruotės
+      </a>
+      <a href="/manage/plans/" class="manage-nav-item {% if section == 'plans' %}active{% endif %}">
+        <i class="bi bi-card-checklist"></i> Abonementų planai
+      </a>
+      <a href="/manage/memberships/" class="manage-nav-item {% if section == 'memberships' %}active{% endif %}">
+        <i class="bi bi-credit-card"></i> Narystės
+      </a>
+      <a href="/manage/purchases/" class="manage-nav-item {% if section == 'purchases' %}active{% endif %}">
+        <i class="bi bi-cart-check"></i> Pirkimai
+      </a>
+      <a href="/manage/achievements/" class="manage-nav-item {% if section == 'achievements' %}active{% endif %}">
+        <i class="bi bi-trophy"></i> Pasiekimai
+      </a>
+      <a href="/manage/email-log/" class="manage-nav-item {% if section == 'email_log' %}active{% endif %}">
+        <i class="bi bi-envelope-paper"></i> El. laiškai
+      </a>
+      <div class="manage-nav-divider"></div>
+      <a href="/dashboard/" class="manage-nav-item">
+        <i class="bi bi-house"></i> Į svetainę
+      </a>
+      <a href="/logout/" class="manage-nav-item text-danger">
+        <i class="bi bi-box-arrow-right"></i> Atsijungti
+      </a>
+    </nav>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <div class="manage-main">
+    {% block manage_content %}{% endblock %}
+  </div>
+</div>
+
+<style>
+.manage-layout {
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  gap: 20px;
+  margin: -20px -20px 0 -20px;
+  min-height: calc(100vh - 70px);
+}
+.manage-sidebar {
+  background: var(--card, #fff);
+  border-right: 1px solid var(--border, #e2e8f0);
+  padding: 20px 0;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+.manage-sidebar-header {
+  padding: 0 20px 18px 20px;
+  border-bottom: 1px solid var(--border, #e2e8f0);
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--primary, #4361ee);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.manage-sidebar-header i {
+  font-size: 20px;
+}
+.manage-nav {
+  padding: 12px 0;
+}
+.manage-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 20px;
+  color: var(--text, #1e293b);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 14px;
+  transition: all .15s;
+  border-left: 3px solid transparent;
+}
+.manage-nav-item:hover {
+  background: var(--primary-light, #eef1ff);
+  color: var(--primary, #4361ee);
+}
+.manage-nav-item.active {
+  background: var(--primary-light, #eef1ff);
+  color: var(--primary, #4361ee);
+  border-left-color: var(--primary, #4361ee);
+  font-weight: 700;
+}
+.manage-nav-item i {
+  width: 20px;
+  text-align: center;
+}
+.manage-nav-divider {
+  height: 1px;
+  background: var(--border, #e2e8f0);
+  margin: 12px 20px;
+}
+.manage-main {
+  padding: 20px 30px;
+}
+
+/* MANAGE TABLES */
+.manage-table {
+  background: var(--card, #fff);
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--border, #e2e8f0);
+}
+.manage-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.manage-table thead th {
+  background: #f8fafc;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  color: var(--text-muted, #64748b);
+  font-weight: 700;
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid var(--border, #e2e8f0);
+}
+.manage-table tbody td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 14px;
+}
+.manage-table tbody tr:hover {
+  background: #f8fafc;
+}
+.manage-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* MANAGE CARDS */
+.manage-stat-card {
+  background: var(--card, #fff);
+  border-radius: 12px;
+  padding: 18px 20px;
+  border: 1px solid var(--border, #e2e8f0);
+}
+.manage-stat-card .stat-label {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  color: var(--text-muted, #64748b);
+  font-weight: 600;
+}
+.manage-stat-card .stat-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text, #1e293b);
+  margin-top: 4px;
+}
+.manage-stat-card .stat-icon {
+  float: right;
+  font-size: 32px;
+  opacity: .25;
+}
+
+/* MOBILUS */
+@media (max-width: 768px) {
+  .manage-layout {
+    grid-template-columns: 1fr;
+  }
+  .manage-sidebar {
+    position: static;
+    height: auto;
+  }
+}
+
+/* High contrast */
+html.a11y-high-contrast .manage-sidebar,
+html.a11y-high-contrast .manage-table,
+html.a11y-high-contrast .manage-stat-card {
+  background: #1a1a1a !important;
+  border-color: #fff !important;
+  color: #fff !important;
+}
+html.a11y-high-contrast .manage-nav-item {
+  color: #fff !important;
+}
+html.a11y-high-contrast .manage-nav-item:hover,
+html.a11y-high-contrast .manage-nav-item.active {
+  background: #333 !important;
+  color: #ffeb3b !important;
+}
+</style>
+{% endblock %}
