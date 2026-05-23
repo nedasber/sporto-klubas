@@ -14,7 +14,6 @@ class UserProgress(models.Model):
         (5, "Legenda"),
     )
 
-    # Taškų ribos kiekvienam lygiui
     LEVEL_THRESHOLDS = {
         1: 0,
         2: 100,
@@ -27,37 +26,40 @@ class UserProgress(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="progress",
+        verbose_name="Vartotojas"
     )
-    points = models.PositiveIntegerField(default=0)
-    level = models.PositiveIntegerField(choices=LEVEL_CHOICES, default=1)
+    points = models.PositiveIntegerField(default=0, verbose_name="Taškai")
+    level = models.PositiveIntegerField(choices=LEVEL_CHOICES, default=1, verbose_name="Lygis")
 
-    # Streak'ai
     current_streak = models.PositiveIntegerField(
         default=0,
-        help_text="Dabartinis dienų iš eilės streak'as (paskutinė dalyvavimo data + sekančios dienos)"
+        verbose_name="Dabartinis streak'as",
+        help_text="Dabartinis dienų iš eilės skaičius"
     )
     longest_streak = models.PositiveIntegerField(
         default=0,
-        help_text="Ilgiausias streak'as kada nors pasiektas"
+        verbose_name="Ilgiausias streak'as"
     )
     last_attendance_date = models.DateField(
         null=True, blank=True,
-        help_text="Paskutinė data, kai dalyvavo treniruotėje"
+        verbose_name="Paskutinis dalyvavimas"
     )
 
-    updated_at = models.DateTimeField(auto_now=True)
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Atnaujinta")
+
+    class Meta:
+        verbose_name = "Vartotojo pažanga"
+        verbose_name_plural = "Vartotojų pažanga"
 
     def __str__(self):
         return f"{self.user.username} – {self.get_level_display()} ({self.points} t.)"
 
     def add_points(self, amount: int):
-        """Prideda taškų ir, jei reikia, atnaujina lygį."""
         self.points += amount
         self.update_level()
         self.save()
 
     def update_level(self):
-        """Atnaujina vartotojo lygį pagal sukauptus taškus."""
         new_level = 1
         for level, threshold in self.LEVEL_THRESHOLDS.items():
             if self.points >= threshold:
@@ -65,7 +67,6 @@ class UserProgress(models.Model):
         self.level = new_level
 
     def progress_to_next_level(self):
-        """Grąžina procentą iki kito lygio (0–100)."""
         if self.level >= 5:
             return 100
         current_threshold = self.LEVEL_THRESHOLDS[self.level]
@@ -75,37 +76,25 @@ class UserProgress(models.Model):
         return int((progress / total) * 100) if total > 0 else 0
 
     def points_to_next_level(self):
-        """Grąžina, kiek taškų trūksta iki kito lygio."""
         if self.level >= 5:
             return 0
         return self.LEVEL_THRESHOLDS[self.level + 1] - self.points
 
     def update_streak(self, attendance_date=None):
-        """
-        Atnaujina streak'ą po dalyvavimo treniruotėje.
-        - Jei dalyvavo šiandien arba vakar po paskutinio karto – streak'as tęsiasi (+1)
-        - Jei tarpas > 1 d. – streak'as resetinasi į 1
-        - Jei dalyvavo tą pačią dieną du kartus – streak'as nesikeičia
-        """
         if attendance_date is None:
             attendance_date = timezone.now().date()
 
         if self.last_attendance_date is None:
-            # Pirmas dalyvavimas
             self.current_streak = 1
         elif attendance_date == self.last_attendance_date:
-            # Tą pačią dieną – nieko nedarom
             return
         else:
             days_gap = (attendance_date - self.last_attendance_date).days
             if days_gap == 1:
-                # Sekanti diena – streak'as tęsiasi
                 self.current_streak += 1
             else:
-                # Praleido dieną – streak'as nulinis ir prasideda nuo 1
                 self.current_streak = 1
 
-        # Atnaujinam ilgiausią
         if self.current_streak > self.longest_streak:
             self.longest_streak = self.current_streak
 
@@ -113,7 +102,6 @@ class UserProgress(models.Model):
         self.save(update_fields=["current_streak", "longest_streak", "last_attendance_date", "updated_at"])
 
     def is_active_member(self):
-        """Aktyvus narys – dalyvavo bent kartą per pastarąsias 30 d."""
         if not self.last_attendance_date:
             return False
         days_since = (timezone.now().date() - self.last_attendance_date).days
@@ -123,11 +111,27 @@ class UserProgress(models.Model):
 class Achievement(models.Model):
     """Pasiekimas (ženklelis), kurį vartotojas gali gauti."""
 
-    code = models.CharField(max_length=50, unique=True, help_text="Unikalus kodas, pvz. 'first_training'")
-    name = models.CharField(max_length=100)
-    description = models.CharField(max_length=255)
-    icon = models.CharField(max_length=50, default="trophy", help_text="Bootstrap Icon pavadinimas be 'bi-' priešdėlio")
-    points_reward = models.PositiveIntegerField(default=50, help_text="Kiek taškų skiriama gavus pasiekimą")
+    code = models.CharField(
+        max_length=50, unique=True,
+        verbose_name="Kodas",
+        help_text="Unikalus kodas, pvz. 'first_training'"
+    )
+    name = models.CharField(max_length=100, verbose_name="Pavadinimas")
+    description = models.CharField(max_length=255, verbose_name="Aprašymas")
+    icon = models.CharField(
+        max_length=50, default="trophy",
+        verbose_name="Piktograma",
+        help_text="Bootstrap Icon pavadinimas be 'bi-' priešdėlio"
+    )
+    points_reward = models.PositiveIntegerField(
+        default=50,
+        verbose_name="Taškų atlygis",
+        help_text="Kiek taškų skiriama gavus pasiekimą"
+    )
+
+    class Meta:
+        verbose_name = "Pasiekimas"
+        verbose_name_plural = "Pasiekimai"
 
     def __str__(self):
         return self.name
@@ -136,13 +140,21 @@ class Achievement(models.Model):
 class UserAchievement(models.Model):
     """Pasiekimo priskyrimas vartotojui."""
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="achievements")
-    achievement = models.ForeignKey(Achievement, on_delete=models.CASCADE)
-    earned_at = models.DateTimeField(default=timezone.now)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="achievements",
+        verbose_name="Vartotojas"
+    )
+    achievement = models.ForeignKey(
+        Achievement, on_delete=models.CASCADE,
+        verbose_name="Pasiekimas"
+    )
+    earned_at = models.DateTimeField(default=timezone.now, verbose_name="Gauta")
 
     class Meta:
         unique_together = ("user", "achievement")
         ordering = ["-earned_at"]
+        verbose_name = "Gautas pasiekimas"
+        verbose_name_plural = "Gauti pasiekimai"
 
     def __str__(self):
         return f"{self.user.username} → {self.achievement.name}"

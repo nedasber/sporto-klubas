@@ -117,17 +117,37 @@
 </div>
 
 <style>
+/* Dalyvių mygtukai - PRIVERSTINAI vienodi */
+.attendance-active-success,
+.attendance-active-danger {
+  border-width: 2px !important;
+  font-weight: 700 !important;
+}
 .attendance-active-success {
   background: #dcfce7 !important;
   color: #166534 !important;
-  border-width: 2px !important;
-  font-weight: 700 !important;
 }
 .attendance-active-danger {
   background: #fee2e2 !important;
   color: #991b1b !important;
-  border-width: 2px !important;
-  font-weight: 700 !important;
+}
+/* Vienodos kraštinės abiems mygtukams */
+.s-table .btn-outline-success,
+.s-table .btn-outline-danger {
+  border-radius: 8px !important;
+  padding: 4px 12px !important;
+  font-weight: 600 !important;
+  border-width: 1.5px !important;
+}
+.s-table .btn-outline-success:hover {
+  background: #dcfce7 !important;
+  color: #166534 !important;
+  border-color: #16a34a !important;
+}
+.s-table .btn-outline-danger:hover {
+  background: #fee2e2 !important;
+  color: #991b1b !important;
+  border-color: #dc2626 !important;
 }
 </style>
 {% endblock %}

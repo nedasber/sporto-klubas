@@ -1,107 +1,403 @@
-{% extends "admin/base_site.html" %}
+{% extends "admin/base.html" %}
+{% load i18n static %}
+
+{% block title %}{{ title|default:"" }} | Sporto klubas{% endblock %}
 
 {% block extrastyle %}
 {{ block.super }}
+<link rel="icon" type="image/svg+xml" href="{% static 'favicon.svg' %}">
 <style>
-  /* ================================================================ */
-  /*  JAZZMIN USER DROPDOWN FIX                                       */
-  /*  Pataiso "nematomą" vartotojo meniu viršuje dešinėje             */
-  /* ================================================================ */
+/* ===== SPORTO KLUBAS ADMIN STILIUS ===== */
+:root {
+  --sk-primary: #4361ee;
+  --sk-primary-dark: #3a56d4;
+  --sk-primary-light: #eef1ff;
+  --sk-sidebar-bg: #0f172a;
+  --sk-bg: #f1f5f9;
+  --sk-text: #1e293b;
+  --sk-text-muted: #64748b;
+  --sk-border: #e2e8f0;
+  --sk-success: #16a34a;
+  --sk-danger: #dc2626;
+  --sk-warning: #f59e0b;
+}
 
-  /* Pagrindinis dropdown fonas */
-  .main-header .dropdown-menu,
-  .main-header .user-menu .dropdown-menu,
-  .navbar-nav .dropdown-menu,
-  ul.dropdown-menu {
-    background-color: #ffffff !important;
-    border: 1px solid #cbd5e1 !important;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15) !important;
-    border-radius: 8px !important;
-    padding: 8px 0 !important;
-    min-width: 220px !important;
-  }
+body {
+  background: var(--sk-bg) !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, sans-serif !important;
+  color: var(--sk-text) !important;
+}
 
-  /* Header "Account" */
-  .main-header .dropdown-menu .dropdown-header,
-  ul.dropdown-menu li.dropdown-header,
-  ul.dropdown-menu .dropdown-header {
-    color: #475569 !important;
-    background-color: #f1f5f9 !important;
-    font-weight: 700 !important;
-    font-size: 12px !important;
-    text-transform: uppercase !important;
-    letter-spacing: 0.5px !important;
-    padding: 10px 16px !important;
-    border-bottom: 1px solid #e2e8f0 !important;
-    margin-bottom: 4px !important;
-  }
+/* HEADER */
+#header {
+  background: linear-gradient(135deg, var(--sk-sidebar-bg) 0%, #1e293b 100%) !important;
+  color: #fff !important;
+  padding: 14px 30px !important;
+  border-bottom: none !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+}
+#header a:link, #header a:visited {
+  color: #fff !important;
+}
+#site-name {
+  font-size: 18px;
+  font-weight: 700;
+}
+#branding h1 {
+  font-weight: 700;
+}
+#branding h1::before {
+  content: "💪 ";
+}
 
-  /* Dropdown nuorodos (Change password, Log out, See Profile) */
-  .main-header .dropdown-menu a,
-  .main-header .dropdown-menu .dropdown-item,
-  ul.dropdown-menu li a,
-  ul.dropdown-menu .dropdown-item {
-    color: #1e293b !important;
-    background-color: transparent !important;
-    padding: 10px 16px !important;
-    font-size: 14px !important;
-    text-decoration: none !important;
-    display: block !important;
-  }
+/* USER TOOLS - atsijungimo blokas */
+#user-tools {
+  background: rgba(255,255,255,0.1);
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+}
+#user-tools a {
+  color: #fff !important;
+  margin-left: 10px;
+}
+#user-tools a:hover {
+  text-decoration: underline;
+}
+.logout-link, a[href*="logout"] {
+  background: var(--sk-danger);
+  color: #fff !important;
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-weight: 600;
+  margin-left: 8px;
+}
+.logout-link:hover, a[href*="logout"]:hover {
+  background: #b91c1c;
+  text-decoration: none !important;
+}
 
-  .main-header .dropdown-menu a:hover,
-  .main-header .dropdown-menu .dropdown-item:hover,
-  ul.dropdown-menu li a:hover,
-  ul.dropdown-menu .dropdown-item:hover,
-  .main-header .dropdown-menu a:focus,
-  .main-header .dropdown-menu .dropdown-item:focus {
-    background-color: #4361ee !important;
-    color: #ffffff !important;
-  }
+/* BREADCRUMBS */
+.breadcrumbs {
+  background: #fff !important;
+  border-bottom: 1px solid var(--sk-border) !important;
+  padding: 12px 30px !important;
+  color: var(--sk-text-muted) !important;
+}
+.breadcrumbs a {
+  color: var(--sk-primary) !important;
+}
 
-  /* Dropdown ikonos */
-  .main-header .dropdown-menu a i,
-  .main-header .dropdown-menu .dropdown-item i,
-  ul.dropdown-menu li a i,
-  ul.dropdown-menu .dropdown-item i {
-    color: #64748b !important;
-    margin-right: 10px !important;
-    width: 16px !important;
-  }
+/* CONTENT */
+#content {
+  padding: 24px 30px !important;
+}
+#content h1, #content h2, #content h3 {
+  color: var(--sk-text) !important;
+  font-weight: 700 !important;
+}
 
-  .main-header .dropdown-menu a:hover i,
-  .main-header .dropdown-menu .dropdown-item:hover i,
-  ul.dropdown-menu li a:hover i,
-  ul.dropdown-menu .dropdown-item:hover i {
-    color: #ffffff !important;
-  }
+/* MODULES */
+.module {
+  background: #fff !important;
+  border-radius: 12px !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06) !important;
+  border: 1px solid var(--sk-border) !important;
+  margin-bottom: 16px !important;
+}
+.module h2, .module caption {
+  background: linear-gradient(135deg, var(--sk-primary) 0%, var(--sk-primary-dark) 100%) !important;
+  color: #fff !important;
+  padding: 12px 20px !important;
+  font-weight: 600 !important;
+  border-radius: 12px 12px 0 0 !important;
+  font-size: 14px !important;
+}
 
-  /* Dropdown footer (See Profile mygtukas apačioje) */
-  .main-header .dropdown-menu .dropdown-footer,
-  ul.dropdown-menu li.dropdown-footer,
-  ul.dropdown-menu .dropdown-footer,
-  ul.dropdown-menu li.dropdown-footer a,
-  ul.dropdown-menu .dropdown-footer a {
-    background-color: #f8fafc !important;
-    color: #1e293b !important;
-    border-top: 1px solid #e2e8f0 !important;
-    margin-top: 4px !important;
-    padding: 10px 16px !important;
-    text-align: center !important;
-    font-weight: 600 !important;
-  }
+/* TABLES */
+table {
+  background: #fff !important;
+}
+table thead th {
+  background: #f8fafc !important;
+  color: var(--sk-text) !important;
+  font-weight: 600 !important;
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: .5px;
+  padding: 12px 16px !important;
+  border-bottom: 1px solid var(--sk-border) !important;
+}
+table tbody tr {
+  transition: background .15s;
+}
+table tbody tr:hover {
+  background: #f8fafc !important;
+}
+table td, table th {
+  padding: 10px 16px !important;
+  border-bottom: 1px solid #f1f5f9 !important;
+}
 
-  ul.dropdown-menu li.dropdown-footer a:hover,
-  ul.dropdown-menu .dropdown-footer a:hover {
-    background-color: #4361ee !important;
-    color: #ffffff !important;
-  }
+/* BUTTONS */
+.button, input[type=submit], input[type=button], .submit-row input, a.button {
+  background: var(--sk-primary) !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 8px !important;
+  padding: 8px 20px !important;
+  font-weight: 600 !important;
+  font-size: 13px !important;
+  transition: all .15s !important;
+  cursor: pointer;
+}
+.button:hover, input[type=submit]:hover, input[type=button]:hover, .submit-row input:hover, a.button:hover {
+  background: var(--sk-primary-dark) !important;
+  box-shadow: 0 4px 12px rgba(67,97,238,.25) !important;
+}
+.button.default, input[type=submit].default {
+  background: var(--sk-primary) !important;
+  font-weight: 700 !important;
+}
+.deletelink {
+  background: var(--sk-danger) !important;
+  color: #fff !important;
+  padding: 8px 16px !important;
+  border-radius: 8px !important;
+}
+.deletelink:hover {
+  background: #b91c1c !important;
+}
 
-  /* Dropdown divider */
-  ul.dropdown-menu .dropdown-divider,
-  .main-header .dropdown-menu .dropdown-divider {
-    border-top: 1px solid #e2e8f0 !important;
-    margin: 4px 0 !important;
-  }
+/* FORMS */
+.form-row {
+  padding: 14px 0 !important;
+  border-bottom: 1px solid #f1f5f9 !important;
+}
+input[type=text], input[type=email], input[type=password], input[type=url],
+input[type=number], input[type=tel], input[type=date], input[type=time],
+input[type=datetime-local], select, textarea {
+  border: 1px solid var(--sk-border) !important;
+  border-radius: 8px !important;
+  padding: 8px 12px !important;
+  font-size: 14px !important;
+  background: #fff !important;
+  color: var(--sk-text) !important;
+  transition: border .15s, box-shadow .15s !important;
+}
+input[type=text]:focus, input[type=email]:focus, input[type=password]:focus,
+select:focus, textarea:focus {
+  border-color: var(--sk-primary) !important;
+  box-shadow: 0 0 0 3px rgba(67,97,238,.12) !important;
+  outline: none !important;
+}
+
+/* LINKS */
+a:link, a:visited {
+  color: var(--sk-primary);
+}
+a:hover {
+  color: var(--sk-primary-dark);
+}
+
+/* MESSAGES */
+.messagelist li {
+  border-radius: 8px !important;
+  padding: 12px 18px !important;
+  margin: 0 30px 16px !important;
+  font-weight: 500 !important;
+}
+.messagelist li.success {
+  background: #dcfce7 !important;
+  color: #166534 !important;
+  border: 1px solid #22c55e !important;
+}
+.messagelist li.error {
+  background: #fee2e2 !important;
+  color: #991b1b !important;
+  border: 1px solid #dc2626 !important;
+}
+.messagelist li.warning {
+  background: #fef3c7 !important;
+  color: #92400e !important;
+  border: 1px solid #f59e0b !important;
+}
+
+/* PAGINATION */
+.paginator {
+  background: #fff !important;
+  padding: 14px 20px !important;
+  border-top: 1px solid var(--sk-border) !important;
+  font-size: 13px !important;
+}
+.paginator a {
+  background: #f8fafc !important;
+  padding: 6px 12px !important;
+  border-radius: 6px !important;
+  margin: 0 2px !important;
+  text-decoration: none !important;
+}
+.paginator a:hover {
+  background: var(--sk-primary-light) !important;
+}
+.paginator .this-page {
+  background: var(--sk-primary) !important;
+  color: #fff !important;
+  padding: 6px 12px !important;
+  border-radius: 6px !important;
+}
+
+/* SEARCH */
+#searchbar {
+  border: 1px solid var(--sk-border) !important;
+  border-radius: 8px !important;
+  padding: 8px 12px !important;
+}
+
+/* FILTER SIDEBAR */
+#changelist-filter {
+  background: #fff !important;
+  border-radius: 12px !important;
+  border: 1px solid var(--sk-border) !important;
+  padding: 0 !important;
+  overflow: hidden;
+}
+#changelist-filter h2 {
+  background: linear-gradient(135deg, var(--sk-primary) 0%, var(--sk-primary-dark) 100%) !important;
+  color: #fff !important;
+  margin: 0 !important;
+  padding: 12px 18px !important;
+  font-size: 14px !important;
+  border-radius: 0 !important;
+}
+#changelist-filter h3 {
+  padding: 10px 18px !important;
+  border-bottom: 1px solid var(--sk-border) !important;
+  font-size: 12px !important;
+  text-transform: uppercase;
+  color: var(--sk-text-muted) !important;
+}
+#changelist-filter li {
+  padding: 4px 18px !important;
+}
+#changelist-filter li.selected a {
+  color: var(--sk-primary) !important;
+  font-weight: 700 !important;
+}
+
+/* ACCESSIBILITY BUTTON - matomas ir admin'e */
+.sk-a11y-link {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: var(--sk-primary);
+  color: #fff;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  text-decoration: none;
+  box-shadow: 0 4px 16px rgba(67,97,238,.3);
+  z-index: 9999;
+  transition: all .2s;
+}
+.sk-a11y-link:hover {
+  background: var(--sk-primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(67,97,238,.4);
+  color: #fff;
+}
+
+/* HIGH CONTRAST režimas admin'e */
+html.a11y-high-contrast,
+html.a11y-high-contrast body {
+  background: #000 !important;
+  color: #fff !important;
+}
+html.a11y-high-contrast #header {
+  background: #000 !important;
+  border-bottom: 2px solid #fff !important;
+}
+html.a11y-high-contrast .module,
+html.a11y-high-contrast #changelist-filter,
+html.a11y-high-contrast table {
+  background: #1a1a1a !important;
+  color: #fff !important;
+  border-color: #fff !important;
+}
+html.a11y-high-contrast .breadcrumbs {
+  background: #1a1a1a !important;
+  color: #fff !important;
+}
+html.a11y-high-contrast input,
+html.a11y-high-contrast select,
+html.a11y-high-contrast textarea {
+  background: #000 !important;
+  color: #fff !important;
+  border: 2px solid #fff !important;
+}
+html.a11y-high-contrast a {
+  color: #ffeb3b !important;
+}
+html.a11y-high-contrast .button,
+html.a11y-high-contrast input[type=submit] {
+  background: #ffeb3b !important;
+  color: #000 !important;
+}
+
+/* Font size */
+html.a11y-font-larger { font-size: 17px; }
+html.a11y-font-smaller { font-size: 13px; }
 </style>
+{% endblock %}
+
+{% block branding %}
+<h1 id="site-name"><a href="{% url 'admin:index' %}">Sporto klubas – Administracija</a></h1>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}
+
+{% block footer %}
+{{ block.super }}
+<!-- A11Y MYGTUKAS -->
+<a href="javascript:void(0)" class="sk-a11y-link" id="skA11yBtn" title="Prieinamumas" aria-label="Prieinamumas">
+  <i class="bi">♿</i>
+</a>
+
+<script>
+(function() {
+  const html = document.documentElement;
+  const btn = document.getElementById('skA11yBtn');
+  if (!btn) return;
+
+  // Atstatom išsaugotus nustatymus
+  const settings = JSON.parse(localStorage.getItem('a11y') || '{}');
+  html.classList.toggle('a11y-font-larger', settings.fontSize === 'larger');
+  html.classList.toggle('a11y-font-smaller', settings.fontSize === 'smaller');
+  html.classList.toggle('a11y-high-contrast', !!settings.contrast);
+
+  btn.addEventListener('click', () => {
+    const choice = prompt(
+      "Prieinamumo nustatymai:\n\n" +
+      "1 - Mažesnis šriftas\n" +
+      "2 - Normalus šriftas\n" +
+      "3 - Didesnis šriftas\n" +
+      "4 - Įjungti/Išjungti didelį kontrastą\n" +
+      "5 - Atstatyti\n\n" +
+      "Įveskite pasirinkimą (1-5):"
+    );
+    if (!choice) return;
+    if (choice === '1') settings.fontSize = 'smaller';
+    else if (choice === '2') delete settings.fontSize;
+    else if (choice === '3') settings.fontSize = 'larger';
+    else if (choice === '4') settings.contrast = !settings.contrast;
+    else if (choice === '5') { Object.keys(settings).forEach(k => delete settings[k]); }
+    localStorage.setItem('a11y', JSON.stringify(settings));
+    location.reload();
+  });
+})();
+</script>
 {% endblock %}
