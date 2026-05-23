@@ -8,6 +8,79 @@
 <link rel="icon" type="image/svg+xml" href="{% static 'favicon.svg' %}">
 <style>
 /* ===== SPORTO KLUBAS ADMIN STILIUS ===== */
+
+/* PRIVERSTINAI šviesus režimas (panaikina Django dark mode) */
+:root {
+  color-scheme: light !important;
+  --primary: #4361ee;
+  --secondary: #4361ee;
+  --accent: #4361ee;
+  --primary-fg: #fff;
+  --body-fg: #1e293b;
+  --body-bg: #f1f5f9;
+  --body-quiet-color: #64748b;
+  --body-loud-color: #1e293b;
+  --header-color: #fff;
+  --header-branding-color: #fff;
+  --header-bg: #0f172a;
+  --header-link-color: #fff;
+  --breadcrumbs-fg: #64748b;
+  --breadcrumbs-link-fg: #4361ee;
+  --breadcrumbs-bg: #fff;
+  --link-fg: #4361ee;
+  --link-hover-color: #3a56d4;
+  --link-selected-fg: #3a56d4;
+  --hairline-color: #e2e8f0;
+  --border-color: #e2e8f0;
+  --error-fg: #dc2626;
+  --message-success-bg: #dcfce7;
+  --message-warning-bg: #fef3c7;
+  --message-error-bg: #fee2e2;
+  --darkened-bg: #f8fafc;
+  --selected-bg: #eef1ff;
+  --selected-row: #eef1ff;
+  --button-fg: #fff;
+  --button-bg: #4361ee;
+  --button-hover-bg: #3a56d4;
+  --default-button-bg: #4361ee;
+  --default-button-hover-bg: #3a56d4;
+  --close-button-bg: #64748b;
+  --close-button-hover-bg: #475569;
+  --delete-button-bg: #dc2626;
+  --delete-button-hover-bg: #b91c1c;
+  --object-tools-fg: #fff;
+  --object-tools-bg: #4361ee;
+  --object-tools-hover-bg: #3a56d4;
+}
+
+/* Priverstinai panaikinam dark mode */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: light !important;
+    --primary: #4361ee;
+    --body-fg: #1e293b;
+    --body-bg: #f1f5f9;
+    --body-quiet-color: #64748b;
+    --body-loud-color: #1e293b;
+    --header-bg: #0f172a;
+    --breadcrumbs-bg: #fff;
+    --link-fg: #4361ee;
+    --hairline-color: #e2e8f0;
+    --border-color: #e2e8f0;
+    --darkened-bg: #f8fafc;
+    --selected-bg: #eef1ff;
+    --selected-row: #eef1ff;
+  }
+}
+
+html[data-theme="dark"], html[data-theme="auto"] {
+  color-scheme: light !important;
+}
+html[data-theme="dark"] :root {
+  --body-bg: #f1f5f9 !important;
+  --body-fg: #1e293b !important;
+}
+
 :root {
   --sk-primary: #4361ee;
   --sk-primary-dark: #3a56d4;
@@ -22,9 +95,18 @@
   --sk-warning: #f59e0b;
 }
 
-body {
+html, body {
   background: var(--sk-bg) !important;
+  color: var(--sk-text) !important;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, sans-serif !important;
+}
+
+#container {
+  background: var(--sk-bg) !important;
+}
+
+#content, #content-main, .colMS, .colM {
+  background: transparent !important;
   color: var(--sk-text) !important;
 }
 
@@ -97,21 +179,90 @@ body {
   font-weight: 700 !important;
 }
 
-/* MODULES */
+/* MODULES - kortelės su lentelėmis */
 .module {
   background: #fff !important;
   border-radius: 12px !important;
   box-shadow: 0 1px 3px rgba(0,0,0,0.06) !important;
   border: 1px solid var(--sk-border) !important;
   margin-bottom: 16px !important;
+  color: var(--sk-text) !important;
+  overflow: hidden;
 }
 .module h2, .module caption {
   background: linear-gradient(135deg, var(--sk-primary) 0%, var(--sk-primary-dark) 100%) !important;
   color: #fff !important;
   padding: 12px 20px !important;
   font-weight: 600 !important;
-  border-radius: 12px 12px 0 0 !important;
+  border-radius: 0 !important;
+  font-size: 13px !important;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+}
+.module table {
+  width: 100% !important;
+  background: #fff !important;
+}
+.module tr {
+  background: #fff !important;
+}
+.module tr:hover {
+  background: #f8fafc !important;
+}
+.module th, .module td {
+  background: transparent !important;
+  color: var(--sk-text) !important;
+  padding: 12px 20px !important;
+  border-bottom: 1px solid #f1f5f9 !important;
+}
+.module td.actionlink a {
+  color: var(--sk-primary) !important;
+}
+
+/* Sidebar (right) - "Mano veiksmai" blokas */
+#content-related {
+  background: transparent !important;
+}
+#content-related .module {
+  background: #fff !important;
+}
+#content-related h2 {
+  background: linear-gradient(135deg, var(--sk-primary) 0%, var(--sk-primary-dark) 100%) !important;
+  color: #fff !important;
+}
+#content-related h3 {
+  color: var(--sk-text) !important;
+  padding: 14px 20px 8px 20px !important;
+  margin: 0 !important;
   font-size: 14px !important;
+  font-weight: 700 !important;
+}
+.actionlist {
+  padding: 0 20px 14px 20px !important;
+}
+.actionlist li {
+  padding: 6px 0 !important;
+  list-style: none !important;
+  border-bottom: 1px solid #f1f5f9 !important;
+}
+.actionlist li:last-child {
+  border-bottom: none !important;
+}
+.actionlist .changelink,
+.actionlist .addlink,
+.actionlist .deletelink {
+  color: var(--sk-text) !important;
+  text-decoration: none !important;
+  font-weight: 500 !important;
+}
+.actionlist .changelink::before,
+.actionlist .addlink::before {
+  content: "✏️ ";
+  margin-right: 4px;
+}
+.mini {
+  color: var(--sk-text-muted) !important;
+  font-size: 12px !important;
 }
 
 /* TABLES */
@@ -198,6 +349,39 @@ a:link, a:visited {
 }
 a:hover {
   color: var(--sk-primary-dark);
+}
+
+/* "Pridėti" ir "Pakeisti" linkai dashboard'e */
+.module a.addlink,
+.module a.changelink {
+  font-weight: 500 !important;
+  text-decoration: none !important;
+  padding: 4px 10px !important;
+  border-radius: 6px !important;
+  font-size: 13px !important;
+  transition: all .15s;
+}
+.module a.addlink {
+  color: var(--sk-success) !important;
+  background: #dcfce7 !important;
+}
+.module a.addlink:hover {
+  background: #bbf7d0 !important;
+}
+.module a.changelink {
+  color: var(--sk-primary) !important;
+  background: var(--sk-primary-light) !important;
+}
+.module a.changelink:hover {
+  background: #dbe2ff !important;
+}
+
+/* Headers - Valdymo skydelis */
+h1 {
+  color: var(--sk-text) !important;
+  font-weight: 700 !important;
+  font-size: 24px !important;
+  margin: 0 0 20px 0 !important;
 }
 
 /* MESSAGES */
