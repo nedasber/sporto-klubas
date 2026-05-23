@@ -101,11 +101,14 @@
               {% endif %}
             </td>
             <td>
-              <div class="d-flex gap-2">
+              <div class="d-flex gap-2 flex-wrap">
                 <a class="btn btn-outline-primary btn-sm" href="/trainer/trainings/{{ t.id }}/attendees/">
                   <i class="bi bi-people me-1"></i> {% trans "Dalyviai" %}
                 </a>
-                {% if t.status != "CANCELLED" %}
+                {% if t.status != "CANCELLED" and t.starts_at >= now %}
+                  <a class="btn btn-outline-secondary btn-sm" href="/trainer/trainings/{{ t.id }}/edit/">
+                    <i class="bi bi-pencil me-1"></i> {% trans "Redaguoti" %}
+                  </a>
                   <a class="btn btn-outline-danger btn-sm" href="/trainer/trainings/{{ t.id }}/cancel/">
                     <i class="bi bi-x-circle me-1"></i> {% trans "Atšaukti" %}
                   </a>

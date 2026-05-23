@@ -595,6 +595,7 @@ def trainer_trainings(request):
         "status_filter": status_filter,
         "period_filter": period_filter,
         "sort_order": sort_order,
+        "now": timezone.now(),
     })
 
 
@@ -728,6 +729,69 @@ def trainer_create_training(request):
     return render(request, "gym/trainer_create_training.html", {
         "form": form,
         "gallery_images": gallery_images,
+    })
+
+
+@login_required
+def trainer_edit_training(request, training_id):
+    """Trenerio treniruotės redagavimo vaizdas."""
+    if not hasattr(request.user, "profile") or request.user.profile.role != "TRAINER":
+        return HttpResponseForbidden("Neturite teisių")
+
+    training = get_object_or_404(Training, id=training_id, trainer=request.user)
+
+    # Negalim redaguoti praeities treniruotės
+    if training.starts_at < timezone.now():
+        messages.warning(request, "Negalima redaguoti praeities treniruočių.")
+        return redirect("/trainer/trainings/")
+
+    # Negalim redaguoti atšauktos treniruotės
+    if training.status == "CANCELLED":
+        messages.warning(request, "Atšauktos treniruotės redaguoti negalima.")
+        return redirect("/trainer/trainings/")
+
+    # Suskaičiuojam aktyvius rezervuotojus (BOOKED) – capacity negali būti mažesnė
+    active_booked_count = Reservation.objects.filter(
+        training=training, status="BOOKED"
+    ).count()
+
+    if request.method == "POST":
+        form = TrainingForm(request.POST, request.FILES, instance=training)
+        if form.is_valid():
+            new_capacity = form.cleaned_data.get("capacity")
+            if new_capacity < active_booked_count:
+                form.add_error(
+                    "capacity",
+                    f"Talpa negali būti mažesnė nei jau užregistruotų dalyvių skaičius ({active_booked_count})."
+                )
+            else:
+                form.save()
+                messages.success(request, "Treniruotė sėkmingai atnaujinta.")
+                return redirect("/trainer/trainings/")
+    else:
+        form = TrainingForm(instance=training)
+
+    gallery_images = [
+        {"key": "Joga",            "label": "Joga",       "url": "https://images.unsplash.com/photo-1545205597-3d9d02c29597?w=800&q=80"},
+        {"key": "CrossFit",        "label": "CrossFit",   "url": "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&q=80"},
+        {"key": "Spin / Dviratis", "label": "Spin",       "url": "https://images.unsplash.com/photo-1518310383802-640c2de311b2?w=800&q=80"},
+        {"key": "Boksas",          "label": "Boksas",     "url": "https://images.unsplash.com/photo-1599058917212-d750089bc07e?w=800&q=80"},
+        {"key": "Svorių salė",     "label": "Svoriai",    "url": "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=800&q=80"},
+        {"key": "Pilatesas",       "label": "Pilatesas",  "url": "https://images.unsplash.com/photo-1518611012118-696072aa579a?w=800&q=80"},
+        {"key": "Zumba",           "label": "Zumba",      "url": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&q=80"},
+        {"key": "HIIT",            "label": "HIIT",       "url": "https://images.unsplash.com/photo-1549060279-7e168fcee0c2?w=800&q=80"},
+        {"key": "Bėgimas",         "label": "Bėgimas",    "url": "https://images.unsplash.com/photo-1552674605-db6ffd4facb5?w=800&q=80"},
+        {"key": "Plaukimas",       "label": "Plaukimas",  "url": "https://images.unsplash.com/photo-1530549387789-4c1017266635?w=800&q=80"},
+        {"key": "Stretching",      "label": "Stretching", "url": "https://images.unsplash.com/photo-1552693673-1bf958298935?w=800&q=80"},
+        {"key": "Kita",            "label": "Kita",       "url": "https://images.unsplash.com/photo-1540497077202-7c8a3999166f?w=800&q=80"},
+    ]
+
+    return render(request, "gym/trainer_create_training.html", {
+        "form": form,
+        "gallery_images": gallery_images,
+        "is_edit": True,
+        "training": training,
+        "active_booked_count": active_booked_count,
     })
 
 

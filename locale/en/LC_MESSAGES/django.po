@@ -969,3 +969,22 @@ msgstr "No past reservations"
 
 msgid "Atšauktų rezervacijų nėra"
 msgstr "No cancelled reservations"
+
+# Edit training
+msgid "Redaguoti treniruotę"
+msgstr "Edit training"
+
+msgid "Pakeiskite treniruotės informaciją"
+msgstr "Change training information"
+
+msgid "Į šią treniruotę užsiregistravę dalyvių:"
+msgstr "Participants registered for this training:"
+
+msgid "Mažinant talpą, jos vertė negali būti mažesnė už šį skaičių."
+msgstr "When reducing capacity, the value cannot be less than this number."
+
+msgid "Atnaujinti"
+msgstr "Update"
+
+msgid "Redaguoti"
+msgstr "Edit"

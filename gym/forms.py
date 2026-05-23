@@ -128,6 +128,11 @@ class TrainingForm(forms.ModelForm):
         starts_at = self.cleaned_data.get("starts_at")
         if not starts_at:
             raise forms.ValidationError("Įveskite pradžios datą ir laiką.")
+
+        # Jei redaguojama esama treniruotė ir laikas nepasikeitė - leidžiame
+        if self.instance and self.instance.pk and self.instance.starts_at == starts_at:
+            return starts_at
+
         if starts_at < timezone.now():
             raise forms.ValidationError("Treniruotės negalima kurti praeityje. Pasirinkite būsimą datą ir laiką.")
         return starts_at

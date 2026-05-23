@@ -42,6 +42,7 @@ urlpatterns = [
     # Trainer
     path("trainer/trainings/", gym_views.trainer_trainings, name="trainer_trainings"),
     path("trainer/trainings/create/", gym_views.trainer_create_training, name="trainer_create_training"),
+    path("trainer/trainings/<int:training_id>/edit/", gym_views.trainer_edit_training, name="trainer_edit_training"),
     path("trainer/trainings/<int:training_id>/attendees/", gym_views.training_attendees, name="training_attendees"),
     path("trainer/trainings/<int:training_id>/cancel/", gym_views.trainer_cancel_training, name="trainer_cancel_training"),
     path("trainer/reservations/<int:reservation_id>/<str:status>/", gym_views.set_attendance, name="set_attendance"),
