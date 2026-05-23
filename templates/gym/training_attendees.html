@@ -85,11 +85,11 @@
                 <span class="text-muted small">{% trans "Treniruotė neįvyko" %}</span>
               {% else %}
                 <div class="d-flex gap-2 flex-wrap">
-                  <a class="btn btn-sm {% if r.status == 'ATTENDED' %}btn-success{% else %}btn-outline-success{% endif %}"
+                  <a class="btn btn-sm btn-outline-success {% if r.status == 'ATTENDED' %}attendance-active-success{% endif %}"
                      href="/trainer/reservations/{{ r.id }}/ATTENDED/">
                     <i class="bi bi-check-lg me-1"></i> {% trans "Dalyvavo" %}
                   </a>
-                  <a class="btn btn-sm {% if r.status == 'NO_SHOW' %}btn-danger{% else %}btn-outline-danger{% endif %}"
+                  <a class="btn btn-sm btn-outline-danger {% if r.status == 'NO_SHOW' %}attendance-active-danger{% endif %}"
                      href="/trainer/reservations/{{ r.id }}/NO_SHOW/">
                     <i class="bi bi-x-lg me-1"></i> {% trans "Neatvyko" %}
                   </a>
@@ -115,4 +115,19 @@
     <i class="bi bi-arrow-left me-1"></i> {% trans "Grįžti į mano treniruotes" %}
   </a>
 </div>
+
+<style>
+.attendance-active-success {
+  background: #dcfce7 !important;
+  color: #166534 !important;
+  border-width: 2px !important;
+  font-weight: 700 !important;
+}
+.attendance-active-danger {
+  background: #fee2e2 !important;
+  color: #991b1b !important;
+  border-width: 2px !important;
+  font-weight: 700 !important;
+}
+</style>
 {% endblock %}
