@@ -935,3 +935,37 @@ msgstr "Strong focus ring"
 
 msgid "Atstatyti"
 msgstr "Reset"
+
+# My reservations filters
+msgid "Būsimos"
+msgstr "Upcoming"
+
+msgid "Praeities"
+msgstr "Past"
+
+msgid "Atšauktos"
+msgstr "Cancelled"
+
+msgid "Paieška pagal pavadinimą"
+msgstr "Search by title"
+
+msgid "Pvz. Joga"
+msgstr "E.g. Yoga"
+
+msgid "Artimiausios pirmiausia"
+msgstr "Soonest first"
+
+msgid "Vėliausios pirmiausia"
+msgstr "Latest first"
+
+msgid "Pagal pavadinimą"
+msgstr "By title"
+
+msgid "Šiuo metu neturite būsimų rezervacijų"
+msgstr "No upcoming reservations"
+
+msgid "Praeities rezervacijų nėra"
+msgstr "No past reservations"
+
+msgid "Atšauktų rezervacijų nėra"
+msgstr "No cancelled reservations"

@@ -8,6 +8,56 @@
   <p>{% trans "Peržiūrėkite ir valdykite savo treniruočių rezervacijas" %}</p>
 </div>
 
+<!-- TAB'AI -->
+<div class="s-card mb-3 py-2">
+  <div class="d-flex flex-wrap gap-2 align-items-center">
+    <a href="?tab=upcoming" class="btn btn-sm {% if tab == 'upcoming' %}btn-primary{% else %}btn-outline-secondary{% endif %}">
+      <i class="bi bi-calendar-event me-1"></i> {% trans "Būsimos" %}
+      {% if counts.upcoming %}<span class="badge ms-1" style="background:rgba(255,255,255,0.3);">{{ counts.upcoming }}</span>{% endif %}
+    </a>
+    <a href="?tab=past" class="btn btn-sm {% if tab == 'past' %}btn-primary{% else %}btn-outline-secondary{% endif %}">
+      <i class="bi bi-clock-history me-1"></i> {% trans "Praeities" %}
+      {% if counts.past %}<span class="badge ms-1" style="background:rgba(255,255,255,0.3);">{{ counts.past }}</span>{% endif %}
+    </a>
+    <a href="?tab=cancelled" class="btn btn-sm {% if tab == 'cancelled' %}btn-primary{% else %}btn-outline-secondary{% endif %}">
+      <i class="bi bi-x-circle me-1"></i> {% trans "Atšauktos" %}
+      {% if counts.cancelled %}<span class="badge ms-1" style="background:rgba(255,255,255,0.3);">{{ counts.cancelled }}</span>{% endif %}
+    </a>
+    <a href="?tab=all" class="btn btn-sm {% if tab == 'all' %}btn-primary{% else %}btn-outline-secondary{% endif %}">
+      <i class="bi bi-list-ul me-1"></i> {% trans "Visos" %}
+      {% if counts.all %}<span class="badge ms-1" style="background:rgba(255,255,255,0.3);">{{ counts.all }}</span>{% endif %}
+    </a>
+  </div>
+</div>
+
+<!-- PAIEŠKA IR RIKIAVIMAS -->
+<form method="get" class="s-card mb-3 py-3">
+  <input type="hidden" name="tab" value="{{ tab }}">
+  <div class="row g-2 align-items-end">
+    <div class="col-md-7">
+      <label class="form-label small mb-1 text-muted">{% trans "Paieška pagal pavadinimą" %}</label>
+      <div class="input-group input-group-sm">
+        <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+        <input type="text" name="q" value="{{ search_query }}" class="form-control" placeholder="{% trans 'Pvz. Joga' %}">
+      </div>
+    </div>
+    <div class="col-md-3">
+      <label class="form-label small mb-1 text-muted">{% trans "Rikiavimas" %}</label>
+      <select name="sort" class="form-select form-select-sm">
+        <option value="soonest" {% if sort_by == "soonest" %}selected{% endif %}>{% trans "Artimiausios pirmiausia" %}</option>
+        <option value="latest" {% if sort_by == "latest" %}selected{% endif %}>{% trans "Vėliausios pirmiausia" %}</option>
+        <option value="title" {% if sort_by == "title" %}selected{% endif %}>{% trans "Pagal pavadinimą" %}</option>
+      </select>
+    </div>
+    <div class="col-md-2">
+      <button class="btn btn-primary btn-sm w-100" type="submit">
+        <i class="bi bi-funnel me-1"></i> {% trans "Filtruoti" %}
+      </button>
+    </div>
+  </div>
+</form>
+
+<!-- REZERVACIJŲ LENTELĖ -->
 <div class="s-card">
   <div class="table-responsive">
     <table class="s-table">
@@ -42,7 +92,7 @@
               {% endif %}
             </td>
             <td>
-              {% if r.status == "BOOKED" %}
+              {% if r.status == "BOOKED" and r.training.starts_at >= now %}
                 <a class="btn btn-outline-danger btn-sm" href="/my-reservations/{{ r.id }}/cancel/">
                   <i class="bi bi-x-circle me-1"></i> {% trans "Atšaukti" %}
                 </a>
@@ -55,7 +105,17 @@
           <tr>
             <td colspan="4" class="text-center py-5">
               <i class="bi bi-calendar-x fs-1 text-muted"></i>
-              <div class="text-muted mt-2">{% trans "Rezervacijų nėra" %}</div>
+              <div class="text-muted mt-2">
+                {% if tab == "upcoming" %}
+                  {% trans "Šiuo metu neturite būsimų rezervacijų" %}
+                {% elif tab == "past" %}
+                  {% trans "Praeities rezervacijų nėra" %}
+                {% elif tab == "cancelled" %}
+                  {% trans "Atšauktų rezervacijų nėra" %}
+                {% else %}
+                  {% trans "Rezervacijų nėra" %}
+                {% endif %}
+              </div>
               <a href="/trainings/" class="btn btn-primary btn-sm mt-3"><i class="bi bi-search me-1"></i> {% trans "Ieškoti treniruočių" %}</a>
             </td>
           </tr>

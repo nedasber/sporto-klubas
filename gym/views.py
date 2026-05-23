@@ -486,13 +486,67 @@ def register_training(request, training_id):
 
 @login_required
 def my_reservations(request):
-    reservations = Reservation.objects.filter(user=request.user).order_by("-created_at")
-    return render(request, "gym/my_reservations.html", {"reservations": reservations})
+    now = timezone.now()
+    qs = Reservation.objects.filter(user=request.user).select_related("training", "training__trainer")
+
+    # FILTRAS PAGAL SKIRTUKĄ
+    tab = request.GET.get("tab", "upcoming")
+    if tab == "upcoming":
+        # Būsimos – BOOKED statusu, ir treniruotė dar nepraeitis
+        qs = qs.filter(status="BOOKED", training__starts_at__gte=now)
+    elif tab == "past":
+        # Praeities – dalyvavo arba neatvyko (treniruotė įvyko)
+        qs = qs.filter(training__starts_at__lt=now).exclude(status="CANCELLED")
+    elif tab == "cancelled":
+        qs = qs.filter(status="CANCELLED")
+    # "all" – nieko nefiltruojam
+
+    # PAIEŠKA
+    search_query = request.GET.get("q", "").strip()
+    if search_query:
+        qs = qs.filter(training__title__icontains=search_query)
+
+    # RIKIAVIMAS
+    sort_by = request.GET.get("sort", "soonest" if tab == "upcoming" else "latest")
+    if sort_by == "soonest":
+        qs = qs.order_by("training__starts_at")
+    elif sort_by == "latest":
+        qs = qs.order_by("-training__starts_at")
+    elif sort_by == "title":
+        qs = qs.order_by("training__title")
+
+    # SKAIČIAVIMAI tab'ams (badge'ams)
+    all_user_res = Reservation.objects.filter(user=request.user)
+    counts = {
+        "upcoming": all_user_res.filter(status="BOOKED", training__starts_at__gte=now).count(),
+        "past": all_user_res.filter(training__starts_at__lt=now).exclude(status="CANCELLED").count(),
+        "cancelled": all_user_res.filter(status="CANCELLED").count(),
+        "all": all_user_res.count(),
+    }
+
+    return render(request, "gym/my_reservations.html", {
+        "reservations": qs,
+        "tab": tab,
+        "search_query": search_query,
+        "sort_by": sort_by,
+        "counts": counts,
+        "now": now,
+    })
 
 
 @login_required
 def cancel_reservation(request, reservation_id):
     r = get_object_or_404(Reservation, id=reservation_id, user=request.user)
+
+    # Negalim atšaukti praeities treniruotės rezervacijos
+    if r.training.starts_at < timezone.now():
+        messages.warning(request, "Negalima atšaukti praeities treniruotės rezervacijos.")
+        return redirect("/my-reservations/")
+
+    if r.status != "BOOKED":
+        messages.warning(request, "Šios rezervacijos jau negalima atšaukti.")
+        return redirect("/my-reservations/")
+
     r.status = "CANCELLED"
     r.save()
     messages.info(request, "Rezervacija atšaukta.")
