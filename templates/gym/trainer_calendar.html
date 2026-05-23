@@ -58,9 +58,95 @@
   .fc-event { border-radius: 6px !important; font-size: 12px !important; padding: 2px 6px !important; cursor: pointer; border: none !important; font-weight: 500; }
   .fc-event:hover { opacity: .9; }
   .fc .fc-col-header-cell { background: #f8fafc; text-transform: uppercase; letter-spacing: .5px; }
-  .fc .fc-col-header-cell-cushion { font-size: 12px; font-weight: 600; color: var(--text-muted); padding: 10px 4px; }
-  .fc .fc-daygrid-day-number, .fc .fc-list-day-text, .fc .fc-list-day-side-text { color: var(--text); text-decoration: none; font-weight: 500; }
+  .fc .fc-col-header-cell-cushion { font-size: 12px; font-weight: 700; color: #1e293b !important; padding: 10px 4px; }
+
+  /* DIENŲ NUMERIAI – aiškūs ir matomi */
+  .fc .fc-daygrid-day-number {
+    color: #1e293b !important;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 6px 8px;
+  }
+  .fc .fc-list-day-text,
+  .fc .fc-list-day-side-text {
+    color: #1e293b !important;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 14px;
+  }
+  /* Šio mėnesio dienos – visiškai tamsios */
+  .fc .fc-day-today .fc-daygrid-day-number {
+    background: var(--primary);
+    color: #fff !important;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    margin: 4px;
+    padding: 0;
+  }
+  /* Kito mėnesio dienos – švelnesnės, bet matomos */
+  .fc .fc-day-other .fc-daygrid-day-number {
+    color: #94a3b8 !important;
+    opacity: 1;
+  }
   .fc .fc-day-today { background: rgba(67, 97, 238, 0.05) !important; }
+
+/* ===== HIGH CONTRAST REŽIMAS ===== */
+html.a11y-high-contrast .fc {
+  background: #1a1a1a !important;
+  color: #fff !important;
+}
+html.a11y-high-contrast .fc .fc-col-header-cell {
+  background: #000 !important;
+  border-color: #fff !important;
+}
+html.a11y-high-contrast .fc .fc-col-header-cell-cushion {
+  color: #ffeb3b !important;
+}
+html.a11y-high-contrast .fc .fc-daygrid-day-number,
+html.a11y-high-contrast .fc .fc-list-day-text,
+html.a11y-high-contrast .fc .fc-list-day-side-text {
+  color: #fff !important;
+  font-weight: 700;
+}
+html.a11y-high-contrast .fc .fc-day {
+  background: #1a1a1a !important;
+  border-color: #fff !important;
+}
+html.a11y-high-contrast .fc .fc-day-other .fc-daygrid-day-number {
+  color: #888 !important;
+}
+html.a11y-high-contrast .fc .fc-day-today {
+  background: #2a2a40 !important;
+}
+html.a11y-high-contrast .fc .fc-day-today .fc-daygrid-day-number {
+  background: #ffeb3b !important;
+  color: #000 !important;
+}
+html.a11y-high-contrast .fc .fc-toolbar-title {
+  color: #fff !important;
+}
+html.a11y-high-contrast .fc .fc-button {
+  background: #000 !important;
+  color: #fff !important;
+  border-color: #fff !important;
+}
+html.a11y-high-contrast .fc .fc-button-primary:not(:disabled).fc-button-active,
+html.a11y-high-contrast .fc .fc-button-primary:not(:disabled):active {
+  background: #ffeb3b !important;
+  color: #000 !important;
+  border-color: #ffeb3b !important;
+}
+html.a11y-high-contrast .fc .fc-today-button {
+  background: #ffeb3b !important;
+  color: #000 !important;
+  border-color: #ffeb3b !important;
+}
 </style>
 
 <script>
