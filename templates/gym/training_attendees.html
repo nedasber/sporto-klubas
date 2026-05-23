@@ -8,11 +8,54 @@
   <p>{{ training.starts_at|date:"Y-m-d H:i" }} · {{ training.duration_minutes }} min · {% trans "Dalyvių sąrašas" %}</p>
 </div>
 
+<!-- INSTRUKCIJA -->
+{% if training.starts_at|date:"U" <= now|date:"U" %}
+  <div class="alert alert-info py-2 small">
+    <i class="bi bi-info-circle me-1"></i>
+    {% trans "Treniruotė įvyko. Pažymėkite, kurie klientai dalyvavo – tai paveiks jų taškus, streak'ą ir pasiekimus." %}
+  </div>
+{% else %}
+  <div class="alert alert-warning py-2 small">
+    <i class="bi bi-clock-history me-1"></i>
+    {% trans "Treniruotė dar neįvyko. Lankomumą galėsite žymėti po jos pabaigos." %}
+  </div>
+{% endif %}
+
+<!-- SUVESTINĖ -->
+<div class="row g-2 mb-3">
+  <div class="col-6 col-md-3">
+    <div class="s-card text-center py-3">
+      <div class="text-muted small">{% trans "Iš viso" %}</div>
+      <div class="fw-bold fs-4">{{ stats.total }}</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="s-card text-center py-3" style="background:#dcfce7;">
+      <div class="text-muted small">{% trans "Dalyvavo" %}</div>
+      <div class="fw-bold fs-4 text-success">{{ stats.attended }}</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="s-card text-center py-3" style="background:#fef2f2;">
+      <div class="text-muted small">{% trans "Neatvyko" %}</div>
+      <div class="fw-bold fs-4 text-danger">{{ stats.no_show }}</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="s-card text-center py-3" style="background:#eef1ff;">
+      <div class="text-muted small">{% trans "Laukia įvertinimo" %}</div>
+      <div class="fw-bold fs-4" style="color:var(--primary);">{{ stats.pending }}</div>
+    </div>
+  </div>
+</div>
+
+<!-- DALYVIŲ LENTELĖ -->
 <div class="s-card">
   <div class="table-responsive">
     <table class="s-table">
       <thead>
         <tr>
+          <th>#</th>
           <th>{% trans "Klientas" %}</th>
           <th>{% trans "Statusas" %}</th>
           <th>{% trans "Veiksmai" %}</th>
@@ -21,6 +64,7 @@
       <tbody>
         {% for r in reservations %}
           <tr>
+            <td><span class="text-muted small">{{ forloop.counter }}</span></td>
             <td>
               <div class="d-flex align-items-center gap-2">
                 <div class="user-avatar" style="width:32px;height:32px;font-size:14px;"><i class="bi bi-person-fill"></i></div>
@@ -30,26 +74,34 @@
             <td>
               {% if r.status == "BOOKED" %}<span class="badge-status badge-booked">{% trans "Užregistruota" %}</span>
               {% elif r.status == "CANCELLED" %}<span class="badge-status badge-cancelled">{% trans "Atšaukta" %}</span>
-              {% elif r.status == "ATTENDED" %}<span class="badge-status badge-attended">{% trans "Dalyvavo" %}</span>
-              {% elif r.status == "NO_SHOW" %}<span class="badge-status badge-no_show">{% trans "Neatvyko" %}</span>
+              {% elif r.status == "ATTENDED" %}<span class="badge-status badge-attended">✓ {% trans "Dalyvavo" %}</span>
+              {% elif r.status == "NO_SHOW" %}<span class="badge-status badge-no_show">✗ {% trans "Neatvyko" %}</span>
               {% endif %}
             </td>
             <td>
-              <div class="d-flex gap-2">
-                <a class="btn btn-success btn-sm" href="/trainer/reservations/{{ r.id }}/ATTENDED/">
-                  <i class="bi bi-check-lg me-1"></i> {% trans "Dalyvavo" %}
-                </a>
-                <a class="btn btn-outline-danger btn-sm" href="/trainer/reservations/{{ r.id }}/NO_SHOW/">
-                  <i class="bi bi-x-lg me-1"></i> {% trans "Neatvyko" %}
-                </a>
-              </div>
+              {% if r.status == "CANCELLED" %}
+                <span class="text-muted small">—</span>
+              {% elif training.starts_at|date:"U" > now|date:"U" %}
+                <span class="text-muted small">{% trans "Treniruotė neįvyko" %}</span>
+              {% else %}
+                <div class="d-flex gap-2 flex-wrap">
+                  <a class="btn btn-sm {% if r.status == 'ATTENDED' %}btn-success{% else %}btn-outline-success{% endif %}"
+                     href="/trainer/reservations/{{ r.id }}/ATTENDED/">
+                    <i class="bi bi-check-lg me-1"></i> {% trans "Dalyvavo" %}
+                  </a>
+                  <a class="btn btn-sm {% if r.status == 'NO_SHOW' %}btn-danger{% else %}btn-outline-danger{% endif %}"
+                     href="/trainer/reservations/{{ r.id }}/NO_SHOW/">
+                    <i class="bi bi-x-lg me-1"></i> {% trans "Neatvyko" %}
+                  </a>
+                </div>
+              {% endif %}
             </td>
           </tr>
         {% empty %}
           <tr>
-            <td colspan="3" class="text-center py-5">
+            <td colspan="4" class="text-center py-5">
               <i class="bi bi-people fs-1 text-muted"></i>
-              <div class="text-muted mt-2">{% trans "Dalyvių nėra" %}</div>
+              <div class="text-muted mt-2">{% trans "Į šią treniruotę dar niekas neužsiregistravo" %}</div>
             </td>
           </tr>
         {% endfor %}

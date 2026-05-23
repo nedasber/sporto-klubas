@@ -666,10 +666,21 @@ def training_attendees(request, training_id):
         return redirect("/dashboard/")
 
     training = get_object_or_404(Training, id=training_id, trainer=request.user)
-    reservations = Reservation.objects.filter(training=training).select_related("user")
+    reservations = Reservation.objects.filter(training=training).select_related("user").order_by("created_at")
+
+    # Statistika
+    stats = {
+        "total": reservations.exclude(status="CANCELLED").count(),
+        "attended": reservations.filter(status="ATTENDED").count(),
+        "no_show": reservations.filter(status="NO_SHOW").count(),
+        "pending": reservations.filter(status="BOOKED").count(),
+    }
+
     return render(request, "gym/training_attendees.html", {
         "training": training,
         "reservations": reservations,
+        "stats": stats,
+        "now": timezone.now(),
     })
 
 
