@@ -882,10 +882,6 @@ msgstr "No new notifications"
 msgid "Žiūrėti visas treniruotes"
 msgstr "View all trainings"
 
-# Linksniavimas
-msgid "apsilankymų"
-msgstr "visits"
-
 # Email verification
 msgid "Į šį adresą bus išsiųstas patvirtinimo laiškas."
 msgstr "A verification email will be sent to this address."
@@ -988,3 +984,96 @@ msgstr "Update"
 
 msgid "Redaguoti"
 msgstr "Edit"
+
+# ============================================================
+# PUBLIC LANDING PAGE
+# ============================================================
+msgid "Sporto klubas – Sveiki atvykę!"
+msgstr "Sports Club – Welcome!"
+
+msgid "Pradėk savo sporto kelionę šiandien!"
+msgstr "Start your fitness journey today!"
+
+msgid "Šiuolaikinė sporto klubo sistema su motyvacine sistema, automatiniais priminimais ir patogiu treniruočių valdymu. Prisijunk prie aktyvių žmonių bendruomenės!"
+msgstr "A modern sports club system with a motivation system, automatic reminders, and convenient training management. Join the community of active people!"
+
+msgid "Pradėk dabar"
+msgstr "Get started"
+
+msgid "Artimiausios treniruotės"
+msgstr "Upcoming trainings"
+
+msgid "Pasirink treniruotę pagal savo grafiką ir interesus"
+msgstr "Choose a training that fits your schedule and interests"
+
+msgid "Talpa"
+msgstr "Capacity"
+
+msgid "Prisijunk ir užsiregistruok"
+msgstr "Sign in and register"
+
+msgid "Šiuo metu artimiausių treniruočių nėra. Prisijunk, kad gautum pranešimus apie naujas treniruotes."
+msgstr "There are no upcoming trainings at the moment. Sign in to receive notifications about new trainings."
+
+msgid "Mūsų abonementai"
+msgstr "Our memberships"
+
+msgid "Pasirink planą, kuris geriausiai atitinka tavo poreikius"
+msgstr "Choose the plan that best fits your needs"
+
+msgid "Populiariausias"
+msgstr "Most popular"
+
+msgid "dienų galiojimas"
+msgstr "days validity"
+
+msgid "Neribotai apsilankymų"
+msgstr "Unlimited visits"
+
+msgid "Visi treniruočių tipai"
+msgstr "All training types"
+
+msgid "Motyvacinė sistema"
+msgstr "Motivation system"
+
+msgid "Įsigyk dabar"
+msgstr "Buy now"
+
+msgid "Šiuo metu abonementų planų nėra."
+msgstr "There are no membership plans at the moment."
+
+msgid "Kodėl būtent mes?"
+msgstr "Why choose us?"
+
+msgid "Mūsų sistema – tai daugiau nei tik treniruočių grafikas"
+msgstr "Our system is more than just a training schedule"
+
+msgid "Rink taškus, kelk lygį, gauk pasiekimus už reguliarų lankymąsi"
+msgstr "Collect points, level up, earn achievements for regular attendance"
+
+msgid "Automatiniai priminimai"
+msgstr "Automatic reminders"
+
+msgid "Gauk priminimus apie treniruotes el. paštu, niekad nepamiršk"
+msgstr "Get training reminders by email, never forget"
+
+msgid "Dvi kalbos"
+msgstr "Two languages"
+
+msgid "Visa sistema lietuvių ir anglų kalbomis, kad būtų patogu visiems"
+msgstr "The entire system in Lithuanian and English for everyone's convenience"
+
+msgid "Pritaikyta vartotojams su specialiais poreikiais (didelis kontrastas, šriftas)"
+msgstr "Adapted for users with special needs (high contrast, font size)"
+
+msgid "Pasiruošę pradėti?"
+msgstr "Ready to start?"
+
+msgid "Užsiregistruok nemokamai ir pradėk savo sporto kelionę šiandien!"
+msgstr "Sign up for free and start your fitness journey today!"
+
+msgid "Šiuolaikinė sporto klubo valdymo sistema su motyvaciniu žaidybinimu"
+msgstr "A modern sports club management system with motivational gamification"
+
+msgid "Sporto klubas. Visos teisės saugomos."
+msgstr "Sports Club. All rights reserved."
