@@ -5,10 +5,11 @@ from django.urls import path, include
 from django.contrib.auth import views as auth_views
 from django.views.generic import RedirectView
 from gym import views as gym_views
+from gym import public_views
 from accounts.forms import LoginForm
 
 urlpatterns = [
-    path("", RedirectView.as_view(url="/login/", permanent=False)),
+    path("", public_views.home_page, name="home"),
 
     # Django integruotas admin (paliktas backup'ui)
     path("django-admin/", admin.site.urls),
