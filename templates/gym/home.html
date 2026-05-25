@@ -1,4 +1,4 @@
-{% load static i18n %}
+{% load static i18n i18n_extras %}
 <!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE|default:'lt' }}">
 <head>
@@ -524,7 +524,7 @@
               {% if forloop.counter == 2 %}
                 <span class="plan-badge">{% trans "Populiariausias" %}</span>
               {% endif %}
-              <div class="plan-name">{{ plan.name }}</div>
+              <div class="plan-name">{{ plan.name|translate }}</div>
               <div class="plan-price">
                 {{ plan.price }} €
                 <small>/ {{ plan.duration_days }} {% trans "d." %}</small>
