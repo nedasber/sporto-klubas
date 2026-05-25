@@ -702,7 +702,6 @@ def set_attendance(request, reservation_id, status):
 
     return redirect(f"/trainer/trainings/{r.training.id}/attendees/")
 
-
 @login_required
 def trainer_create_training(request):
     # tik treneriui

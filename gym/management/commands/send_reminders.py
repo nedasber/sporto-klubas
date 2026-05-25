@@ -22,7 +22,6 @@ from accounts.emails import (
     send_membership_expiring,
 )
 
-
 class Command(BaseCommand):
     help = "Siunčia priminimus apie treniruotes ir abonemento pabaigą"
 
