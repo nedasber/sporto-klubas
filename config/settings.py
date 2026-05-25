@@ -155,7 +155,7 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'config.storage.ForgivingManifestStaticFilesStorage'
 
 # Media failai (vartotojo įkelti paveikslėliai ir t.t.)
 MEDIA_URL = '/media/'
