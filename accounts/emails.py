@@ -1,26 +1,24 @@
 """
-Email pagalbinės funkcijos – siunčia laiškus per Resend API.
+Email pagalbinės funkcijos – siunčia laiškus per Brevo SMTP.
 """
-import resend
 from django.conf import settings
+from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.urls import reverse
 
 from .models import EmailLog
 
-resend.api_key = settings.RESEND_API_KEY
-
 
 def _send(subject, text_body, html_body, to_email):
-    """Bendra siuntimo funkcija per Resend API."""
-    params = {
-        "from": settings.DEFAULT_FROM_EMAIL,
-        "to": [to_email],
-        "subject": subject,
-        "html": html_body,
-        "text": text_body,
-    }
-    resend.Emails.send(params)
+    """Bendra siuntimo funkcija per Brevo SMTP."""
+    msg = EmailMultiAlternatives(
+        subject=subject,
+        body=text_body,
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        to=[to_email],
+    )
+    msg.attach_alternative(html_body, "text/html")
+    msg.send(fail_silently=False)
 
 
 def send_verification_email(user, request=None):
