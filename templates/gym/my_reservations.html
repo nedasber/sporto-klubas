@@ -8,38 +8,32 @@
   <p>{% trans "Peržiūrėkite ir valdykite savo treniruočių rezervacijas" %}</p>
 </div>
 
-<!-- TAB'AI -->
-<div class="s-card mb-3 py-2">
-  <div class="d-flex flex-wrap gap-2 align-items-center">
-    <a href="?tab=upcoming" class="btn btn-sm {% if tab == 'upcoming' %}btn-primary{% else %}btn-outline-secondary{% endif %}">
-      <i class="bi bi-calendar-event me-1"></i> {% trans "Būsimos" %}
-      {% if counts.upcoming %}<span class="badge ms-1" style="background:rgba(255,255,255,0.3);">{{ counts.upcoming }}</span>{% endif %}
-    </a>
-    <a href="?tab=past" class="btn btn-sm {% if tab == 'past' %}btn-primary{% else %}btn-outline-secondary{% endif %}">
-      <i class="bi bi-clock-history me-1"></i> {% trans "Praeities" %}
-      {% if counts.past %}<span class="badge ms-1" style="background:rgba(255,255,255,0.3);">{{ counts.past }}</span>{% endif %}
-    </a>
-    <a href="?tab=cancelled" class="btn btn-sm {% if tab == 'cancelled' %}btn-primary{% else %}btn-outline-secondary{% endif %}">
-      <i class="bi bi-x-circle me-1"></i> {% trans "Atšauktos" %}
-      {% if counts.cancelled %}<span class="badge ms-1" style="background:rgba(255,255,255,0.3);">{{ counts.cancelled }}</span>{% endif %}
-    </a>
-    <a href="?tab=all" class="btn btn-sm {% if tab == 'all' %}btn-primary{% else %}btn-outline-secondary{% endif %}">
-      <i class="bi bi-list-ul me-1"></i> {% trans "Visos" %}
-      {% if counts.all %}<span class="badge ms-1" style="background:rgba(255,255,255,0.3);">{{ counts.all }}</span>{% endif %}
-    </a>
-  </div>
-</div>
-
-<!-- PAIEŠKA IR RIKIAVIMAS -->
+<!-- FILTRAI: PAIEŠKA + STATUSAS + RIKIAVIMAS VIENOJE EILUTĖJE -->
 <form method="get" class="s-card mb-3 py-3">
-  <input type="hidden" name="tab" value="{{ tab }}">
   <div class="row g-2 align-items-end">
-    <div class="col-md-7">
+    <div class="col-md-4">
       <label class="form-label small mb-1 text-muted">{% trans "Paieška pagal pavadinimą" %}</label>
       <div class="input-group input-group-sm">
         <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
         <input type="text" name="q" value="{{ search_query }}" class="form-control" placeholder="{% trans 'Pvz. Joga' %}">
       </div>
+    </div>
+    <div class="col-md-3">
+      <label class="form-label small mb-1 text-muted">{% trans "Statusas" %}</label>
+      <select name="tab" class="form-select form-select-sm">
+        <option value="upcoming" {% if tab == "upcoming" %}selected{% endif %}>
+          {% trans "Būsimos" %}{% if counts.upcoming %} ({{ counts.upcoming }}){% endif %}
+        </option>
+        <option value="past" {% if tab == "past" %}selected{% endif %}>
+          {% trans "Praeities" %}{% if counts.past %} ({{ counts.past }}){% endif %}
+        </option>
+        <option value="cancelled" {% if tab == "cancelled" %}selected{% endif %}>
+          {% trans "Atšauktos" %}{% if counts.cancelled %} ({{ counts.cancelled }}){% endif %}
+        </option>
+        <option value="all" {% if tab == "all" %}selected{% endif %}>
+          {% trans "Visos" %}{% if counts.all %} ({{ counts.all }}){% endif %}
+        </option>
+      </select>
     </div>
     <div class="col-md-3">
       <label class="form-label small mb-1 text-muted">{% trans "Rikiavimas" %}</label>
