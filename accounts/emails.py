@@ -1,8 +1,9 @@
 """
-Email pagalbinės funkcijos – siunčia laiškus per Brevo SMTP.
+Email pagalbinės funkcijos – siunčia laiškus per Brevo HTTPS API.
 """
+import sib_api_v3_sdk
+from sib_api_v3_sdk.rest import ApiException
 from django.conf import settings
-from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.urls import reverse
 
@@ -10,15 +11,23 @@ from .models import EmailLog
 
 
 def _send(subject, text_body, html_body, to_email):
-    """Bendra siuntimo funkcija per Brevo SMTP."""
-    msg = EmailMultiAlternatives(
-        subject=subject,
-        body=text_body,
-        from_email=settings.DEFAULT_FROM_EMAIL,
-        to=[to_email],
+    """Bendra siuntimo funkcija per Brevo HTTPS API (port 443)."""
+    configuration = sib_api_v3_sdk.Configuration()
+    configuration.api_key['api-key'] = settings.BREVO_API_KEY
+
+    api_instance = sib_api_v3_sdk.TransactionalEmailsApi(
+        sib_api_v3_sdk.ApiClient(configuration)
     )
-    msg.attach_alternative(html_body, "text/html")
-    msg.send(fail_silently=False)
+
+    send_smtp_email = sib_api_v3_sdk.SendSmtpEmail(
+        to=[{"email": to_email}],
+        sender={"email": settings.DEFAULT_FROM_EMAIL, "name": "Sporto klubas"},
+        subject=subject,
+        html_content=html_body,
+        text_content=text_body,
+    )
+
+    api_instance.send_transac_email(send_smtp_email)
 
 
 def send_verification_email(user, request=None):
