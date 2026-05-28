@@ -6,8 +6,10 @@ from django.utils import timezone
 
 def notifications(request):
     """
-    Suskaičiuoja naujų treniruočių sk. ir grąžina jų sąrašą.
-    „Nauja" = treniruotė sukurta po vartotojo paskutinio pranešimų peržiūrėjimo.
+    Pranesimai varpelyje klientui:
+    1. Naujos treniruotes (po paskutinio perziurejimo)
+    2. Atsauktos treniruotes, i kurias klientas buvo uzsiregistraves
+
     Veikia tik prisijungusiems klientams.
     """
     if not request.user.is_authenticated:
@@ -22,24 +24,47 @@ def notifications(request):
     if profile.role != "CLIENT":
         return {
             "notifications_count": 0,
-            "notifications_list": [],
+            "notifications_new_trainings": [],
+            "notifications_cancelled_trainings": [],
         }
 
-    from gym.models import Training
+    from gym.models import Training, Reservation
 
     # SVARBU: jei naujas vartotojas, last_notifications_seen_at gali būti None.
     # Tokiu atveju naudojam user.date_joined kaip atskaitos tašką
     since = profile.last_notifications_seen_at or request.user.date_joined
     now = timezone.now()
 
-    # Naujos treniruotės: sukurtos po paskutinio peržiūrėjimo, dar nepraėjusios, ne atšauktos
-    new_trainings = Training.objects.filter(
-        created_at__gt=since,
-        starts_at__gte=now,
-        status="SCHEDULED",
-    ).select_related("trainer").order_by("-created_at")
+    # 1. NAUJOS treniruotes - sukurtos po paskutinio perziurejimo
+    new_trainings = list(
+        Training.objects.filter(
+            created_at__gt=since,
+            starts_at__gte=now,
+            status="SCHEDULED",
+        ).select_related("trainer").order_by("-created_at")[:10]
+    )
+
+    # 2. ATSAUKTOS treniruotes, i kurias klientas BUVO uzsiregistraves.
+    # Rodom tik tas, kurios buvo atsauktos PO paskutinio perziurejimo
+    # ir kurios dar nera praejusios (kad nekauptu seno)
+    cancelled_reservations = list(
+        Reservation.objects.filter(
+            user=request.user,
+            status="BOOKED",  # klientas buvo uzsiregistraves
+            training__status="CANCELLED",  # bet treniruote atsaukta
+            training__starts_at__gte=now,  # tik busimos
+        ).select_related("training", "training__trainer")
+        .order_by("-training__starts_at")[:10]
+    )
+
+    cancelled_trainings = [r.training for r in cancelled_reservations]
+
+    total_count = len(new_trainings) + len(cancelled_trainings)
 
     return {
-        "notifications_count": new_trainings.count(),
-        "notifications_list": list(new_trainings[:10]),
+        "notifications_count": total_count,
+        "notifications_new_trainings": new_trainings,
+        "notifications_cancelled_trainings": cancelled_trainings,
+        # Backward compatibility - jei kazkur naudojama notifications_list
+        "notifications_list": new_trainings,
     }

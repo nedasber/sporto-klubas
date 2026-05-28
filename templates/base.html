@@ -1135,8 +1135,21 @@ html.a11y-strong-focus *:focus-visible {
             {% endif %}
           </div>
           <div class="notif-body">
-            {% if notifications_list %}
-              {% for t in notifications_list %}
+            {% if notifications_cancelled_trainings %}
+              {% for t in notifications_cancelled_trainings %}
+                <a href="/my-reservations/?tab=cancelled" class="notif-item">
+                  <div class="notif-icon" style="background:#fee2e2;color:#dc2626;"><i class="bi bi-calendar-x-fill"></i></div>
+                  <div class="notif-content">
+                    <div class="fw-semibold small text-danger">{% trans "Treniruotė atšaukta" %}: {{ t.title }}</div>
+                    <div class="text-muted" style="font-size:11px;">
+                      {{ t.starts_at|date:"Y-m-d H:i" }} · {{ t.trainer.username }}
+                    </div>
+                  </div>
+                </a>
+              {% endfor %}
+            {% endif %}
+            {% if notifications_new_trainings %}
+              {% for t in notifications_new_trainings %}
                 <a href="/trainings/" class="notif-item">
                   <div class="notif-icon"><i class="bi bi-calendar-plus"></i></div>
                   <div class="notif-content">
@@ -1147,14 +1160,15 @@ html.a11y-strong-focus *:focus-visible {
                   </div>
                 </a>
               {% endfor %}
-            {% else %}
+            {% endif %}
+            {% if not notifications_new_trainings and not notifications_cancelled_trainings %}
               <div class="text-center py-4 text-muted small">
                 <i class="bi bi-bell-slash fs-3 d-block mb-2"></i>
                 {% trans "Naujų pranešimų nėra" %}
               </div>
             {% endif %}
           </div>
-          {% if notifications_list %}
+          {% if notifications_new_trainings or notifications_cancelled_trainings %}
             <div class="notif-footer">
               <a href="/trainings/" class="small">{% trans "Žiūrėti visas treniruotes" %} →</a>
             </div>
