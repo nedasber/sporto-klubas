@@ -27,7 +27,9 @@ def notifications(request):
 
     from gym.models import Training
 
-    since = profile.last_notifications_seen_at
+    # SVARBU: jei naujas vartotojas, last_notifications_seen_at gali būti None.
+    # Tokiu atveju naudojam user.date_joined kaip atskaitos tašką
+    since = profile.last_notifications_seen_at or request.user.date_joined
     now = timezone.now()
 
     # Naujos treniruotės: sukurtos po paskutinio peržiūrėjimo, dar nepraėjusios, ne atšauktos
