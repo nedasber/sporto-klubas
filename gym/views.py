@@ -143,9 +143,11 @@ def dashboard(request):
         defaults={"role": "CLIENT"},
     )
 
-    # Treneris turi savo atskirą dashboard'ą
+    # Rolės nukreipimas - kiekviena rolė turi savo darbo erdvę
     if profile.role == "TRAINER":
         return _trainer_dashboard(request)
+    if profile.role == "ADMIN":
+        return redirect("/manage/")
 
     today = timezone.now().date()
 
