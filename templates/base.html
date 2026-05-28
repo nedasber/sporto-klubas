@@ -1039,9 +1039,11 @@ html.a11y-strong-focus *:focus-visible {
     </div>
 
     <div class="sidebar-nav flex-grow-1">
+      {% if not request.user.profile or request.user.profile.role != "ADMIN" %}
       <a href="/dashboard/" class="sidebar-link {% if request.path == '/dashboard/' %}active{% endif %}">
         <i class="bi bi-grid-1x2-fill"></i> {% trans "Valdymo skydelis" %}
       </a>
+      {% endif %}
 
       {% if request.user.profile and request.user.profile.role == "CLIENT" %}
         <a href="/trainings/" class="sidebar-link {% if '/trainings' in request.path and 'trainer' not in request.path %}active{% endif %}">
