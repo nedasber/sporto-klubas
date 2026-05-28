@@ -478,9 +478,20 @@ def register_training(request, training_id):
 
     booked = Reservation.objects.filter(training=training, status="BOOKED").count()
     if booked >= training.capacity:
+        messages.error(request, "Treniruotė užpildyta.")
         return redirect("/trainings/")
 
-    Reservation.objects.get_or_create(training=training, user=request.user, defaults={"status": "BOOKED"})
+    # Jei jau yra rezervacija (gali būti CANCELLED) - atnaujinam į BOOKED, nekuriam naujos
+    existing = Reservation.objects.filter(training=training, user=request.user).first()
+    if existing:
+        if existing.status == "BOOKED":
+            messages.info(request, "Jau esate užsiregistravęs į šitą treniruotę.")
+            return redirect("/my-reservations/")
+        # CANCELLED, ATTENDED, NO_SHOW - atstatom į BOOKED
+        existing.status = "BOOKED"
+        existing.save(update_fields=["status"])
+    else:
+        Reservation.objects.create(training=training, user=request.user, status="BOOKED")
 
     messages.success(request, "Sėkmingai užsiregistravote į treniruotę!")
     return redirect("/my-reservations/")
@@ -830,12 +841,28 @@ def trainer_cancel_training(request, training_id):
 
 @login_required
 def membership_buy_page(request):
+    # Neleisti pirkti, jei jau turi aktyvų abonementą
+    if _has_active_membership(request.user):
+        messages.info(
+            request,
+            "Jūs jau turite aktyvų abonementą. Naują galėsite įsigyti po jo pasibaigimo."
+        )
+        return redirect("/dashboard/")
+
     plans = MembershipPlan.objects.all().order_by("price")
     return render(request, "gym/membership_buy.html", {"plans": plans})
 
 
 @login_required
 def membership_buy_checkout(request, plan_id):
+    # Neleisti pradėti pirkimo, jei jau turi aktyvų
+    if _has_active_membership(request.user):
+        messages.info(
+            request,
+            "Jūs jau turite aktyvų abonementą. Naują galėsite įsigyti po jo pasibaigimo."
+        )
+        return redirect("/dashboard/")
+
     plan = get_object_or_404(MembershipPlan, id=plan_id)
 
     if request.method == "POST":
