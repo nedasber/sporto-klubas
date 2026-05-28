@@ -7,8 +7,8 @@ from django.utils import timezone
 def notifications(request):
     """
     Pranesimai varpelyje klientui:
-    1. Naujos treniruotes (po paskutinio perziurejimo)
-    2. Atsauktos treniruotes, i kurias klientas buvo uzsiregistraves
+    1. Naujos treniruotes (sukurtos po paskutinio perziurejimo)
+    2. Atsauktos treniruotes (atsauktos po paskutinio perziurejimo)
 
     Veikia tik prisijungusiems klientams.
     """
@@ -44,17 +44,17 @@ def notifications(request):
         ).select_related("trainer").order_by("-created_at")[:10]
     )
 
-    # 2. ATSAUKTOS treniruotes, i kurias klientas BUVO uzsiregistraves.
-    # Rodom tik tas, kurios buvo atsauktos PO paskutinio perziurejimo
-    # ir kurios dar nera praejusios (kad nekauptu seno)
+    # 2. ATSAUKTOS treniruotes - atsauktos PO paskutinio perziurejimo.
+    # Klientas turi buti uzsiregistraves (BOOKED rezervacija) IR treniruote dar nepraejusi.
     cancelled_reservations = list(
         Reservation.objects.filter(
             user=request.user,
             status="BOOKED",  # klientas buvo uzsiregistraves
             training__status="CANCELLED",  # bet treniruote atsaukta
+            training__cancelled_at__gt=since,  # atsaukta po paskutinio perziurejimo
             training__starts_at__gte=now,  # tik busimos
         ).select_related("training", "training__trainer")
-        .order_by("-training__starts_at")[:10]
+        .order_by("-training__cancelled_at")[:10]
     )
 
     cancelled_trainings = [r.training for r in cancelled_reservations]

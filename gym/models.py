@@ -146,6 +146,13 @@ class Training(models.Model):
         verbose_name="Atšaukimo priežastis"
     )
 
+    # SVARBU: kada treniruote atsaukta - reikalinga in-app pranesimams varpelyje.
+    # Jei null - treniruote nera atsaukta. Nustatomas signal'e gym/signals.py
+    cancelled_at = models.DateTimeField(
+        null=True, blank=True,
+        verbose_name="Atšaukta"
+    )
+
     created_at = models.DateTimeField(default=timezone.now, verbose_name="Sukurta")
 
     class Meta:

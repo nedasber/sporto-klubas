@@ -33,6 +33,11 @@ def _send_cancellation_emails(sender, instance, created, **kwargs):
 
     # Tik jei buvo NE-cancelled, dabar tapo CANCELLED
     if old_status != "CANCELLED" and instance.status == "CANCELLED":
+        # SVARBU: nustatom cancelled_at, kad varpelio pranesimai galetu filtruoti
+        # pagal sia data. Naudojam update_fields, kad nepaleistume signal'o vel.
+        from django.utils import timezone
+        Training.objects.filter(pk=instance.pk).update(cancelled_at=timezone.now())
+
         from accounts.emails import send_training_cancelled
 
         # Visiems aktyviems rezervuotojams
