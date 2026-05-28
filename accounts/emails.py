@@ -1,28 +1,29 @@
 """
-Email pagalbinės funkcijos – siunčia laiškus per Gmail SMTP.
+Email pagalbinės funkcijos – siunčia laiškus per Resend API.
 """
+import resend
 from django.conf import settings
-from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.urls import reverse
 
 from .models import EmailLog
 
+resend.api_key = settings.RESEND_API_KEY
+
 
 def _send(subject, text_body, html_body, to_email):
-    """Bendra siuntimo funkcija."""
-    msg = EmailMultiAlternatives(
-        subject=subject,
-        body=text_body,
-        from_email=settings.DEFAULT_FROM_EMAIL,
-        to=[to_email],
-    )
-    msg.attach_alternative(html_body, "text/html")
-    msg.send(fail_silently=False)
+    """Bendra siuntimo funkcija per Resend API."""
+    params = {
+        "from": settings.DEFAULT_FROM_EMAIL,
+        "to": [to_email],
+        "subject": subject,
+        "html": html_body,
+        "text": text_body,
+    }
+    resend.Emails.send(params)
 
 
 def send_verification_email(user, request=None):
-    """Siunčia patvirtinimo laišką su unikalia nuoroda."""
     profile = user.profile
     token = profile.generate_new_token()
 
@@ -45,14 +46,12 @@ def send_verification_email(user, request=None):
 
 
 def send_training_cancelled(reservation):
-    """Siunčia laišką apie atšauktą treniruotę. Apsauga nuo dvigubo siuntimo."""
     user = reservation.user
     training = reservation.training
 
     if not user.email:
         return False
 
-    # Jau siųsta?
     already_sent = EmailLog.objects.filter(
         user=user, kind="training_cancelled", object_id=training.id
     ).exists()
@@ -80,10 +79,6 @@ def send_training_cancelled(reservation):
 
 
 def send_training_reminder(reservation, reminder_type="day"):
-    """
-    Siunčia priminimą prieš treniruotę.
-    reminder_type: 'day' (diena prieš) arba 'hour' (1 val. prieš)
-    """
     user = reservation.user
     training = reservation.training
 
@@ -119,7 +114,6 @@ def send_training_reminder(reservation, reminder_type="day"):
 
 
 def send_membership_expiring(membership, days_left):
-    """Siunčia pranešimą, kad abonementas baigiasi."""
     user = membership.user
 
     if not user.email:
@@ -152,7 +146,6 @@ def send_membership_expiring(membership, days_left):
 
 
 def send_membership_purchased(membership):
-    """Siunčia patvirtinimą po sėkmingo abonemento pirkimo."""
     user = membership.user
 
     if not user.email:
